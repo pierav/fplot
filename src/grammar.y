@@ -5,6 +5,7 @@
   int yyerror(char *s);
 %}
 
+%debug
 %define api.value.type {void *}
 
 %token ENTIER
@@ -65,11 +66,5 @@ variable
 
 int yyerror(char *s) {
     printf("yyerror : %s\n",s);
-    return 0;
-}
-
-int main(void) {
-    yyparse();
-    printf("[***  EOM  ***]\n");
     return 0;
 }
