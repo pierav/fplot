@@ -3,6 +3,7 @@
  ******************************************************************************/
 
 #include "obj.h"
+#include "obj_int.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,9 @@
  * Types
  ******************************************************************************/
 
+typedef OBJ *(*OBJ_func1)(OBJ *);
+typedef OBJ *(*OBJ_func2)(OBJ *, OBJ *);
+
 /*******************************************************************************
  * Internal function declaration
  ******************************************************************************/
@@ -24,6 +28,14 @@
  ******************************************************************************/
 
 const char *OBJ_TYPES_NAMES[] = {"BOOL", "INT", "CHAR", "STR", "FUNC"};
+
+const char *OBJ_FUNCS_NAMES[] = {
+    "__ADD__", "__SUB__",  "__MUL__", "__TDV__",   "__POW__", "__FDV__",
+    "__MOD__", "__NEG__",  "__POS__", "__ABS__",   "__EQ__",  "__NE__",
+    "__LT__",  "__GT__",   "__LE__",  "__GE__",    "__LEN__", "__GETITEM__",
+    "__STR__", "__REPR__", "__INT__", "__DOUBLE__"};
+
+const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, NULL, NULL};
 
 /*******************************************************************************
  * Public function
@@ -68,31 +80,55 @@ OBJ *OBJ_Call(OBJ *func, void *stack) {
   return func;
 }
 
-// obj + (__add__)
-OBJ *OBJ_Add(OBJ *obj1, OBJ *obj2) {
-  printf("ADD ");
+OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
+  printf(OBJ_FUNCS_NAMES[func]);
+  OBJ_Print(obj1);
+
+  // type valide ? TODO delete
+  const void *objfunctab = OBJ_FULL_FUNC[obj1->type];
+  if (objfunctab == NULL) {
+    printf("Invalid type\n");
+    return obj1;
+  }
+
+  // fonction valide ?
+  const OBJ_func1 objfunc = ((OBJ_func1 *)objfunctab)[func];
+
+  if (objfunc == NULL) {
+    printf("Invalid func\n");
+    return obj1;
+  }
+
+  // all OK
+  OBJ *ret = objfunc(obj1);
+  printf(" ==> ");
+  OBJ_Print(ret);
+  printf("\n");
+  return ret;
+}
+
+OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2) {
+  printf(OBJ_FUNCS_NAMES[func]);
   OBJ_Print(obj1);
   OBJ_Print(obj2);
 
-  if (obj1->type != obj2->type) {
-    printf("wrong type\n");
-    exit(1);
-  }
-  OBJ *ret = calloc(1, sizeof(struct OBJ));
-  ret->type = obj1->type;
-
-  switch (ret->type) {
-  case OBJ_INT:
-    ret->data = malloc(sizeof(int));
-    assert(ret->data);
-    *(int *)ret->data = *(int *)obj1->data + *(int *)obj2->data;
-    break;
-  default:
-    printf("No valid func\n");
-    exit(1);
-    break;
+  // type valide ? TODO delete
+  const void *objfunctab = OBJ_FULL_FUNC[obj1->type];
+  if (objfunctab == NULL) {
+    printf("Invalid type\n");
+    return obj1;
   }
 
+  // fonction valide ?
+  const OBJ_func2 objfunc = ((OBJ_func2 *)objfunctab)[func];
+
+  if (objfunc == NULL) {
+    printf("Invalid func\n");
+    return obj1;
+  }
+
+  // all OK
+  OBJ *ret = objfunc(obj1, obj2);
   printf(" ==> ");
   OBJ_Print(ret);
   printf("\n");
@@ -121,14 +157,7 @@ void OBJ_Print(OBJ *obj) {
   }
   printf("]");
 }
-
-// Tests
-OBJ *OBJ_INT_Create(int value, char *name) {
-  int *p_data = (int *)malloc(sizeof(int));
-  *p_data = value;
-  return OBJ_Create(OBJ_INT, p_data, name);
-}
-
+/* Outdated
 void OBJ_Tu(void) {
   OBJ *x = OBJ_INT_Create(10, "x");
   OBJ_Print(x);
@@ -138,7 +167,7 @@ void OBJ_Tu(void) {
   OBJ *xpy = OBJ_Add(x, y);
   OBJ_Print(xpy);
 }
-
+*/
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

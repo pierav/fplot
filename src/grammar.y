@@ -51,16 +51,16 @@ call
 
 /* Manipulation des objets (TODO)*/
 expr_list
-: expr                                  { $$ = $1; /*  TODO */}
+  : expr                                { $$ = $1; /*  TODO */}
   | expr_list COMMA expr                { $$ = $1; }
 
 expr
   : var_src                             { $$ = $1;}
-  | expr DOUBLEPT expr                  { $$ = OBJ_Add($1, $3); printf("LISTE : TODO\n"); }
-  | expr PLUS expr                      { $$ = OBJ_Add($1, $3); }
-  | expr MOINS expr                     { $$ = OBJ_Add($1, $3); }
-  | expr FOIS expr                      { $$ = OBJ_Add($1, $3); }
-  | expr DIVISE expr                    { $$ = OBJ_Add($1, $3); }
+  | expr DOUBLEPT expr                  { $$ = OBJ_ApplyFunc2(__ADD__, $1, $3); printf("LISTE : TODO\n"); }
+  | expr PLUS expr                      { $$ = OBJ_ApplyFunc2(__ADD__, $1, $3); }
+  | expr MOINS expr                     { $$ = OBJ_ApplyFunc2(__SUB__, $1, $3); }
+  | expr FOIS expr                      { $$ = OBJ_ApplyFunc2(__MUL__, $1, $3); }
+  | expr DIVISE expr                    { $$ = OBJ_ApplyFunc2(__FDV__, $1, $3); }
   | OUVRIR expr FERMER                  { $$ = $2; }
 
 var_src
