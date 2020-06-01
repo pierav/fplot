@@ -1,10 +1,11 @@
-#ifndef _OBJ_H_
-#define _OBJ_H_
+#ifndef _MEM_H_
+#define _MEM_H_
 
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
+#include "obj.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -16,15 +17,6 @@
  * Types
  ******************************************************************************/
 
-typedef enum { OBJ_BOOL, OBJ_INT, OBJ_CHAR, OBJ_STR, OBJ_FUNC } OBJ_TYPE;
-
-typedef struct OBJ {
-  OBJ_TYPE type;
-  void *data;
-  char *name;
-  uint32_t cpt_usage;
-} OBJ;
-
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -33,14 +25,19 @@ typedef struct OBJ {
  * Prototypes
  ******************************************************************************/
 
-OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name);
-OBJ *OBJ_INT_Create(int value, char *name);
+// Retourne l'objet de nom name. NULL si inexistant
+OBJ *MEM_GetObj(char *name);
 
-OBJ *OBJ_Add(OBJ *obj1, OBJ *obj2);
+// Crée un objet de nom name. NULL si déja existant
+OBJ *MEM_CreateObj(OBJ_TYPE type, void *value, char *name);
 
-OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
-OBJ *OBJ_Call(OBJ *func, void *stack);
+// Retourne l'objet pointe par name. On le créer si inexistant
+OBJ *MEM_GetOrCreateObj(OBJ_TYPE type, void *value, char *name);
 
-void OBJ_Print(OBJ *obj);
+void MEM_Clear(void);
+float MEM_GetUsage(void);
+
+void MEM_Tu(void);
+void MEM_Print(void);
 
 #endif /* _OBJ_H_ */

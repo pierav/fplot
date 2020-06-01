@@ -3,17 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "mem.h"
+
 int main(void) {
+  setvbuf(stdout, NULL, _IONBF, 0);
+
   yyparse();
+  MEM_Print();
 
-  OBJ *x = OBJ_INT_Create(10, "x");
-  OBJ_Print(x);
-  OBJ *y = OBJ_INT_Create(100, "y");
-  OBJ_Print(y);
+  // MEM_Tu();
 
-  OBJ *xpy = OBJ_Add(x, y);
-  OBJ_Print(xpy);
   printf("Hello world\n");
+
+  // MEM_Tu();
 
   return 0;
 }

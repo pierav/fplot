@@ -29,12 +29,16 @@ fois        \*
 divise      \/
 ouvrir      \(
 fermer      \)
-
 equal       \=
 doublept    \:
 ptcomma     \;
-name        {LET}({LET}|{DEC})*
 comma       \,
+
+/* Variables */
+name        {LET}({LET}|{DEC})*
+
+/* Chaines de caractères */
+string 			\"[^\"]*
 
 %%
 
@@ -54,6 +58,7 @@ comma       \,
 {comment2}	{ /* ignore */ }
 
 {entier}    { yylval = malloc(4); *(int *)yylval = atoi(yytext); return(ENTIER); }
+{string}		{ return(STRING);}
 {plus}      { return(PLUS); }
 {moins}     { return(MOINS); }
 {fois}      { return(FOIS); }
@@ -67,7 +72,7 @@ comma       \,
 {name}      {
 				      yylval = malloc(strlen(yytext));
 				      strncpy(yylval, yytext, strlen(yytext));
-				      return(NAME);
+				      return(VAR);
             }
 {comma}     { return(COMMA); }
 
