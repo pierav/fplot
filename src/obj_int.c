@@ -30,7 +30,7 @@ static inline OBJ_int_t OBJ_INT_GetRaw(OBJ *obj);
  * Variables
  ******************************************************************************/
 
-const void *OBJ_INT_FUNC[] = {
+const void *OBJ_INT_FUNC[NB_OBJ_FUNC] = {
     OBJ_INT__add__, OBJ_INT__sub__,     OBJ_INT__mul__, OBJ_INT__tdv__,
     OBJ_INT__pow__, OBJ_INT__fdv__,     OBJ_INT__mod__, OBJ_INT__neg__,
     OBJ_INT__pos__, OBJ_INT__abs__,     OBJ_INT__eq__,  OBJ_INT__ne__,

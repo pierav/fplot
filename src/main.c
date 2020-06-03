@@ -11,8 +11,6 @@ int main(void) {
   yyparse();
   MEM_Print();
 
-  // MEM_Tu();
-
   printf("Hello world\n");
 
   // MEM_Tu();

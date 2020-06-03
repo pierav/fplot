@@ -25,30 +25,39 @@ typedef enum {
   OBJ_FUNC = 4
 } OBJ_TYPE;
 
-#define NB_OBJ_FUNC 22
+#define NB_OBJ_FUNC (22)
 typedef enum {
-  __ADD__ = 0,
-  __SUB__ = 1,
-  __MUL__ = 2,
-  __TDV__ = 3,
-  __POW__ = 4,
-  __FDV__ = 5,
-  __MOD__ = 6,
-  __NEG__ = 7,
-  __POS__ = 8,
-  __ABS__ = 9,
-  __EQ__ = 10,
-  __NE__ = 11,
-  __LT__ = 12,
-  __GT__ = 13,
-  __LE__ = 14,
-  __GE__ = 15,
-  __LEN__ = 16,
-  __GETITEM__ = 17,
-  __STR__ = 18,
-  __REPR__ = 19,
-  __INT__ = 20,
-  __DOUBLE__ = 21
+  // Opérations mathématiques
+  __ADD__ = 0, // addition
+  __SUB__ = 1, // soustraction
+  __MUL__ = 2, // multiplication
+  __TDV__ = 3, // division
+  __POW__ = 4, // élévation à la puissance
+  __FDV__ = 5, // division entière
+  __MOD__ = 6, // modulo
+  __NEG__ = 7, // opposé
+  __POS__ = 8, // positif
+  __ABS__ = 9, // valeur absolue
+
+  // Opérateurs de comparaison
+  __EQ__ = 10, // égal
+  __NE__ = 11, // non égal
+  __LT__ = 12, // strictement inférieur
+  __GT__ = 13, // strictement supérieur
+  __LE__ = 14, // inférieur ou égal
+  __GE__ = 15, // supérieur ou égal
+
+  // Opérateurs de conteneurs
+  __LEN__ = 16,     // dimension
+  __GETITEM__ = 17, // accès aux éléments
+
+  // Méthodes d'affichage
+  __STR__ = 18,  //  conversion en string pour print
+  __REPR__ = 19, // affichage
+
+  // Changement de type
+  __INT__ = 20,    // -> toInt
+  __DOUBLE__ = 21, // ->toDouble
 } OBJ_PRIMITIVES;
 
 typedef struct OBJ {
