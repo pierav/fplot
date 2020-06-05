@@ -42,7 +42,7 @@ statements
 
 statement
   : affectation                         { }
-  | expr                                { }
+  | expr                                { FPC_RunFpcode(FPC_Create(POP, 0));}
 
 affectation
   : var_dst EQUAL expr                  { FPC_RunFpcode(FPC_Create(AFFECT, 0)); }

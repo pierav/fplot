@@ -9,7 +9,9 @@ int main(void) {
   setvbuf(stdout, NULL, _IONBF, 0);
 
   yyparse();
+
   MEM_Print();
+  FPC_PrintStack();
 
   printf("Hello world\n");
 
