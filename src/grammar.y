@@ -3,6 +3,7 @@
   #include <stdlib.h>
   #include "obj.h"
   #include "mem.h"
+  #include "fpcode.h"
   int yyparse();
   int yylex();
   int yyerror(char *s);
@@ -44,33 +45,32 @@ statement
   | expr                                { }
 
 affectation
-  : var_dst EQUAL expr                  { $$ = OBJ_Affect($1, $3); }
+  : var_dst EQUAL expr                  { FPC_RunFpcode(FPC_Create(AFFECT, 0)); }
 
 call
-  : var_src OUVRIR expr_list FERMER     { $$ = OBJ_Call($1, $3); }
+  : var_src OUVRIR expr_list FERMER     { FPC_RunFpcode(FPC_Create(CALL, 0)); }
 
-/* Manipulation des objets (TODO)*/
 expr_list
-  : expr                                { $$ = $1; /*  TODO */}
-  | expr_list COMMA expr                { $$ = $1; }
+  : expr                                {/*  TODO */}
+  | expr_list COMMA expr                { }
 
 expr
-  : var_src                             { $$ = $1;}
-  | expr DOUBLEPT expr                  { $$ = OBJ_ApplyFunc2(__ADD__, $1, $3); printf("LISTE : TODO\n"); }
-  | expr PLUS expr                      { $$ = OBJ_ApplyFunc2(__ADD__, $1, $3); }
-  | expr MOINS expr                     { $$ = OBJ_ApplyFunc2(__SUB__, $1, $3); }
-  | expr FOIS expr                      { $$ = OBJ_ApplyFunc2(__MUL__, $1, $3); }
-  | expr DIVISE expr                    { $$ = OBJ_ApplyFunc2(__FDV__, $1, $3); }
-  | OUVRIR expr FERMER                  { $$ = $2; }
+  : var_src                             { }
+  | expr DOUBLEPT expr                  { FPC_RunFpcode(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); printf("LISTE : TODO\n"); }
+  | expr PLUS expr                      { FPC_RunFpcode(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); }
+  | expr MOINS expr                     { FPC_RunFpcode(FPC_Create(APPLY_OBJ_FUNC, (void *)__SUB__)); }
+  | expr FOIS expr                      { FPC_RunFpcode(FPC_Create(APPLY_OBJ_FUNC, (void *)__MUL__)); }
+  | expr DIVISE expr                    { FPC_RunFpcode(FPC_Create(APPLY_OBJ_FUNC, (void *)__FDV__)); }
+  | OUVRIR expr FERMER                  { }
 
 var_src
-  : VAR                                 { $$ = MEM_GetObj($1); if ($$ == NULL){printf("USR# undefined varable : %s", (char *)$1); exit(1);}}
-  | ENTIER                              { $$ = OBJ_Create(OBJ_INT, $1, NULL); }
-  | STRING                              { $$ = OBJ_Create(OBJ_STR, $1, NULL); }
+  : VAR                                 { FPC_RunFpcode(FPC_Create(PUSH, MEM_GetObj($1)));}
+  | ENTIER                              { FPC_RunFpcode(FPC_Create(PUSH, OBJ_Create(OBJ_INT, $1, NULL))); }
+  | STRING                              { FPC_RunFpcode(FPC_Create(PUSH, OBJ_Create(OBJ_STR, $1, NULL))); }
   | call
 
 var_dst
-  : VAR                                 { $$ = MEM_GetOrCreateObj(OBJ_STR, "undefined value", $1); }
+  : VAR                                 { FPC_RunFpcode(FPC_Create(PUSH, MEM_GetOrCreateObj(OBJ_STR, "undefined value", $1))); }
 
 
 %%

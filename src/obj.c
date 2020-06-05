@@ -27,13 +27,16 @@ typedef OBJ *(*OBJ_func2)(OBJ *, OBJ *);
  * Variables
  ******************************************************************************/
 
-const char *OBJ_TYPES_NAMES[] = {"BOOL", "INT", "CHAR", "STR", "FUNC"};
-
-const char *OBJ_FUNCS_NAMES[] = {
+const char *OBJ_FUNCS_NAMES[NB_OBJ_FUNC] = {
     "__ADD__", "__SUB__",  "__MUL__", "__TDV__",   "__POW__", "__FDV__",
     "__MOD__", "__NEG__",  "__POS__", "__ABS__",   "__EQ__",  "__NE__",
     "__LT__",  "__GT__",   "__LE__",  "__GE__",    "__LEN__", "__GETITEM__",
     "__STR__", "__REPR__", "__INT__", "__DOUBLE__"};
+
+const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC] = {2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2,
+                                          2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1};
+
+const char *OBJ_TYPES_NAMES[] = {"BOOL", "INT", "CHAR", "STR", "FUNC"};
 
 const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, NULL, NULL};
 

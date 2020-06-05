@@ -28,6 +28,9 @@
  * Internal function declaration
  ******************************************************************************/
 
+OBJ *get(char *name);
+OBJ *set(OBJ *obj);
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -41,35 +44,32 @@ extern OBJ *MEM_ans; // TODO
  * Public function
  ******************************************************************************/
 
-// Retourne l'objet de nom name. NULL si inexistant
+// Retourne l'objet de nom name
 OBJ *MEM_GetObj(char *name) {
   // TODO; hash
-  for (size_t i = 0; i < MEM_current_size; i++) {
-    if (strcmp(name, MEM_data[i]->name) == 0) {
-      return MEM_data[i];
-    }
+  OBJ *ret = get(name);
+  if (ret == NULL) {
+    printf("USR# undefined varable : %s", name);
+    exit(1);
   }
-  return NULL;
+  return ret;
 }
 
-// Crée un objet de nom name. NULL si déja existant
+// Crée un objet de nom name
 OBJ *MEM_CreateObj(OBJ_TYPE type, void *value, char *name) {
-  if (MEM_GetObj(name) != NULL)
-    return NULL;
-  assert(MEM_current_size < MEM_SIZE);
-  MEM_data[MEM_current_size++] = OBJ_Create(type, value, name);
-  return MEM_data[MEM_current_size - 1];
+  if (get(name) != NULL) {
+    printf("USR# ever defined varable : %s", name);
+    exit(1);
+  }
+  return set(OBJ_Create(type, value, name));
 }
 
 // Retourne l'objet pointe par name. On le créer si inexistant
 OBJ *MEM_GetOrCreateObj(OBJ_TYPE type, void *value, char *name) {
-  OBJ *ret = MEM_GetObj(name);
+  OBJ *ret = get(name);
   if (ret != NULL)
     return ret;
-  assert(MEM_current_size < MEM_SIZE);
-  ret = OBJ_Create(type, value, name);
-  MEM_data[MEM_current_size++] = ret;
-  return ret;
+  return set(OBJ_Create(type, value, name));
 }
 
 void MEM_Clear(void) { MEM_current_size = 0; }
@@ -106,3 +106,20 @@ void MEM_Tu(void) {
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
+
+// TODO HASH TABLE
+OBJ *get(char *name) {
+  for (size_t i = 0; i < MEM_current_size; i++) {
+    if (strcmp(name, MEM_data[i]->name) == 0) {
+      return MEM_data[i];
+    }
+  }
+  return NULL;
+}
+
+OBJ *set(OBJ *obj) {
+  assert(obj);
+  assert(MEM_current_size < MEM_SIZE);
+  MEM_data[MEM_current_size++] = obj;
+  return obj;
+}

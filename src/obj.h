@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 /*******************************************************************************
  * Macros
@@ -70,6 +71,11 @@ typedef struct OBJ {
 /*******************************************************************************
  * Variables
  ******************************************************************************/
+
+extern const char *OBJ_FUNCS_NAMES[NB_OBJ_FUNC];
+extern const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC];
+extern const char *OBJ_TYPES_NAMES[];
+extern const void *OBJ_FULL_FUNC[];
 
 /*******************************************************************************
  * Prototypes
