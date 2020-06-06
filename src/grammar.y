@@ -64,13 +64,13 @@ expr
   | OUVRIR expr FERMER                  { }
 
 var_src
-  : VAR                                 { FPC_RunFpcode(FPC_Create(PUSH, MEM_GetObj($1)));}
-  | ENTIER                              { FPC_RunFpcode(FPC_Create(PUSH, OBJ_Create(OBJ_INT, $1, NULL))); }
-  | STRING                              { FPC_RunFpcode(FPC_Create(PUSH, OBJ_Create(OBJ_STR, $1, NULL))); }
+  : VAR                                 { FPC_RunFpcode(FPC_Create(PUSH_SRC_VAR, $1));}
+  | ENTIER                              { FPC_RunFpcode(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_INT, $1, NULL))); }
+  | STRING                              { FPC_RunFpcode(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_STR, $1, NULL))); }
   | call
 
 var_dst
-  : VAR                                 { FPC_RunFpcode(FPC_Create(PUSH, MEM_GetOrCreateObj(OBJ_STR, "undefined value", $1))); }
+  : VAR                                 { FPC_RunFpcode(FPC_Create(PUSH_DST_VAR, $1)); }
 
 
 %%

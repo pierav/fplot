@@ -45,6 +45,7 @@ const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, NULL, NULL};
  ******************************************************************************/
 
 OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name) {
+  printf("[\e[33mOBJ\e[39m]>>> ");
   printf("NEW (%s) ", name);
   OBJ *ret = malloc(sizeof(struct OBJ));
   ret->type = type;
@@ -58,7 +59,7 @@ OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name) {
 
 // obj =
 OBJ *OBJ_Affect(OBJ *dst, OBJ *src) {
-
+  printf("[\e[33mOBJ\e[39m]>>> ");
   printf("MV  ");
   OBJ_Print(dst);
   printf(" <- ");
@@ -79,11 +80,13 @@ OBJ *OBJ_Affect(OBJ *dst, OBJ *src) {
 // obj()
 // TODO
 OBJ *OBJ_Call(OBJ *func, void *stack) {
+  printf("[\e[33mOBJ\e[39m]>>> ");
   printf("CALL %s(%s)>\n", func->name, "TODO");
   return func;
 }
 
 OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
+  printf("[\e[33mOBJ\e[39m]>>> ");
   printf(OBJ_FUNCS_NAMES[func]);
   OBJ_Print(obj1);
 
@@ -111,6 +114,7 @@ OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
 }
 
 OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2) {
+  printf("[\e[33mOBJ\e[39m]>>> ");
   printf(OBJ_FUNCS_NAMES[func]);
   OBJ_Print(obj1);
   OBJ_Print(obj2);

@@ -32,7 +32,7 @@ OBJ *MEM_GetObj(char *name);
 OBJ *MEM_CreateObj(OBJ_TYPE type, void *value, char *name);
 
 // Retourne l'objet pointe par name. On le créer si inexistant
-OBJ *MEM_GetOrCreateObj(OBJ_TYPE type, void *value, char *name);
+OBJ *MEM_GetOrCreateObj(char *name);
 
 void MEM_Clear(void);
 float MEM_GetUsage(void);

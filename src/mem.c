@@ -65,11 +65,11 @@ OBJ *MEM_CreateObj(OBJ_TYPE type, void *value, char *name) {
 }
 
 // Retourne l'objet pointe par name. On le créer si inexistant
-OBJ *MEM_GetOrCreateObj(OBJ_TYPE type, void *value, char *name) {
+OBJ *MEM_GetOrCreateObj(char *name) {
   OBJ *ret = get(name);
   if (ret != NULL)
     return ret;
-  return set(OBJ_Create(type, value, name));
+  return set(OBJ_Create(OBJ_STR, "NULL OBJ", name));
 }
 
 void MEM_Clear(void) { MEM_current_size = 0; }

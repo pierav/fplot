@@ -37,22 +37,77 @@ void FPC_Affect(void);
 static OBJ *stack[STACK_SIZE];
 static size_t i_stack = 0; // Point sur un case vide
 
-const char *FPC_TYPE_NAME[] = {"PUSH", "POP", "APPLY_OBJ_FUNC", "CALL",
+const char *FPC_TYPE_NAME[] = {"PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
+                               "POP",          "APPLY_OBJ_FUNC", "CALL",
                                "AFFECT"};
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
+void FPC_PrintCode(FPCODE *code) {
+  assert(code);
+  printf("[\e[34mFPC\e[39m]>>> ");
+  printf("%s(", FPC_TYPE_NAME[code->type]);
+  switch (code->type) {
+  case PUSH_SRC_VAR:
+    printf("\"%s\"", (char *)code->arg);
+    break;
+  case PUSH_DST_VAR:
+    printf("\"%s\"", (char *)code->arg);
+    break;
+  case PUSH_CST:
+    OBJ_Print((OBJ *)code->arg);
+    break;
+  case POP:
+    break;
+  case APPLY_OBJ_FUNC:
+    printf("\"%s\"", OBJ_FUNCS_NAMES[(OBJ_PRIMITIVES)code->arg]);
+    if (OBJ_NB_ARGS[(OBJ_PRIMITIVES)code->arg] >= 1) {
+      printf(", ");
+      OBJ_Print(stack[i_stack - 1]);
+    }
+    if ((OBJ_NB_ARGS[(OBJ_PRIMITIVES)code->arg] >= 2)) {
+      printf(", ");
+      OBJ_Print(stack[i_stack - 2]);
+    }
+    break;
+  case CALL:
+    break;
+  case AFFECT:
+    OBJ_Print(stack[i_stack - 1]);
+    printf(", ");
+    OBJ_Print(stack[i_stack - 2]);
+    break;
+  default:
+    printf("Unkonw code !!!");
+    break;
+  }
+  printf(")\e[39m\n");
+}
+
 void *FPC_RunFpcode(FPCODE *code) {
   assert(code);
-
-  printf("============= run code %s on stack =>\n", FPC_TYPE_NAME[code->type]);
-  FPC_PrintStack();
+  FPC_PrintCode(code);
+  // FPC_PrintStack();
   switch (code->type) {
-  case PUSH:
-    FPC_Push(code->arg);
+  case PUSH_SRC_VAR: {
+    char *name = code->arg;
+    OBJ *obj = MEM_GetObj(name);
+    FPC_Push(obj);
     break;
+  }
+  case PUSH_DST_VAR: {
+    char *name = code->arg;
+    OBJ *obj = MEM_GetOrCreateObj(name);
+    FPC_Push(obj);
+    break;
+  }
+  case PUSH_CST: {
+    OBJ *obj = code->arg;
+    FPC_Push(obj);
+    break;
+  }
   case POP:
     FPC_Pop();
     break;
@@ -64,6 +119,11 @@ void *FPC_RunFpcode(FPCODE *code) {
     break;
   case AFFECT:
     FPC_Affect();
+    break;
+  default:
+    printf("Invalid CODE\n");
+    exit(1);
+    break;
   }
   return NULL;
 }

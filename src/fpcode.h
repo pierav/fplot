@@ -16,7 +16,16 @@
  * Types
  ******************************************************************************/
 
-enum FPC_TYPE { PUSH, POP, APPLY_OBJ_FUNC, CALL, AFFECT };
+enum FPC_TYPE {
+  PUSH_SRC_VAR,   // char * | Push variable existante
+  PUSH_DST_VAR,   // char * | Push variable existante ou indéfinie
+  PUSH_CST,       // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
+  POP,            // void   | Pop
+  APPLY_OBJ_FUNC, // void   | Applique une OBJ__FUNC__ en tete de pile
+  CALL,           // void   | Applique une fonction utilisateur
+  AFFECT          // void   | Affecte le premier element de pile sur le second
+};
+
 typedef enum FPC_TYPE FPC_TYPE;
 
 struct FPCODE {
@@ -37,6 +46,7 @@ typedef struct FPCODE FPCODE;
 void *FPC_RunFpcode(FPCODE *code);
 
 void FPC_PrintStack(void);
+void FPC_PrintCode(FPCODE *code);
 
 FPCODE *FPC_Create(FPC_TYPE type, void *arg);
 #endif /* _PC_FPCODE_H_ */
