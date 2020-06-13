@@ -45,7 +45,7 @@ const char *FPC_TYPE_NAME[] = {"PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
  * Public function
  ******************************************************************************/
 
-void FPC_PrintCode(FPCODE *code) {
+void FPC_PrintCodeWhenExec(FPCODE *code) {
   assert(code);
   printf("[\e[34mFPC\e[39m]>>> ");
   printf("%s(", FPC_TYPE_NAME[code->type]);
@@ -86,9 +86,35 @@ void FPC_PrintCode(FPCODE *code) {
   printf(")\e[39m\n");
 }
 
+void FPC_Print(FPCODE *code) {
+  assert(code);
+  printf("[%s / ", FPC_TYPE_NAME[code->type]);
+  switch (code->type) {
+  case PUSH_SRC_VAR:
+    printf("\"%s\"", (char *)code->arg);
+    break;
+  case PUSH_DST_VAR:
+    printf("\"%s\"", (char *)code->arg);
+    break;
+  case PUSH_CST:
+    OBJ_Print((OBJ *)code->arg);
+    break;
+  case POP:
+    break;
+  case APPLY_OBJ_FUNC:
+    printf("\"%s\"", OBJ_FUNCS_NAMES[(OBJ_PRIMITIVES)code->arg]);
+    break;
+  case CALL:
+    break;
+  case AFFECT:
+    break;
+  }
+  printf("]");
+}
+
 void *FPC_RunFpcode(FPCODE *code) {
   assert(code);
-  FPC_PrintCode(code);
+  FPC_PrintCodeWhenExec(code);
   // FPC_PrintStack();
   switch (code->type) {
   case PUSH_SRC_VAR: {

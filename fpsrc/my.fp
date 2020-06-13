@@ -18,8 +18,8 @@ cos = cos;
 y = cos (x);
 
 M12aS_u_P_eR_Func14578 = cos;
+
 /* Ceci est un commentaire */
-test = 0;
 test /*xxx com*/ = test;
 3*3; // line comment
 3*3 /*Block*/;
@@ -36,4 +36,4 @@ test /*xxx com*/ = test;
 3*3//*3
 ;
 
-x = test;
+x = 0;
