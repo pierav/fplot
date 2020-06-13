@@ -45,15 +45,15 @@ const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, NULL, NULL};
  ******************************************************************************/
 
 OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name) {
-  printf("[\e[33mOBJ\e[39m]>>> ");
-  printf("NEW (%s) ", name);
+  // printf("[\e[33mOBJ\e[39m]>>> ");
+  // printf("NEW (%s) ", name);
   OBJ *ret = malloc(sizeof(struct OBJ));
   ret->type = type;
   ret->data = value;
   ret->name = name;
   ret->cpt_usage = 0;
-  OBJ_Print(ret);
-  printf("\n");
+  // OBJ_Print(ret);
+  // printf("\n");
   return ret;
 }
 
@@ -145,12 +145,12 @@ OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2) {
 // print(obj) __str__
 void OBJ_Print(OBJ *obj) {
   if (obj == NULL) {
-    printf("[#/!\\ NULL /!\\]");
+    printf("(#/!\\ NULL /!\\)");
     fflush(stdout);
     return;
     // exit(1);
   }
-  printf("[%s#%s:", OBJ_TYPES_NAMES[obj->type], obj->name ? obj->name : "_");
+  printf("(%s#%s:", OBJ_TYPES_NAMES[obj->type], obj->name ? obj->name : "_");
   switch (obj->type) {
   case OBJ_INT:
     assert(obj->data);
@@ -162,7 +162,7 @@ void OBJ_Print(OBJ *obj) {
   default:
     printf("TODO");
   }
-  printf("]");
+  printf(")");
 }
 /* Outdated
 void OBJ_Tu(void) {
