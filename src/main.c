@@ -12,6 +12,7 @@ int main(void) {
   setvbuf(stdout, NULL, _IONBF, 0);
 
   // parse file
+  yydebug = 0;
   yyparse();
   PRGM_Print();
 

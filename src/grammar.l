@@ -2,7 +2,11 @@
 #include "grammar.y.h"
 #include <stdio.h>
 
+
+
 %}
+
+%option warn
 
 %option noyywrap
 %option nounput
@@ -27,8 +31,6 @@ plus        \+
 moins       \-
 fois        \*
 divise      \/
-ouvrir      \(
-fermer      \)
 equal       \=
 doublept    \:
 ptcomma     \;
@@ -40,10 +42,24 @@ name        {LET}({LET}|{DEC})*
 /* Chaines de caractères */
 string 			\"[^\"]*
 
+%option yylineno
+
 %%
 
-{blanks}    { /* ignore */ }
-"/*" 				{ /* http://web.iitd.ac.in/~sumeet/flex__bison.pdf */
+"if"     		{ECHO; return(IF); }
+"elsif"			{ECHO; return(ELSIF); }
+"else"   		{ECHO; return(ELSE); }
+"for"				{ECHO;  return(FOR); }
+"while"			{ECHO;  return(WHILE); }
+
+"{"					{ECHO;  return(BEG); }
+"}"					{ECHO;  return(END); }
+
+"("    			{ECHO;  return(OPAR); }
+")"					{ECHO;  return(CPAR); }
+
+{blanks}    {ECHO;  /* ignore */ }
+"/*" 				{ ECHO; /* http://web.iitd.ac.in/~sumeet/flex__bison.pdf */
 						  int c1 = 0, c2 = input();
 						  for (;;) {
 						    if (c2 == EOF)
@@ -57,23 +73,23 @@ string 			\"[^\"]*
 						}
 {comment2}	{ /* ignore */ }
 
-{entier}    { yylval = malloc(4); *(int *)yylval = atoi(yytext); return(ENTIER); }
-{string}		{ return(STRING);}
-{plus}      { return(PLUS); }
-{moins}     { return(MOINS); }
-{fois}      { return(FOIS); }
-{divise}    { return(DIVISE); }
-{ouvrir}    { return(OUVRIR); }
-{fermer}    { return(FERMER); }
+{entier}    { ECHO; yylval = malloc(4); *(int *)yylval = atoi(yytext); return(ENTIER); }
+{string}		{ ECHO; return(STRING);}
+{plus}      { ECHO; return(PLUS); }
+{moins}     { ECHO; return(MOINS); }
+{fois}      { ECHO; return(FOIS); }
+{divise}    { ECHO; return(DIVISE); }
 
-{equal}     { return(EQUAL); }
-{doublept}  { return(DOUBLEPT); }
-{ptcomma}   { return(PTCOMMA); }
-{name}      {
+
+{equal}     { ECHO; return(EQUAL); }
+{doublept}  { ECHO; return(DOUBLEPT); }
+{ptcomma}   { ECHO; return(PTCOMMA); }
+{name}      {ECHO;
 				      yylval = malloc(strlen(yytext));
 				      strncpy(yylval, yytext, strlen(yytext));
 				      return(VAR);
             }
-{comma}     { return(COMMA); }
+{comma}     { ECHO; return(COMMA); }
+
 
 %%

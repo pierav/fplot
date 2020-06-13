@@ -13,21 +13,24 @@
 %debug
 %define api.value.type {void *}
 
+%token EQUAL
+
 %token ENTIER
 %left DOUBLEPT
 %left PLUS MOINS
 %left FOIS DIVISE
 
-%token OUVRIR
-%token FERMER
+%token OPAR CPAR
+%token BEG END
+%token IF ELSIF ELSE
+%token FOR WHILE
 
-%token EQUAL
+%token COMMA
 %token PTCOMMA
 
 %token VAR
 %token STRING
 
-%token COMMA
 
 %start ROOT
 
@@ -37,19 +40,35 @@ ROOT: statements
 
 /* Instrucions */
 statements
-  : statement PTCOMMA statements
-| %empty                                { /* *** EOP *** */   PRGM_InitEnd(); }
+  : statement statements
+  | %empty                                { /* *** EOP *** */   PRGM_InitEnd(); }
 
 
 statement
-  : affectation                         { }
-  | expr                                { PRGM_InitAdd(FPC_Create(POP, 0));}
+  : statement_affectation                         { }
+  | statement_condition                           { printf("--end COND\n"); }
+  | statement_expression                          { PRGM_InitAdd(FPC_Create(POP, 0));}
 
-affectation
-  : var_dst EQUAL expr                  { PRGM_InitAdd(FPC_Create(AFFECT, 0)); }
+statement_expression
+  : expr PTCOMMA
+  | PTCOMMA
+
+statement_affectation
+  : var_dst EQUAL expr PTCOMMA                  { PRGM_InitAdd(FPC_Create(AFFECT, 0)); }
+
+statement_condition
+  : IF OPAR expr CPAR BEG statements END condition2     { /* */ printf("--if\n"); }
+
+condition2
+  : ELSIF OPAR expr CPAR BEG statements END condition2  { /* */ printf("--elsif\n"); }
+  | condition3
+
+condition3
+  : ELSE statements BEG statements END                  { /* */ printf("--else\n"); }
+  | %empty                                              { /* */ printf("--end\n"); }
 
 call
-  : var_src OUVRIR expr_list FERMER     { PRGM_InitAdd(FPC_Create(CALL, 0)); }
+  : var_src OPAR expr_list CPAR     { PRGM_InitAdd(FPC_Create(CALL, 0)); }
 
 expr_list
   : expr                                {/*  TODO */}
@@ -62,7 +81,7 @@ expr
   | expr MOINS expr                     { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__SUB__)); }
   | expr FOIS expr                      { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__MUL__)); }
   | expr DIVISE expr                    { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__FDV__)); }
-  | OUVRIR expr FERMER                  { }
+  | OPAR expr CPAR                      { }
 
 var_src
   : VAR                                 { PRGM_InitAdd(FPC_Create(PUSH_SRC_VAR, $1));}
