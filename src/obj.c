@@ -137,44 +137,37 @@ OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2) {
   // all OK
   OBJ *ret = objfunc(obj1, obj2);
   printf(" ==> ");
-  OBJ_Print(ret);
+  OBJ_FPrint(stdout, ret);
   printf("\n");
   return ret;
 }
 
 // print(obj) __str__
-void OBJ_Print(OBJ *obj) {
+void OBJ_FPrint(FILE *pf, OBJ *obj) {
   if (obj == NULL) {
-    printf("(#/!\\ NULL /!\\)");
-    fflush(stdout);
+    fprintf(pf, "(#/!\\ NULL /!\\)");
+    fflush(pf);
     return;
     // exit(1);
   }
-  printf("(%s#%s:", OBJ_TYPES_NAMES[obj->type], obj->name ? obj->name : "_");
+  fprintf(pf, "(%s#%s:", OBJ_TYPES_NAMES[obj->type],
+          obj->name ? obj->name : "_");
   switch (obj->type) {
   case OBJ_INT:
     assert(obj->data);
-    printf("%d", *(int *)obj->data);
+    fprintf(pf, "%d", *(int *)obj->data);
     break;
   case OBJ_STR:
-    printf("%s", (char *)obj->data);
+    fprintf(pf, "%s", (char *)obj->data);
     break;
   default:
-    printf("TODO");
+    fprintf(pf, "TODO");
   }
-  printf(")");
+  fprintf(pf, ")");
 }
-/* Outdated
-void OBJ_Tu(void) {
-  OBJ *x = OBJ_INT_Create(10, "x");
-  OBJ_Print(x);
-  OBJ *y = OBJ_INT_Create(100, "y");
-  OBJ_Print(y);
 
-  OBJ *xpy = OBJ_Add(x, y);
-  OBJ_Print(xpy);
-}
-*/
+void OBJ_Print(OBJ *obj) { OBJ_FPrint(stdout, obj); }
+
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

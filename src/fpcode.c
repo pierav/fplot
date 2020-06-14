@@ -92,23 +92,23 @@ void FPC_PrintCodeWhenExec(FPCODE *code) {
   printf(")\e[39m\n");
 }
 
-void FPC_Print(FPCODE *code) {
+void FPC_FPrint(FILE *pf, FPCODE *code) {
   assert(code);
-  printf("[%s / ", FPC_TYPE_NAME[code->type]);
+  fprintf(pf, "[%s / ", FPC_TYPE_NAME[code->type]);
   switch (code->type) {
   case PUSH_SRC_VAR:
-    printf("\"%s\"", (char *)code->arg);
+    fprintf(pf, "%s", (char *)code->arg);
     break;
   case PUSH_DST_VAR:
-    printf("\"%s\"", (char *)code->arg);
+    fprintf(pf, "%s", (char *)code->arg);
     break;
   case PUSH_CST:
-    OBJ_Print((OBJ *)code->arg);
+    OBJ_FPrint(pf, (OBJ *)code->arg);
     break;
   case POP:
     break;
   case APPLY_OBJ_FUNC:
-    printf("\"%s\"", OBJ_FUNCS_NAMES[(OBJ_PRIMITIVES)code->arg]);
+    fprintf(pf, "%s", OBJ_FUNCS_NAMES[(OBJ_PRIMITIVES)code->arg]);
     break;
   case CALL:
     break;
@@ -117,11 +117,13 @@ void FPC_Print(FPCODE *code) {
   case JUMP:
     break;
   case CONDITIONAL_JUMP:
-    printf("node[%d]", (int)code->arg);
+    fprintf(pf, "node[%d]", (int)code->arg);
     break;
   }
-  printf("]");
+  fprintf(pf, "]");
 }
+
+void FPC_Print(FPCODE *code) { FPC_FPrint(stdout, code); }
 
 void *FPC_RunFpcode(FPCODE *code) {
   assert(code);

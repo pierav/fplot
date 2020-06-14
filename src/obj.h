@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 /*******************************************************************************
@@ -86,6 +87,7 @@ OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name);
 OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
 OBJ *OBJ_Call(OBJ *func, void *stack);
 
+void OBJ_FPrint(FILE *pf, OBJ *obj);
 void OBJ_Print(OBJ *obj);
 
 OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1);

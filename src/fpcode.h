@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /*******************************************************************************
  * Macros
@@ -48,6 +49,7 @@ typedef struct FPCODE FPCODE;
 void *FPC_RunFpcode(FPCODE *code);
 
 void FPC_PrintStack(void);
+void FPC_FPrint(FILE *pf, FPCODE *code);
 void FPC_Print(FPCODE *code);
 
 FPCODE *FPC_Create(FPC_TYPE type, void *arg);

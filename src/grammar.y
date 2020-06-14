@@ -4,7 +4,8 @@
   #include "obj.h"
   #include "mem.h"
   #include "fpcode.h"
-  #include "prgm.h"
+  //#include "prgm.h"
+  #include "ast.h"
   int yyparse();
   int yylex();
   int yyerror(char *s);
@@ -36,55 +37,55 @@
 
 %%
 
-ROOT: statements
+ROOT: statements                          { printf("DONE0\n"); AST_NODE_DisplayRecu($1, 0); printf("DONE1\n"); AST_ToDot($1); printf("DONE\n"); }
 
 /* Instrucions */
 statements
-  : statement statements
-  | %empty                                { /* *** EOP *** */   PRGM_InitEnd(); }
+  : statement statements                  { $$ = AST_NODE_STAT_Create($2/*next*/,$1); }
+  | %empty                                { $$ = NULL;/* *** EOP *** */   }
 
 
 statement
-  : statement_affectation                         { }
+  : statement_affectation                         { $$ = $1; }
   | statement_condition                           { printf("--end COND\n"); }
-  | statement_expression                          { PRGM_InitAdd(FPC_Create(POP, 0));}
-  | BEG statements END
+  | statement_expression                          { $$ = AST_NODE_PCODE_Create(FPC_Create(POP, 0), $1, NULL);}
+  | BEG statements END                            { $$ = $2; }
 
 statement_expression
-  : expr PTCOMMA
+  : expr PTCOMMA                                  { $$ = $1; }
   | PTCOMMA
 
 statement_affectation
-  : var_dst EQUAL expr PTCOMMA                  { $$ = PRGM_InitAdd(FPC_Create(AFFECT, 0)); }
+  : var_dst EQUAL expr PTCOMMA                  { $$ = AST_NODE_PCODE_Create(FPC_Create(AFFECT, 0), $1, $3); }
 
 statement_condition
-  : IF OPAR expr CPAR statement                 { $$ = PRGM_InitAdd(FPC_Create(CONDITIONAL_JUMP, ((struct PRGM_NODE*)$5)->index)); printf("--if\n"); }
-  | IF OPAR expr CPAR statement ELSE statement  { $$ = PRGM_InitAdd(FPC_Create(CONDITIONAL_JUMP, 0)); printf("--if-else\n"); }
+  : IF OPAR expr CPAR statement                 { $$ = AST_NODE_IF_Create($3, $5, NULL); }
+  | IF OPAR expr CPAR statement ELSE statement  { $$ = AST_NODE_IF_Create($3, $5, $7); }
 
 call
-  : var_src OPAR expr_list CPAR         { $$ = PRGM_InitAdd(FPC_Create(CALL, 0)); }
+  : var_src OPAR expr_list CPAR         { $$ = AST_NODE_PCODE_Create(FPC_Create(CALL, 0), $1, $3); }
 
 expr_list
   : expr                                {/*  TODO */}
-  | expr_list COMMA expr                { }
+  | expr_list COMMA expr                { $$ = $1; }
 
 expr
-  : var_src                             { }
-  | expr DOUBLEPT expr                  { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); printf("LISTE : TODO\n"); }
-  | expr PLUS expr                      { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); }
-  | expr MOINS expr                     { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__SUB__)); }
-  | expr FOIS expr                      { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__MUL__)); }
-  | expr DIVISE expr                    { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__FDV__)); }
-  | OPAR expr CPAR                      { }
+  : var_src                             { $$ = $1; }
+  | expr DOUBLEPT expr                  { $$ = AST_NODE_PCODE_Create(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__), $1, $3); printf("LISTE : TODO\n"); }
+  | expr PLUS expr                      { $$ = AST_NODE_PCODE_Create(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__), $1, $3); }
+  | expr MOINS expr                     { $$ = AST_NODE_PCODE_Create(FPC_Create(APPLY_OBJ_FUNC, (void *)__SUB__), $1, $3); }
+  | expr FOIS expr                      { $$ = AST_NODE_PCODE_Create(FPC_Create(APPLY_OBJ_FUNC, (void *)__MUL__), $1, $3); }
+  | expr DIVISE expr                    { $$ = AST_NODE_PCODE_Create(FPC_Create(APPLY_OBJ_FUNC, (void *)__FDV__), $1, $3); }
+  | OPAR expr CPAR                      { $$ = $2; }
 
 var_src
-  : VAR                                 { $$ = PRGM_InitAdd(FPC_Create(PUSH_SRC_VAR, $1));}
-  | ENTIER                              { $$ = PRGM_InitAdd(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_INT, $1, NULL))); }
-  | STRING                              { $$ = PRGM_InitAdd(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_STR, $1, NULL))); }
+  : VAR                                 { $$ = AST_NODE_PCODE_Create(FPC_Create(PUSH_SRC_VAR, $1), NULL, NULL);}
+  | ENTIER                              { $$ = AST_NODE_PCODE_Create(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_INT, $1, NULL)), NULL, NULL); }
+  | STRING                              { $$ = AST_NODE_PCODE_Create(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_STR, $1, NULL)), NULL, NULL); }
   | call
 
 var_dst
-  : VAR                                 { PRGM_InitAdd(FPC_Create(PUSH_DST_VAR, $1)); }
+  : VAR                                 { $$ = AST_NODE_PCODE_Create(FPC_Create(PUSH_DST_VAR, $1), NULL, NULL); }
 
 
 %%
