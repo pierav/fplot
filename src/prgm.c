@@ -22,12 +22,6 @@
  * Types
  ******************************************************************************/
 
-typedef struct PRGM_NODE {
-  FPCODE *code;
-  struct PRGM_NODE *next_if_true; // Default true
-  struct PRGM_NODE *next_if_false;
-} PRGM_NODE;
-
 /*******************************************************************************
  * Internal function declaration
  ******************************************************************************/
@@ -48,16 +42,19 @@ static PRGM_NODE *current = NULL;
  ******************************************************************************/
 
 // Init
-void PRGM_InitAdd(FPCODE *fpc) {
+PRGM_NODE *PRGM_InitAdd(FPCODE *fpc) {
   if (head == NULL) {
     head = queu = malloc(sizeof(struct PRGM_NODE));
+    queu->index = 0;
     assert(queu);
   } else {
     queu->next_if_true = malloc(sizeof(struct PRGM_NODE));
+    queu->next_if_true->index = queu->index + 1;
     assert(queu);
     queu = queu->next_if_true;
   }
   queu->code = fpc;
+  return queu;
 }
 
 void PRGM_InitEnd(void) {
@@ -83,7 +80,7 @@ void PRGM_Free(void) {
 // Tools
 void PRGM_Print(void) {
   for (PRGM_NODE *cur = head; cur != NULL; cur = cur->next_if_true) {
-    printf("NODE: ");
+    printf("NODE[%d]: ", cur->index);
     FPC_Print(cur->code);
     printf("\n");
   }

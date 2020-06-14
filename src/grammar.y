@@ -48,27 +48,21 @@ statement
   : statement_affectation                         { }
   | statement_condition                           { printf("--end COND\n"); }
   | statement_expression                          { PRGM_InitAdd(FPC_Create(POP, 0));}
+  | BEG statements END
 
 statement_expression
   : expr PTCOMMA
   | PTCOMMA
 
 statement_affectation
-  : var_dst EQUAL expr PTCOMMA                  { PRGM_InitAdd(FPC_Create(AFFECT, 0)); }
+  : var_dst EQUAL expr PTCOMMA                  { $$ = PRGM_InitAdd(FPC_Create(AFFECT, 0)); }
 
 statement_condition
-  : IF OPAR expr CPAR BEG statements END condition2     { /* */ printf("--if\n"); }
-
-condition2
-  : ELSIF OPAR expr CPAR BEG statements END condition2  { /* */ printf("--elsif\n"); }
-  | condition3
-
-condition3
-  : ELSE statements BEG statements END                  { /* */ printf("--else\n"); }
-  | %empty                                              { /* */ printf("--end\n"); }
+  : IF OPAR expr CPAR statement                 { $$ = PRGM_InitAdd(FPC_Create(CONDITIONAL_JUMP, ((struct PRGM_NODE*)$5)->index)); printf("--if\n"); }
+  | IF OPAR expr CPAR statement ELSE statement  { $$ = PRGM_InitAdd(FPC_Create(CONDITIONAL_JUMP, 0)); printf("--if-else\n"); }
 
 call
-  : var_src OPAR expr_list CPAR     { PRGM_InitAdd(FPC_Create(CALL, 0)); }
+  : var_src OPAR expr_list CPAR         { $$ = PRGM_InitAdd(FPC_Create(CALL, 0)); }
 
 expr_list
   : expr                                {/*  TODO */}
@@ -76,17 +70,17 @@ expr_list
 
 expr
   : var_src                             { }
-  | expr DOUBLEPT expr                  { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); printf("LISTE : TODO\n"); }
-  | expr PLUS expr                      { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); }
-  | expr MOINS expr                     { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__SUB__)); }
-  | expr FOIS expr                      { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__MUL__)); }
-  | expr DIVISE expr                    { PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__FDV__)); }
+  | expr DOUBLEPT expr                  { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); printf("LISTE : TODO\n"); }
+  | expr PLUS expr                      { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__ADD__)); }
+  | expr MOINS expr                     { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__SUB__)); }
+  | expr FOIS expr                      { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__MUL__)); }
+  | expr DIVISE expr                    { $$ = PRGM_InitAdd(FPC_Create(APPLY_OBJ_FUNC, (void *)__FDV__)); }
   | OPAR expr CPAR                      { }
 
 var_src
-  : VAR                                 { PRGM_InitAdd(FPC_Create(PUSH_SRC_VAR, $1));}
-  | ENTIER                              { PRGM_InitAdd(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_INT, $1, NULL))); }
-  | STRING                              { PRGM_InitAdd(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_STR, $1, NULL))); }
+  : VAR                                 { $$ = PRGM_InitAdd(FPC_Create(PUSH_SRC_VAR, $1));}
+  | ENTIER                              { $$ = PRGM_InitAdd(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_INT, $1, NULL))); }
+  | STRING                              { $$ = PRGM_InitAdd(FPC_Create(PUSH_CST, /*CONST OBJ */OBJ_Create(OBJ_STR, $1, NULL))); }
   | call
 
 var_dst

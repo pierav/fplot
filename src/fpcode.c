@@ -37,9 +37,10 @@ void FPC_Affect(void);
 static OBJ *stack[STACK_SIZE];
 static size_t i_stack = 0; // Point sur un case vide
 
-const char *FPC_TYPE_NAME[] = {"PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
-                               "POP",          "APPLY_OBJ_FUNC", "CALL",
-                               "AFFECT"};
+const char *FPC_TYPE_NAME[] = {
+    "PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
+    "POP",          "APPLY_OBJ_FUNC", "CALL",
+    "AFFECT",       "JUMP",           "CONDITIONAL_JUMP"};
 
 /*******************************************************************************
  * Public function
@@ -79,6 +80,11 @@ void FPC_PrintCodeWhenExec(FPCODE *code) {
     printf(", ");
     OBJ_Print(stack[i_stack - 2]);
     break;
+  case JUMP:
+    break;
+  case CONDITIONAL_JUMP:
+    FPC_Pop();
+    break;
   default:
     printf("Unkonw code !!!");
     break;
@@ -107,6 +113,11 @@ void FPC_Print(FPCODE *code) {
   case CALL:
     break;
   case AFFECT:
+    break;
+  case JUMP:
+    break;
+  case CONDITIONAL_JUMP:
+    printf("node[%d]", (int)code->arg);
     break;
   }
   printf("]");
@@ -145,6 +156,11 @@ void *FPC_RunFpcode(FPCODE *code) {
     break;
   case AFFECT:
     FPC_Affect();
+    break;
+  case JUMP:
+    break;
+  case CONDITIONAL_JUMP:
+
     break;
   default:
     printf("Invalid CODE\n");
