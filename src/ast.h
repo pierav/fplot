@@ -29,6 +29,7 @@ enum AST_NODE_TYPE {
   AST_NODE_TYPE_STAT
 };
 typedef enum AST_NODE_TYPE AST_NODE_TYPE;
+extern const char *AST_NODE_TYPE_STR[];
 
 // Abstract struct for all type;
 typedef void AST_NODE;
@@ -74,9 +75,5 @@ AST_NODE *AST_NODE_PCODE_Create(FPCODE *code, AST_NODE *arg1, AST_NODE *arg2);
 AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
                              AST_NODE *if_false);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);
-
-void AST_NODE_DisplayRecu(AST_NODE *cur, int space);
-
-void AST_ToDot(AST_NODE *root);
 
 #endif /* _AST_H_ */

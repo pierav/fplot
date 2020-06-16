@@ -6,6 +6,7 @@
   #include "fpcode.h"
   //#include "prgm.h"
   #include "ast.h"
+  #include "ast_displayer.h"
   int yyparse();
   int yylex();
   int yyerror(char *s);
@@ -37,7 +38,7 @@
 
 %%
 
-ROOT: statements                          { printf("DONE0\n"); AST_NODE_DisplayRecu($1, 0); printf("DONE1\n"); AST_ToDot($1); printf("DONE\n"); }
+ROOT: statements                          { printf("DONE0\n"); AST_DISPLAY_Text($1, 0); printf("DONE1\n"); AST_DISPLAY_DotF($1, "out.dot"); printf("DONE\n"); }
 
 /* Instrucions */
 statements

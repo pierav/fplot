@@ -48,6 +48,12 @@ obj/tests/%.o: tests/%.c
 $(DIRS): %:
 	mkdir -p $@
 
+display_ast: all
+	bin/main < fpsrc/condition.fp
+	dot -Tpng out.dot > /tmp/ast.png
+	$(DISPLAY_IMAGE)  /tmp/ast.png
+
+
 graphs:
 	mkdir -p graphs
 
