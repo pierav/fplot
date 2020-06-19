@@ -7,6 +7,8 @@
   //#include "prgm.h"
   #include "ast.h"
   #include "ast_displayer.h"
+  #include "ast_traversal.h"
+
   int yyparse();
   int yylex();
   int yyerror(char *s);
@@ -38,7 +40,14 @@
 
 %%
 
-ROOT: statements                          { printf("DONE0\n"); AST_DISPLAY_Text($1, 0); printf("DONE1\n"); AST_DISPLAY_DotF($1, "out.dot"); printf("DONE\n"); }
+ROOT: statements                          {
+                                            printf("DONE0\n");
+                                            AST_DISPLAY_Text($1, 0);
+                                            printf("DONE1\n");
+                                            AST_DISPLAY_DotF($1, "out.dot");
+                                            printf("DONE2\n");
+                                            PrgmCodePrint(AST_ToCodeRec($1));
+                                          }
 
 /* Instrucions */
 statements

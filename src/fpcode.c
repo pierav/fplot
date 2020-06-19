@@ -115,9 +115,10 @@ void FPC_FPrint(FILE *pf, FPCODE *code) {
   case AFFECT:
     break;
   case JUMP:
+    fprintf(pf, "(%d)", (int)code->arg);
     break;
   case CONDITIONAL_JUMP:
-    fprintf(pf, "node[%d]", (int)code->arg);
+    fprintf(pf, "(%d)", (int)code->arg);
     break;
   }
   fprintf(pf, "]");

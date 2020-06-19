@@ -14,12 +14,14 @@ int main(void) {
   // parse file
   yydebug = 0;
   yyparse();
-  PRGM_Print();
+
+  // Outdated
+  // PRGM_Print();
 
   // Execution
 
-  for (FPCODE *fpc = PRGM_GetNext(); fpc != NULL; fpc = PRGM_GetNext())
-    FPC_RunFpcode(fpc);
+  // for (FPCODE *fpc = PRGM_GetNext(); fpc != NULL; fpc = PRGM_GetNext())
+  //  FPC_RunFpcode(fpc);
 
   // State of PO
   MEM_Print();

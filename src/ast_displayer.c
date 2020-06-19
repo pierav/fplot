@@ -109,18 +109,18 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
   case AST_NODE_TYPE_PCODE: {
     fprintf(pf, "[fillcolor=lightblue, style=\"filled\", ");
     fprintf(pf, "label = \"PCODE : ");
-    FPC_FPrint(pf, ((AST_NODE_PCODE *)node)->code);
+    FPC_FPrint(pf, AST_CAST_PCODE(node)->code);
     fprintf(pf, "\"]\n");
 
-    if (((AST_NODE_PCODE *)node)->arg1) {
-      fprintRecuDot(((AST_NODE_PCODE *)node)->arg1, pf);
+    if (AST_CAST_PCODE(node)->arg1) {
+      fprintRecuDot(AST_CAST_PCODE(node)->arg1, pf);
       fprintf(pf, "n%p -> n%p [ label=\"a1\"];\n", node,
-              ((AST_NODE_PCODE *)node)->arg1);
+              AST_CAST_PCODE(node)->arg1);
     }
-    if (((AST_NODE_PCODE *)node)->arg2) {
-      fprintRecuDot(((AST_NODE_PCODE *)node)->arg2, pf);
+    if (AST_CAST_PCODE(node)->arg2) {
+      fprintRecuDot(AST_CAST_PCODE(node)->arg2, pf);
       fprintf(pf, "n%p -> n%p [ label=\"a2\"]\n", node,
-              ((AST_NODE_PCODE *)node)->arg2);
+              AST_CAST_PCODE(node)->arg2);
     }
     break;
   }
@@ -128,18 +128,18 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
     fprintf(pf, "[fillcolor=lightgreen, style=\"filled\", shape=diamond, ");
     fprintf(pf, "label = \"IF\"]\n");
 
-    fprintRecuDot(((AST_NODE_IF *)node)->test, pf);
+    fprintRecuDot(AST_CAST_IF(node)->test, pf);
     fprintf(pf, "n%p -> n%p [ label=\"test\"]\n", node,
-            ((AST_NODE_IF *)node)->test);
-    if (((AST_NODE_IF *)node)->if_true) {
-      fprintRecuDot(((AST_NODE_IF *)node)->if_true, pf);
+            AST_CAST_IF(node)->test);
+    if (AST_CAST_IF(node)->if_true) {
+      fprintRecuDot(AST_CAST_IF(node)->if_true, pf);
       fprintf(pf, "n%p -> n%p [ label=\"T\"]\n", node,
-              ((AST_NODE_IF *)node)->if_true);
+              AST_CAST_IF(node)->if_true);
     }
-    if (((AST_NODE_IF *)node)->if_false) {
-      fprintRecuDot(((AST_NODE_IF *)node)->if_false, pf);
+    if (AST_CAST_IF(node)->if_false) {
+      fprintRecuDot(AST_CAST_IF(node)->if_false, pf);
       fprintf(pf, "n%p -> n%p [ label=\"F\"]\n", node,
-              ((AST_NODE_IF *)node)->if_false);
+              AST_CAST_IF(node)->if_false);
     }
     break;
   }
