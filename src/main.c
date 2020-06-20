@@ -1,6 +1,5 @@
 #include "fpcode.h"
 #include "grammar.y.h"
-#include "prgm.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +24,7 @@ int main(void) {
 
   // State of PO
   MEM_Print();
-  FPC_PrintStack();
+  PC_PrintStack();
 
   // Free
   // PRGM_Free();

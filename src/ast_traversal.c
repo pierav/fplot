@@ -23,7 +23,7 @@
  ******************************************************************************/
 
 struct PrgmPoint {
-  FPCODE *code;
+  PCODE *code;
   struct PrgmPoint *next;
 };
 typedef struct PrgmPoint PrgmPoint;
@@ -45,7 +45,7 @@ PrgmCode *PC_New(void) {
   return pc;
 }
 
-void PC_AddEnd(PrgmCode *pc, FPCODE *code) {
+void PC_AddEnd(PrgmCode *pc, PCODE *code) {
   PrgmPoint *pp = malloc(sizeof(struct PrgmPoint));
   assert(pp);
   pp->code = code;
@@ -62,7 +62,7 @@ void PC_AddEnd(PrgmCode *pc, FPCODE *code) {
   return;
 }
 
-void PC_AddBeg(PrgmCode *pc, FPCODE *code) {
+void PC_AddBeg(PrgmCode *pc, PCODE *code) {
   PrgmPoint *pp = malloc(sizeof(struct PrgmPoint));
   assert(pp);
   pp->code = code;
@@ -95,7 +95,7 @@ void PC_FusionEnd(PrgmCode *dst, PrgmCode *src) {
   // Ugly
   for (PrgmPoint *cur = src->head; cur != NULL; cur = cur->next) {
     if (cur->code->type == CONDITIONAL_JUMP || cur->code->type == JUMP)
-      cur->code->arg += dst->size; // Offset jump
+      cur->code->arg.int_t += dst->size; // Offset jump
   }
   dst->size += src->size;
 }
@@ -104,7 +104,7 @@ void PrgmCodePrint(PrgmCode *pc) {
   size_t cpt = 0;
   for (PrgmPoint *cur = pc->head; cur != NULL; cur = cur->next, cpt++) {
     printf("[%ld] ", cpt);
-    FPC_Print(cur->code);
+    PC_Print(cur->code);
     printf("\n");
   }
 }
@@ -145,16 +145,16 @@ PrgmCode *AST_ToCodeRec(AST_NODE *node) {
     // Todo optimise ELSE
     if (!AST_CAST_IF(node)->if_false) { // only "if"
       PC_FusionEnd(pc, test);           // test
-      PC_AddEnd(
-          pc, FPC_Create(CONDITIONAL_JUMP, (void *)test->size + 1 + ift->size));
+      PC_AddEnd(pc, PC_Create(CONDITIONAL_JUMP,
+                              (PC_ARG)(int)(test->size + 1 + ift->size)));
       PC_FusionEnd(pc, ift); // if true
     } else {
       PC_FusionEnd(pc, test); // test
-      PC_AddEnd(pc, FPC_Create(CONDITIONAL_JUMP,
-                               (void *)test->size + 1 + ift->size + 1));
+      PC_AddEnd(pc, PC_Create(CONDITIONAL_JUMP,
+                              (PC_ARG)(int)(test->size + 1 + ift->size + 1)));
       PC_FusionEnd(pc, ift); // if true
-      PC_AddEnd(pc, FPC_Create(JUMP, (void *)test->size + 1 + ift->size + 1 +
-                                         iff->size));
+      PC_AddEnd(pc, PC_Create(JUMP, (PC_ARG)(int)(test->size + 1 + ift->size +
+                                                  1 + iff->size)));
       PC_FusionEnd(pc, iff); // if false
     }
     break;

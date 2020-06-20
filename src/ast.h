@@ -43,7 +43,7 @@ struct AST_NODE_PCODE {
   // For all AST_NODE
   enum AST_NODE_TYPE type; // first pos
   // For PCODE
-  FPCODE *code;
+  PCODE *code;
   AST_NODE *arg1;
   AST_NODE *arg2;
 };
@@ -76,7 +76,7 @@ typedef struct AST_NODE_STAT AST_NODE_STAT;
  * Prototypes
  ******************************************************************************/
 
-AST_NODE *AST_NODE_PCODE_Create(FPCODE *code, AST_NODE *arg1, AST_NODE *arg2);
+AST_NODE *AST_NODE_PCODE_Create(PCODE *code, AST_NODE *arg1, AST_NODE *arg2);
 AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
                              AST_NODE *if_false);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);

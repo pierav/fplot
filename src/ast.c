@@ -36,7 +36,7 @@ const char *AST_NODE_TYPE_STR[] = {"PCODE", "IF", "WHILE", "STAT"};
  * Public function
  ******************************************************************************/
 
-AST_NODE *AST_NODE_PCODE_Create(FPCODE *code, AST_NODE *arg1, AST_NODE *arg2) {
+AST_NODE *AST_NODE_PCODE_Create(PCODE *code, AST_NODE *arg1, AST_NODE *arg2) {
   // AST_NODE_DisplayRecu(fils);
   AST_NODE_PCODE *ret = malloc(sizeof(struct AST_NODE_PCODE));
   ret->type = AST_NODE_TYPE_PCODE;

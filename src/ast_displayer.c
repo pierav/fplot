@@ -44,7 +44,7 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
   printf("%s", AST_NODE_TYPE_STR[*(int *)cur]);
   switch (*(int *)cur) {
   case AST_NODE_TYPE_PCODE: {
-    FPC_Print(((AST_NODE_PCODE *)cur)->code);
+    PC_Print(((AST_NODE_PCODE *)cur)->code);
     printf("\n");
     if (((AST_NODE_PCODE *)cur)->arg1) {
       for (int i = 0; i < space; i++)
@@ -109,7 +109,7 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
   case AST_NODE_TYPE_PCODE: {
     fprintf(pf, "[fillcolor=lightblue, style=\"filled\", ");
     fprintf(pf, "label = \"PCODE : ");
-    FPC_FPrint(pf, AST_CAST_PCODE(node)->code);
+    PC_FPrint(pf, AST_CAST_PCODE(node)->code);
     fprintf(pf, "\"]\n");
 
     if (AST_CAST_PCODE(node)->arg1) {
