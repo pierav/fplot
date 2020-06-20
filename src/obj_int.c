@@ -78,13 +78,25 @@ OBJ *OBJ_INT__pos__(OBJ *obj1) { return obj1; }
 OBJ *OBJ_INT__abs__(OBJ *obj1) { return obj1; }
 
 // Comparaisons
-// Retourne un OBJ_BOOL
-OBJ *OBJ_INT__eq__(OBJ *obj1, OBJ *obj2) { return obj1; }
-OBJ *OBJ_INT__ne__(OBJ *obj1, OBJ *obj2) { return obj1; }
-OBJ *OBJ_INT__lt__(OBJ *obj1, OBJ *obj2) { return obj1; }
-OBJ *OBJ_INT__gt__(OBJ *obj1, OBJ *obj2) { return obj1; }
-OBJ *OBJ_INT__le__(OBJ *obj1, OBJ *obj2) { return obj1; }
-OBJ *OBJ_INT__ge__(OBJ *obj1, OBJ *obj2) { return obj1; }
+// Retourne un OBJ_BOOL TODO !
+OBJ *OBJ_INT__eq__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) == OBJ_INT_GetRaw(obj2));
+}
+OBJ *OBJ_INT__ne__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) != OBJ_INT_GetRaw(obj2));
+}
+OBJ *OBJ_INT__lt__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) < OBJ_INT_GetRaw(obj2));
+}
+OBJ *OBJ_INT__gt__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) > OBJ_INT_GetRaw(obj2));
+}
+OBJ *OBJ_INT__le__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) <= OBJ_INT_GetRaw(obj2));
+}
+OBJ *OBJ_INT__ge__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) >= OBJ_INT_GetRaw(obj2));
+}
 
 // Taille d'un element
 // Retourne un OBJ_INT

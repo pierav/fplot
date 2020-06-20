@@ -79,7 +79,7 @@ OBJ *OBJ_Affect(OBJ *dst, OBJ *src) {
 
 // obj()
 // TODO
-OBJ *OBJ_Call(OBJ *func, void *stack) {
+OBJ *OBJ_Call(OBJ *func) {
   printf("[\e[33mOBJ\e[39m]>>> ");
   printf("CALL %s(%s)>\n", func->name, "TODO");
   return func;

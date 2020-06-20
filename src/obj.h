@@ -85,7 +85,7 @@ extern const void *OBJ_FULL_FUNC[];
 OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name);
 
 OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
-OBJ *OBJ_Call(OBJ *func, void *stack);
+OBJ *OBJ_Call(OBJ *func);
 
 void OBJ_FPrint(FILE *pf, OBJ *obj);
 void OBJ_Print(OBJ *obj);
