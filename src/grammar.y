@@ -46,7 +46,9 @@ ROOT: statements                        {
                                           printf("DONE1\n");
                                           AST_DISPLAY_DotF($1, "out.dot");
                                           printf("DONE2\n");
-                                          PrgmCodePrint(AST_ToCodeRec($1));
+                                          size_t size;
+                                          AST_ComputePrgm($1, &size);
+                                          printf("DONE3\n");
                                         }
 
 /* Instrucions */

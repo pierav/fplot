@@ -22,7 +22,6 @@
 /*******************************************************************************
  * Types
  ******************************************************************************/
-typedef struct PrgmCode PrgmCode;
 
 /*******************************************************************************
  * Variables
@@ -32,7 +31,6 @@ typedef struct PrgmCode PrgmCode;
  * Prototypes
  ******************************************************************************/
 
-void PrgmCodePrint(PrgmCode *pc);
-PrgmCode *AST_ToCodeRec(AST_NODE *node);
+PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size);
 
 #endif /* _ast_traversal_H_ */

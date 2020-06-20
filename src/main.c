@@ -13,7 +13,7 @@ int main(void) {
   // parse file
   yydebug = 0;
   yyparse();
-
+  printf("GOOD\n");
   // Outdated
   // PRGM_Print();
 
