@@ -119,32 +119,29 @@ void PrgmCodePrint(PrgmCode *pc) {
 
 PrgmCode *AST_ToCodeRec(AST_NODE *node) {
   assert(node);
-  printf("Ast To rec (%s): \n", AST_NODE_TYPE_STR[*(int *)node]);
   PrgmCode *pc = PC_New();
   // processing
-  switch (*(int *)node) {
+  switch (AST_NODE_GET_TYPE(node)) {
   case AST_NODE_TYPE_PCODE:
-    if (AST_CAST_PCODE(node)->arg1) {
-      printf("ARG1:\n");
-      PC_FusionEnd(pc, AST_ToCodeRec(AST_CAST_PCODE(node)->arg1));
+    if (AST_NODE_CAST_PCODE(node)->arg1) {
+      PC_FusionEnd(pc, AST_ToCodeRec(AST_NODE_CAST_PCODE(node)->arg1));
     }
-    if (AST_CAST_PCODE(node)->arg2) {
-      printf("ARG2:\n");
-      PC_FusionEnd(pc, AST_ToCodeRec(AST_CAST_PCODE(node)->arg2));
+    if (AST_NODE_CAST_PCODE(node)->arg2) {
+      PC_FusionEnd(pc, AST_ToCodeRec(AST_NODE_CAST_PCODE(node)->arg2));
     }
-    PC_AddEnd(pc, AST_CAST_PCODE(node)->code);
+    PC_AddEnd(pc, AST_NODE_CAST_PCODE(node)->code);
     break;
   case AST_NODE_TYPE_IF: {
     PrgmCode *test, *ift, *iff;
 
-    test = AST_ToCodeRec(AST_CAST_IF(node)->test);
-    ift = AST_ToCodeRec(AST_CAST_IF(node)->if_true);
-    if (AST_CAST_IF(node)->if_false) { // if "else"
-      iff = AST_ToCodeRec(AST_CAST_IF(node)->if_false);
+    test = AST_ToCodeRec(AST_NODE_CAST_IF(node)->test);
+    ift = AST_ToCodeRec(AST_NODE_CAST_IF(node)->if_true);
+    if (AST_NODE_CAST_IF(node)->if_false) { // if "else"
+      iff = AST_ToCodeRec(AST_NODE_CAST_IF(node)->if_false);
     }
     // Todo optimise ELSE
-    if (!AST_CAST_IF(node)->if_false) { // only "if"
-      PC_FusionEnd(pc, test);           // test
+    if (!AST_NODE_CAST_IF(node)->if_false) { // only "if"
+      PC_FusionEnd(pc, test);                // test
       PC_AddEnd(pc, PC_Create(CONDITIONAL_JUMP,
                               (PC_ARG)(int)(test->size + 1 + ift->size)));
       PC_FusionEnd(pc, ift); // if true
@@ -164,7 +161,7 @@ PrgmCode *AST_ToCodeRec(AST_NODE *node) {
     break;
   case AST_NODE_TYPE_STAT:
     for (AST_NODE_STAT *cur = node; cur != NULL; cur = cur->next) {
-      PC_FusionEnd(pc, AST_ToCodeRec(AST_CAST_STAT(cur)->ptr));
+      PC_FusionEnd(pc, AST_ToCodeRec(AST_NODE_CAST_STAT(cur)->ptr));
     }
     break;
   }

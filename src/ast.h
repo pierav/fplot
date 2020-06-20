@@ -18,10 +18,12 @@
  * Macros
  ******************************************************************************/
 
-#define AST_CAST_PCODE(_n) ((AST_NODE_PCODE *)(_n))
-#define AST_CAST_IF(_n) ((AST_NODE_IF *)(_n))
-#define AST_CAST_WHILE(_n) ((AST_NODE_WHILE *)(_n))
-#define AST_CAST_STAT(_n) ((AST_NODE_STAT *)(_n))
+#define AST_NODE_CAST_PCODE(_n) ((AST_NODE_PCODE *)(_n))
+#define AST_NODE_CAST_IF(_n) ((AST_NODE_IF *)(_n))
+#define AST_NODE_CAST_WHILE(_n) ((AST_NODE_WHILE *)(_n))
+#define AST_NODE_CAST_STAT(_n) ((AST_NODE_STAT *)(_n))
+
+#define AST_NODE_GET_TYPE(_n) (((AST_NODE_PCODE *)(_n))->type)
 
 /*******************************************************************************
  * Types
@@ -41,7 +43,7 @@ typedef void AST_NODE;
 
 struct AST_NODE_PCODE {
   // For all AST_NODE
-  enum AST_NODE_TYPE type; // first pos
+  enum AST_NODE_TYPE type;
   // For PCODE
   PCODE *code;
   AST_NODE *arg1;
@@ -51,7 +53,7 @@ typedef struct AST_NODE_PCODE AST_NODE_PCODE;
 
 struct AST_NODE_IF {
   // For all AST_NODE
-  enum AST_NODE_TYPE type; // first pos
+  enum AST_NODE_TYPE type;
   // For IF
   AST_NODE *test;
   AST_NODE *if_true;
@@ -61,7 +63,7 @@ typedef struct AST_NODE_IF AST_NODE_IF;
 
 struct AST_NODE_STAT {
   // For all AST_NODE
-  enum AST_NODE_TYPE type; // first pos
+  enum AST_NODE_TYPE type;
   // For STATEMENT
   struct AST_NODE_STAT *next; // list
   AST_NODE *ptr;
