@@ -2,9 +2,11 @@
 #include "grammar.y.h"
 #include <stdio.h>
 
-
+int oldstate;
 
 %}
+%x COMMENT
+
 
 %option warn
 
@@ -58,22 +60,21 @@ string 			\"[^\"]*
 "("    			{ECHO;  return(OPAR); }
 ")"					{ECHO;  return(CPAR); }
 
-{blanks}    {ECHO;  /* ignore */ }
-"/*" 				{ ECHO; /* http://web.iitd.ac.in/~sumeet/flex__bison.pdf */
-						  int c1 = 0, c2 = input();
-						  for (;;) {
-						    if (c2 == EOF)
-						      break;
-						    if (c1 == '*' && c2 == '/')
-						      break;
-						    c1 = c2;
-						    c2 = input();
-						  }
-							/* ignore */
-						}
+
 {comment2}	{ /* ignore */ }
 
-{entier}    { ECHO; yylval = malloc(sizeof(int)); *(int *)yylval = atoi(yytext); return(ENTIER); }
+"/*"								{ oldstate = YY_START; BEGIN COMMENT; }
+<COMMENT>"*/" 			{ BEGIN oldstate; }
+<COMMENT>.|\n 			{ ; }
+<COMMENT><<EOF>>		{ printf("unclosed comment"); }
+
+
+{entier}    {
+							ECHO;
+							yylval = malloc(sizeof(int));
+	 						*(int *)yylval = atoi(yytext);
+							return(ENTIER);
+						}
 {string}		{ ECHO; return(STRING);}
 {plus}      { ECHO; return(PLUS); }
 {moins}     { ECHO; return(MOINS); }
