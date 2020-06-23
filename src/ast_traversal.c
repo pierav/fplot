@@ -57,9 +57,12 @@ void PrgmFreeOnlyPointsRec(PrgmPoint *point);
 
 PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size) {
   PrgmCode pc = AST_ToCodeRec(root);
+
+  /*
   printf("PRGM(size = %ld):\n", pc.size);
   PrgmCodePrint(&pc);
   printf("EOP\n");
+  */
 
   PCODE **prgm = malloc(sizeof(struct PCODE *) * pc.size);
   *size = 0;

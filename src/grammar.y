@@ -5,17 +5,25 @@
   #include "mem.h"
   #include "fpcode.h"
   //#include "prgm.h"
-  #include "ast.h"
   #include "ast_displayer.h"
   #include "ast_traversal.h"
 
-  int yyparse();
+  int yyparse(AST_NODE **root);
+  int yyerror(AST_NODE **root, char *s);
   int yylex();
-  int yyerror(char *s);
 %}
+%code requires {
+  #include "ast.h"
+}
+
 
 %debug
 %define api.value.type {void *}
+
+%parse-param {AST_NODE **root}
+
+// union /!\
+
 
 %token EQUAL
 
@@ -41,16 +49,8 @@
 %%
 
 ROOT: statements                        {
-                                          printf("DONE0\n");
-                                          AST_DISPLAY_Text($1, 0);
-                                          printf("DONE1\n");
-                                          AST_DISPLAY_DotF($1, "out.dot");
-                                          printf("DONE2\n");
-                                          size_t size;
-                                          AST_ComputePrgm($1, &size);
-                                          printf("DONE3\n");
+                                          *root = $1;
                                         }
-
 /* Instrucions */
 statements
   : statement statements                { $$ = AST_NODE_STAT_Create($2/*next*/,$1); }
@@ -102,7 +102,7 @@ var_dst
 
 %%
 
-int yyerror(char *s) {
-    printf("yyerror : %s\n",s);
+int yyerror(AST_NODE **root, char *s){
+    printf("yyerror : %s\n tree : %p\n", s, root);
     return 0;
 }
