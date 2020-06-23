@@ -12,6 +12,8 @@
 #include "ast_displayer.h"
 #include "ast_traversal.h"
 
+#include "po_objstack.h"
+
 AST_NODE *BISON_Parse(void) {
   AST_NODE *root = NULL;
 
@@ -45,18 +47,11 @@ int main(void) {
   MEMPRGM_Print();
   printf("DONE4\n");
 
-  // Outdated
-  // PRGM_Print();
-
-  // Execution
-
-  // for (FPCODE *fpc = PRGM_GetNext(); fpc != NULL; fpc = PRGM_GetNext())
-  //  FPC_RunFpcode(fpc);
+  PO_Run();
 
   // State of PO
   MEM_Print();
-  PC_PrintStack();
-
+  PO_OBJSTACK_Print();
   // Free
   // PRGM_Free();
 

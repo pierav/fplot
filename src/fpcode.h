@@ -53,11 +53,9 @@ typedef struct PCODE PCODE;
  * Prototypes
  ******************************************************************************/
 
-void *PC_RunFpcode(PCODE *code);
-
-void PC_PrintStack(void);
 void PC_FPrint(FILE *pf, PCODE *code);
 void PC_Print(PCODE *code);
-
+const char *PC_GetName(PCODE *code);
 PCODE *PC_Create(PC_TYPE type, PC_ARG arg);
+
 #endif /* _PC_FPCODE_H_ */

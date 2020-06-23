@@ -1,16 +1,18 @@
 /*
- * mem_prgm.c
+ * po_objstack.h
  *
  *  Created on: 23/06/2020
  *      Author: pirx
  */
 
+#ifndef _po_objstack_H_
+#define _po_objstack_H_
+
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "mem_prgm.h"
-#include <assert.h>
+#include "obj.h"
 
 /*******************************************************************************
  * Macros
@@ -21,39 +23,17 @@
  ******************************************************************************/
 
 /*******************************************************************************
- * Internal function declaration
- ******************************************************************************/
-
-/*******************************************************************************
  * Variables
  ******************************************************************************/
 
-size_t mem_size;
-PCODE **memprgm = NULL;
-
 /*******************************************************************************
- * Public function
+ * Prototypes
  ******************************************************************************/
 
-void MEMPRGM_Init(PCODE **prgm, size_t prgmsize) {
-  memprgm = prgm;
-  mem_size = prgmsize;
-}
+void PO_OBJSTACK_Push(OBJ *obj);
+OBJ *PO_OBJSTACK_Pop(void);
+void PO_OBJSTACK_Print(void);
 
-PCODE *MEMPRGM_Get(size_t i) {
-  if (i >= mem_size)
-    return NULL; // EOP
-  return memprgm[i];
-}
+void PO_OBJSTACK_PrintDebugOBJ(size_t offset);
 
-void MEMPRGM_Print(void) {
-  printf("***     MEM-PRGM(%ld)     ***\n", mem_size);
-  for (size_t i = 0; i < mem_size; i++) {
-    printf("[%.5ld] ", i);
-    PC_Print(memprgm[i]);
-    printf("\n");
-  }
-}
-/*******************************************************************************
- * Internal function
- ******************************************************************************/
+#endif /* _po_objstack_H_ */

@@ -1,16 +1,22 @@
+/*
+ * po_objstack.c
+ *
+ *  Created on: 23/06/2020
+ *      Author: pirx
+ */
+
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "fpcode.h"
+#include "po_objstack.h"
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 /*******************************************************************************
  * Macros
  ******************************************************************************/
+
+#define STACK_SIZE 1024
 
 /*******************************************************************************
  * Types
@@ -24,53 +30,33 @@
  * Variables
  ******************************************************************************/
 
-const char *PC_TYPE_NAME[] = {
-    "PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
-    "POP",          "APPLY_OBJ_FUNC", "CALL",
-    "AFFECT",       "JUMP",           "CONDITIONAL_JUMP"};
+static OBJ *stack[STACK_SIZE];
+static size_t i_stack = 0; // Point sur un case vide
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
-void PC_FPrint(FILE *pf, PCODE *code) {
-  assert(code);
-  fprintf(pf, "[%s / ", PC_TYPE_NAME[code->type]);
-  switch (code->type) {
-  case PUSH_SRC_VAR: // fallthrough
-  case PUSH_DST_VAR:
-    fprintf(pf, "%s", code->arg.pchar_t);
-    break;
-  case PUSH_CST:
-    OBJ_FPrint(pf, code->arg.pobj_t);
-    break;
-  case POP:
-    break;
-  case APPLY_OBJ_FUNC:
-    fprintf(pf, "%s", OBJ_FUNCS_NAMES[code->arg.int_t]);
-    break;
-  case CALL:
-    break;
-  case AFFECT:
-    break;
-  case JUMP: // fallthrough
-  case CONDITIONAL_JUMP:
-    fprintf(pf, "(%d)", code->arg.int_t);
-    break;
-  }
-  fprintf(pf, "]");
+void PO_OBJSTACK_Push(OBJ *obj) {
+  assert(i_stack < STACK_SIZE - 1);
+  stack[i_stack++] = obj;
 }
 
-void PC_Print(PCODE *code) { PC_FPrint(stdout, code); }
+OBJ *PO_OBJSTACK_Pop(void) {
+  assert(i_stack < STACK_SIZE - 1);
+  return stack[i_stack-- - 1];
+}
 
-const char *PC_GetName(PCODE *code) { return PC_TYPE_NAME[code->type]; }
+void PO_OBJSTACK_Print(void) {
+  for (size_t i = 0; i < i_stack; i++) {
+    printf("OBJSTACK[%.5ld]:", i);
+    OBJ_Print(stack[i]);
+    printf("\n");
+  }
+}
 
-PCODE *PC_Create(PC_TYPE type, PC_ARG arg) {
-  PCODE *ret = malloc(sizeof(struct PCODE));
-  assert(ret);
-  ret->type = type;
-  ret->arg = arg;
-  return ret;
+void PO_OBJSTACK_PrintDebugOBJ(size_t offset) {
+  OBJ_Print(stack[i_stack - offset - 1]);
 }
 
 /*******************************************************************************
