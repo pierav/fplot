@@ -73,7 +73,7 @@ string 			\"[^\"]*
 						}
 {comment2}	{ /* ignore */ }
 
-{entier}    { ECHO; yylval = malloc(4); *(int *)yylval = atoi(yytext); return(ENTIER); }
+{entier}    { ECHO; yylval = malloc(sizeof(int)); *(int *)yylval = atoi(yytext); return(ENTIER); }
 {string}		{ ECHO; return(STRING);}
 {plus}      { ECHO; return(PLUS); }
 {moins}     { ECHO; return(MOINS); }
@@ -85,8 +85,7 @@ string 			\"[^\"]*
 {doublept}  { ECHO; return(DOUBLEPT); }
 {ptcomma}   { ECHO; return(PTCOMMA); }
 {name}      {ECHO;
-				      yylval = malloc(strlen(yytext));
-				      strncpy(yylval, yytext, strlen(yytext));
+				      yylval = strdup(yytext);
 				      return(VAR);
             }
 {comma}     { ECHO; return(COMMA); }

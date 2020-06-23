@@ -96,9 +96,7 @@ void PC_FPrint(FILE *pf, PCODE *code) {
   assert(code);
   fprintf(pf, "[%s / ", PC_TYPE_NAME[code->type]);
   switch (code->type) {
-  case PUSH_SRC_VAR:
-    fprintf(pf, "%s", code->arg.pchar_t);
-    break;
+  case PUSH_SRC_VAR: // fallthrough
   case PUSH_DST_VAR:
     fprintf(pf, "%s", code->arg.pchar_t);
     break;
@@ -114,9 +112,7 @@ void PC_FPrint(FILE *pf, PCODE *code) {
     break;
   case AFFECT:
     break;
-  case JUMP:
-    fprintf(pf, "(%d)", code->arg.int_t);
-    break;
+  case JUMP: // fallthrough
   case CONDITIONAL_JUMP:
     fprintf(pf, "(%d)", code->arg.int_t);
     break;
