@@ -1,5 +1,5 @@
 /*
- * po_objstack.c
+ * logbuffer.c
  *
  *  Created on: 23/06/2020
  *      Author: pirx
@@ -9,14 +9,16 @@
  * Includes
  ******************************************************************************/
 
-#include "po_objstack.h"
-#include <assert.h>
+#include "logbuffer.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /*******************************************************************************
  * Macros
  ******************************************************************************/
 
-#define STACK_SIZE 1024
+#define BUFFER_SIZE 2048
 
 /*******************************************************************************
  * Types
@@ -30,35 +32,37 @@
  * Variables
  ******************************************************************************/
 
-static OBJ *stack[STACK_SIZE];
-static size_t i_stack = 0; // Point sur un case vide
-
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
-void PO_OBJSTACK_Push(OBJ *obj) {
-  assert(i_stack < STACK_SIZE - 1);
-  stack[i_stack++] = obj;
+FILE *LB_Init(size_t buffer_size) {
+  FILE *stdout2 = fdopen(1, "w");
+  char *buffer = calloc(sizeof(char), buffer_size);
+  setvbuf(stdout2, buffer, _IOFBF, buffer_size); // trigger full
+  return stdout2;
 }
 
-OBJ *PO_OBJSTACK_Pop(void) {
-  assert(i_stack < STACK_SIZE - 1);
-  return stack[i_stack-- - 1];
+/*
+void LB_Write(LogBuffer *lb, const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  vsnprintf(lb->dat + strlen(lb->dat), BUFFER_SIZE - strlen(lb->dat) - 1,
+            format, args);
+  va_end(args);
 }
 
-void PO_OBJSTACK_Print(void) {
-  for (size_t i = 0; i < i_stack; i++) {
-    printf("OBJSTACK[%.5ld]:", i);
-    OBJ_Print(stack[i]);
-    printf("\n");
-  }
+
+void LB_Print(LogBuffer *lb) {
+  printf("%s%s", lb->prefix, lb->dat);
+  if (strlen(lb->dat) == BUFFER_SIZE)
+    printf("...");
+  printf("\n");
+  lb->dat[0] = '\0';
 }
 
-void PO_OBJSTACK_PrintDebugOBJ(FILE *f, size_t offset) {
-  OBJ_FPrint(f, stack[i_stack - offset - 1]);
-}
-
+void LB_Free(LogBuffer *lb) { free(lb); }
+*/
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

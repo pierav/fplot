@@ -14,6 +14,8 @@
 #include "mem_prgm.h"
 #include "po_objstack.h"
 
+#include "logbuffer.h"
+
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -38,11 +40,15 @@ bool run = false;
 size_t pc = 0; // Program counter
 PCODE *code = NULL;
 
+FILE *stdout_po;
+
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
 void PO_Run(void) {
+  stdout_po = LB_Init(2048);
+
   run = true;
   while (run)
     PO_Iter();
@@ -56,30 +62,32 @@ void PO_Iter(void) {
     return;
   }
 
-  printf("[\e[34mFPC\e[39m]>>> ");
-  printf("%s(", PC_GetName(code));
+  fprintf(stdout_po, "[\e[34mFPC\e[39m]>>> ");
+  fprintf(stdout_po, "%s(", PC_GetName(code));
 
   // Exec code
   switch (code->type) {
   case PUSH_SRC_VAR: {
-    printf("\"%s\"", code->arg.pchar_t);
     char *name = code->arg.pchar_t;
     OBJ *obj = MEM_GetObj(name);
+    fprintf(stdout_po, "\"%s\":", name);
+    OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
     pc++;
     break;
   }
   case PUSH_DST_VAR: {
-    printf("\"%s\"", code->arg.pchar_t);
     char *name = code->arg.pchar_t;
     OBJ *obj = MEM_GetOrCreateObj(name);
+    fprintf(stdout_po, "\"%s\":", name);
+    OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
     pc++;
     break;
   }
   case PUSH_CST: {
-    OBJ_Print(code->arg.pobj_t);
     OBJ *obj = code->arg.pobj_t;
+    OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
     pc++;
     break;
@@ -89,14 +97,14 @@ void PO_Iter(void) {
     pc++;
     break;
   case APPLY_OBJ_FUNC: {
-    printf("\"%s\"", OBJ_FUNCS_NAMES[code->arg.int_t]);
+    fprintf(stdout_po, "\"%s\"", OBJ_FUNCS_NAMES[code->arg.int_t]);
     if (OBJ_NB_ARGS[code->arg.int_t] >= 1) {
-      printf(", ");
-      PO_OBJSTACK_PrintDebugOBJ(0);
+      fprintf(stdout_po, ", ");
+      PO_OBJSTACK_PrintDebugOBJ(stdout_po, 0);
     }
     if ((OBJ_NB_ARGS[code->arg.int_t] >= 2)) {
-      printf(", ");
-      PO_OBJSTACK_PrintDebugOBJ(1);
+      fprintf(stdout_po, ", ");
+      PO_OBJSTACK_PrintDebugOBJ(stdout_po, 1);
     }
 
     OBJ_PRIMITIVES func = code->arg.int_t;
@@ -119,9 +127,9 @@ void PO_Iter(void) {
     OBJ *src = PO_OBJSTACK_Pop();
     OBJ *dst = PO_OBJSTACK_Pop();
     OBJ_Affect(dst, src);
-    OBJ_Print(src);
-    printf(", ");
-    OBJ_Print(dst);
+    OBJ_FPrint(stdout_po, src);
+    fprintf(stdout_po, ", ");
+    OBJ_FPrint(stdout_po, dst);
     pc++;
   } break;
   case JUMP:
@@ -129,7 +137,7 @@ void PO_Iter(void) {
     break;
   case CONDITIONAL_JUMP: {
     OBJ *test = PO_OBJSTACK_Pop();
-    OBJ_Print(test);
+    // OBJ_Print(test);
     pc++; // TODO
   } break;
   default:
@@ -137,7 +145,8 @@ void PO_Iter(void) {
     exit(1);
     break;
   }
-  printf(")\e[39m\n");
+  fprintf(stdout_po, ")\e[39m\n");
+  fflush(stdout_po);
   return;
 }
 
