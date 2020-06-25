@@ -35,7 +35,7 @@ const char *PC_TYPE_NAME[] = {
 
 void PC_FPrint(FILE *pf, PCODE *code) {
   assert(code);
-  fprintf(pf, "<%s / ", PC_TYPE_NAME[code->type]);
+  fprintf(pf, "(%s / ", PC_TYPE_NAME[code->type]);
   switch (code->type) {
   case PUSH_SRC_VAR: // fallthrough
   case PUSH_DST_VAR:
@@ -58,7 +58,7 @@ void PC_FPrint(FILE *pf, PCODE *code) {
     fprintf(pf, "(%d)", code->arg.int_t);
     break;
   }
-  fprintf(pf, ">");
+  fprintf(pf, ")");
 }
 
 void PC_Print(PCODE *code) { PC_FPrint(stdout, code); }

@@ -91,8 +91,8 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
 void AST_DISPLAY_DotF(AST_NODE *root, char *namefile) {
   FILE *pf = fopen(namefile, "w");
   assert(pf);
-  fprintf(pf, "digraph L {\n");
-  fprintf(pf, "node[shape = record fontname = Arial];\n");
+  fprintf(pf, "digraph AST {\n");
+  fprintf(pf, "node[shape = record];\n");
   fprintRecuDot(root, pf);
   fprintf(pf, "}\n");
   fclose(pf);
@@ -108,7 +108,7 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
   switch (AST_NODE_GET_TYPE(node)) {
   case AST_NODE_TYPE_PCODE: {
     fprintf(pf, "[fillcolor=lightblue, style=\"filled\", ");
-    fprintf(pf, "label = \"PCODE : ");
+    fprintf(pf, "label = \"");
     PC_FPrint(pf, AST_NODE_CAST_PCODE(node)->code);
     fprintf(pf, "\"]\n");
 
