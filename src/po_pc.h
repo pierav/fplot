@@ -37,5 +37,6 @@ void PO_PC_Init(void);
 void PO_PC_Set(size_t npc);
 void PO_PC_Inc(void);
 size_t PO_PC_Get(void);
+void PO_PC_Add(size_t dpc);
 
 #endif /* _po_pc_H_ */

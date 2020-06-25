@@ -32,9 +32,10 @@ enum PC_TYPE {
 typedef enum PC_TYPE PC_TYPE;
 
 union PC_ARG {
+  OBJ_PRIMITIVES ifunc;
   char *pchar_t;
   OBJ *pobj_t;
-  int int_t;
+  size_t int_t;
 };
 typedef union PC_ARG PC_ARG;
 
@@ -58,4 +59,12 @@ void PC_Print(PCODE *code);
 const char *PC_GetName(PCODE *code);
 PCODE *PC_Create(PC_TYPE type, PC_ARG arg);
 
+PCODE *PC_CreateJump(size_t arg);
+PCODE *PC_CreateJumpCond(size_t arg);
+PCODE *PC_CreatePushSrc(char *name);
+PCODE *PC_CreatePushDst(char *name);
+PCODE *PC_CreatePushCst(OBJ *obj);
+PCODE *PC_CreatePop(void);
+PCODE *PC_CreateApply(size_t func);
+PCODE *PC_CreateAffect(void);
 #endif /* _PC_FPCODE_H_ */

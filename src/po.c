@@ -144,7 +144,7 @@ void PO_Iter(void) {
     PO_PC_Inc();
   } break;
   case JUMP:
-    PO_PC_Inc(); // TODO
+    PO_PC_Add(code->arg.int_t);
     break;
   case CONDITIONAL_JUMP: {
     OBJ *test = PO_OBJSTACK_Pop();
@@ -157,7 +157,7 @@ void PO_Iter(void) {
     if (*(int *)res_test->data) // do nothing
       PO_PC_Inc();
     else // Jump if false
-      PO_PC_Set(code->arg.int_t);
+      PO_PC_Add(code->arg.int_t);
   } break;
   default:
     printf("Invalid CODE\n");

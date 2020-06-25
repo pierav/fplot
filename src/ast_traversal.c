@@ -95,16 +95,13 @@ PrgmCode AST_ToCodeRec(AST_NODE *node) {
       PrgmCode iff = AST_ToCodeRec(AST_NODE_CAST_IF(node)->if_false);
       if (!AST_NODE_CAST_IF(node)->if_false) { // only "if"
         PC_FusionEnd(&pc, &test);              // test
-        PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP,
-                                 (PC_ARG)(int)(test.size + 1 + ift.size)));
+        PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP, (PC_ARG)(1 + ift.size)));
         PC_FusionEnd(&pc, &ift); // if true
       } else {
         PC_FusionEnd(&pc, &test); // test
-        PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP,
-                                 (PC_ARG)(int)(test.size + 1 + ift.size + 1)));
+        PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP, (PC_ARG)(1 + ift.size + 1)));
         PC_FusionEnd(&pc, &ift); // if true
-        PC_AddEnd(&pc, PC_Create(JUMP, (PC_ARG)(int)(test.size + 1 + ift.size +
-                                                     1 + iff.size)));
+        PC_AddEnd(&pc, PC_Create(JUMP, (PC_ARG)(1 + iff.size)));
         PC_FusionEnd(&pc, &iff); // if false
       }
       break;
@@ -172,11 +169,6 @@ void PC_FusionEnd(PrgmCode *dst, PrgmCode *src) {
   // Head to Queu
   dst->queu->next = src->head;
   dst->queu = src->queu;
-  // Ugly
-  for (PrgmPoint *cur = src->head; cur != NULL; cur = cur->next) {
-    if (cur->code->type == CONDITIONAL_JUMP || cur->code->type == JUMP)
-      cur->code->arg.int_t += dst->size; // Offset jump
-  }
   dst->size += src->size;
 }
 

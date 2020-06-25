@@ -55,7 +55,7 @@ void PC_FPrint(FILE *pf, PCODE *code) {
     break;
   case JUMP: // fallthrough
   case CONDITIONAL_JUMP:
-    fprintf(pf, "(%d)", code->arg.int_t);
+    fprintf(pf, "(%ld)", code->arg.int_t);
     break;
   }
   fprintf(pf, ")");
@@ -72,6 +72,30 @@ PCODE *PC_Create(PC_TYPE type, PC_ARG arg) {
   ret->arg = arg;
   return ret;
 }
+
+PCODE *PC_CreateJump(size_t arg) { return PC_Create(JUMP, (PC_ARG)arg); }
+
+PCODE *PC_CreateJumpCond(size_t arg) {
+  return PC_Create(CONDITIONAL_JUMP, (PC_ARG)arg);
+}
+
+PCODE *PC_CreatePushSrc(char *name) {
+  return PC_Create(PUSH_SRC_VAR, (PC_ARG)name);
+}
+
+PCODE *PC_CreatePushDst(char *name) {
+  return PC_Create(PUSH_DST_VAR, (PC_ARG)name);
+}
+
+PCODE *PC_CreatePushCst(OBJ *obj) { return PC_Create(PUSH_CST, (PC_ARG)obj); }
+
+PCODE *PC_CreatePop(void) { return PC_Create(POP, (PC_ARG)0UL); }
+
+PCODE *PC_CreateApply(size_t func) {
+  return PC_Create(APPLY_OBJ_FUNC, (PC_ARG)func);
+}
+
+PCODE *PC_CreateAffect(void) { return PC_Create(AFFECT, (PC_ARG)0UL); }
 
 /*******************************************************************************
  * Internal function
