@@ -78,9 +78,13 @@ extern const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC];
 extern const char *OBJ_TYPES_NAMES[];
 extern const void *OBJ_FULL_FUNC[];
 
+extern FILE *stdout_po_alu;
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
+
+void PO_ALU_Init(void);
 
 OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name);
 

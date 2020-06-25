@@ -53,11 +53,13 @@ FILE *stdout_po;
 void PO_Run(void) {
   stdout_po = LB_Init(1024);
   PO_PC_Init();
+  PO_ALU_Init();
 
   run = true;
   while (run) {
     PO_Iter();
     fflush(stdout_po);
+    fflush(stdout_po_alu);
     fflush(stdout_po_pc);
   }
 }
