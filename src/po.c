@@ -10,11 +10,16 @@
  ******************************************************************************/
 
 #include "po.h"
+#include "po_pc.h"
+
 #include "mem.h"
 #include "mem_prgm.h"
 #include "po_objstack.h"
 
 #include "logbuffer.h"
+
+#include "obj.h"
+#include "obj_int.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -37,7 +42,6 @@
  ******************************************************************************/
 
 bool run = false;
-size_t pc = 0; // Program counter
 PCODE *code = NULL;
 
 FILE *stdout_po;
@@ -47,23 +51,28 @@ FILE *stdout_po;
  ******************************************************************************/
 
 void PO_Run(void) {
-  stdout_po = LB_Init(2048);
+  stdout_po = LB_Init(1024);
+  PO_PC_Init();
 
   run = true;
-  while (run)
+  while (run) {
     PO_Iter();
+    fflush(stdout_po);
+    fflush(stdout_po_pc);
+  }
 }
 
 void PO_Iter(void) {
   // GET mem[pc]
-  code = MEMPRGM_Get(pc);
-  if (code == NULL) {
+  code = MEMPRGM_Get(PO_PC_Get());
+  if (code == NULL) { // EOP
     run = 0;
     return;
   }
 
-  fprintf(stdout_po, "[\e[34mFPC\e[39m]>>> ");
-  fprintf(stdout_po, "%s(", PC_GetName(code));
+  fprintf(stdout_po, "[\e[34mFPC\e[39m]>>> [%ld]", PO_PC_Get());
+  PC_FPrint(stdout_po, code);
+  fprintf(stdout_po, "(");
 
   // Exec code
   switch (code->type) {
@@ -73,7 +82,7 @@ void PO_Iter(void) {
     fprintf(stdout_po, "\"%s\":", name);
     OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
-    pc++;
+    PO_PC_Inc();
     break;
   }
   case PUSH_DST_VAR: {
@@ -82,19 +91,19 @@ void PO_Iter(void) {
     fprintf(stdout_po, "\"%s\":", name);
     OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
-    pc++;
+    PO_PC_Inc();
     break;
   }
   case PUSH_CST: {
     OBJ *obj = code->arg.pobj_t;
     OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
-    pc++;
+    PO_PC_Inc();
     break;
   }
   case POP:
     PO_OBJSTACK_Pop();
-    pc++;
+    PO_PC_Inc();
     break;
   case APPLY_OBJ_FUNC: {
     fprintf(stdout_po, "\"%s\"", OBJ_FUNCS_NAMES[code->arg.int_t]);
@@ -117,10 +126,10 @@ void PO_Iter(void) {
       printf("AYE AYE AYE !");
       assert(0);
     }
-    pc++;
+    PO_PC_Inc();
   } break;
   case CALL:
-    pc++;
+    PO_PC_Inc();
     // TODO
     break;
   case AFFECT: {
@@ -130,19 +139,27 @@ void PO_Iter(void) {
     OBJ_FPrint(stdout_po, src);
     fprintf(stdout_po, ", ");
     OBJ_FPrint(stdout_po, dst);
-    pc++;
+    PO_PC_Inc();
   } break;
   case JUMP:
-    pc++; // TODO
+    PO_PC_Inc(); // TODO
     break;
   case CONDITIONAL_JUMP: {
     OBJ *test = PO_OBJSTACK_Pop();
-    // OBJ_Print(test);
-    pc++; // TODO
+    fprintf(stdout_po, "test:");
+    OBJ_FPrint(stdout_po, test);
+    OBJ *res_test = OBJ_ApplyFunc1(__INT__, test);
+    fprintf(stdout_po, "::");
+    OBJ_FPrint(stdout_po, res_test);
+    fprintf(stdout_po, "%s", *(int *)res_test->data ? ":true" : ":false");
+    if (*(int *)res_test->data) // do nothing
+      PO_PC_Inc();
+    else // Jump if false
+      PO_PC_Set(code->arg.int_t);
   } break;
   default:
     printf("Invalid CODE\n");
-    exit(1);
+    assert(0);
     break;
   }
   fprintf(stdout_po, ")\e[39m\n");

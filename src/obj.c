@@ -94,7 +94,7 @@ OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
   const void *objfunctab = OBJ_FULL_FUNC[obj1->type];
   if (objfunctab == NULL) {
     printf("Invalid type\n");
-    return obj1;
+    assert(0);
   }
 
   // fonction valide ?
@@ -102,7 +102,7 @@ OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
 
   if (objfunc == NULL) {
     printf("Invalid func\n");
-    return obj1;
+    assert(0);
   }
 
   // all OK

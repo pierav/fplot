@@ -1,12 +1,17 @@
+/*
+ * po_pc.c
+ *
+ *  Created on: 25/06/2020
+ *      Author: pirx
+ */
+
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "fpcode.h"
-#include <assert.h>
-#include <stdio.h>
+#include "po_pc.h"
+#include "logbuffer.h"
 #include <stdlib.h>
-#include <string.h>
 
 /*******************************************************************************
  * Macros
@@ -24,54 +29,27 @@
  * Variables
  ******************************************************************************/
 
-const char *PC_TYPE_NAME[] = {
-    "PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
-    "POP",          "APPLY_OBJ_FUNC", "CALL",
-    "AFFECT",       "JUMP",           "CONDITIONAL_JUMP"};
+FILE *stdout_po_pc = NULL;
+size_t pc = 0; // Program counter
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
-void PC_FPrint(FILE *pf, PCODE *code) {
-  assert(code);
-  fprintf(pf, "<%s / ", PC_TYPE_NAME[code->type]);
-  switch (code->type) {
-  case PUSH_SRC_VAR: // fallthrough
-  case PUSH_DST_VAR:
-    fprintf(pf, "%s", code->arg.pchar_t);
-    break;
-  case PUSH_CST:
-    OBJ_FPrint(pf, code->arg.pobj_t);
-    break;
-  case POP:
-    break;
-  case APPLY_OBJ_FUNC:
-    fprintf(pf, "%s", OBJ_FUNCS_NAMES[code->arg.int_t]);
-    break;
-  case CALL:
-    break;
-  case AFFECT:
-    break;
-  case JUMP: // fallthrough
-  case CONDITIONAL_JUMP:
-    fprintf(pf, "(%d)", code->arg.int_t);
-    break;
-  }
-  fprintf(pf, ">");
+void PO_PC_Init(void) {
+  pc = 0;
+  stdout_po_pc = LB_Init(1024);
 }
 
-void PC_Print(PCODE *code) { PC_FPrint(stdout, code); }
-
-const char *PC_GetName(PCODE *code) { return PC_TYPE_NAME[code->type]; }
-
-PCODE *PC_Create(PC_TYPE type, PC_ARG arg) {
-  PCODE *ret = malloc(sizeof(struct PCODE));
-  assert(ret);
-  ret->type = type;
-  ret->arg = arg;
-  return ret;
+void PO_PC_Set(size_t npc) {
+  pc = npc;
+  fprintf(stdout_po_pc, "[\e[32m PC\e[39m]>>> pc <- [%ld]\n", pc);
+  fflush(stdout_po_pc);
 }
+
+void PO_PC_Inc(void) { pc++; }
+
+size_t PO_PC_Get(void) { return pc; }
 
 /*******************************************************************************
  * Internal function

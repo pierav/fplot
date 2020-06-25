@@ -12,6 +12,7 @@
 #include "ast_displayer.h"
 #include "ast_traversal.h"
 
+#include "po.h"
 #include "po_objstack.h"
 
 AST_NODE *BISON_Parse(void) {
