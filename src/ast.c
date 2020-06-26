@@ -64,6 +64,15 @@ AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr) {
   return (AST_NODE *)ret;
 }
 
+AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true) {
+  AST_NODE_WHILE *ret = malloc(sizeof(struct AST_NODE_WHILE));
+  assert(ret);
+  ret->type = AST_NODE_TYPE_WHILE;
+  ret->test = test;
+  ret->while_true = while_true;
+  return (AST_NODE *)ret;
+}
+
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

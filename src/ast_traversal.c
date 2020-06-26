@@ -106,9 +106,15 @@ PrgmCode AST_ToCodeRec(AST_NODE *node) {
       }
       break;
     }
-    case AST_NODE_TYPE_WHILE:
-      // TODO
+    case AST_NODE_TYPE_WHILE: {
+      PrgmCode test = AST_ToCodeRec(AST_NODE_CAST_WHILE(node)->test);
+      PrgmCode code = AST_ToCodeRec(AST_NODE_CAST_WHILE(node)->while_true);
+      PC_FusionEnd(&pc, &test);
+      PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP, (PC_ARG)(1 + code.size + 1)));
+      PC_FusionEnd(&pc, &code);
+      PC_AddEnd(&pc, PC_Create(JUMP, (PC_ARG)(-test.size - 1 - code.size)));
       break;
+    }
     case AST_NODE_TYPE_STAT: {
       PrgmCode prgm;
       for (AST_NODE_STAT *cur = node; cur != NULL; cur = cur->next) {

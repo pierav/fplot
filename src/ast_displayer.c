@@ -76,6 +76,18 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
     }
     break;
   }
+  case AST_NODE_TYPE_WHILE: {
+    printf("\n");
+    for (int i = 0; i < space; i++)
+      printf(" | ");
+    printf("test:\n");
+    AST_DISPLAY_Text(((AST_NODE_WHILE *)cur)->test, space + 1);
+    for (int i = 0; i < space; i++)
+      printf(" | ");
+    printf("while true:\n");
+    AST_DISPLAY_Text(((AST_NODE_WHILE *)cur)->while_true, space + 1);
+    break;
+  }
   case AST_NODE_TYPE_STAT: {
     printf("\n");
     for (AST_NODE_STAT *c = cur; c != NULL; c = c->next) {
@@ -141,6 +153,19 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
       fprintf(pf, "n%p -> n%p [ label=\"F\"]\n", node,
               AST_NODE_CAST_IF(node)->if_false);
     }
+    break;
+  }
+  case AST_NODE_TYPE_WHILE: {
+    fprintf(pf, "[fillcolor=gold, style=\"filled\", shape=trapezium, ");
+    fprintf(pf, "label = \"WHILE\"]\n");
+
+    fprintRecuDot(AST_NODE_CAST_WHILE(node)->test, pf);
+    fprintf(pf, "n%p -> n%p [ label=\"test\"]\n", node,
+            AST_NODE_CAST_WHILE(node)->test);
+
+    fprintRecuDot(AST_NODE_CAST_WHILE(node)->while_true, pf);
+    fprintf(pf, "n%p -> n%p [ label=\"T\"]\n", node,
+            AST_NODE_CAST_WHILE(node)->while_true);
     break;
   }
   case AST_NODE_TYPE_STAT: {

@@ -59,7 +59,8 @@ statements
 
 statement
   : statement_affectation               { $$ = $1; }
-  | statement_condition                 {  }
+  | statement_condition                 { $$ = $1; }
+  | statement_while                     { $$ = $1; }
   | statement_expression                { $$ = AST_NODE_PCODE_Create(PC_CreatePop(), $1, NULL);}
   | BEG statements END                  { $$ = $2; }
 
@@ -73,6 +74,9 @@ statement_affectation
 statement_condition
   : IF OPAR expr CPAR statement                 { $$ = AST_NODE_IF_Create($3, $5, NULL); }
   | IF OPAR expr CPAR statement ELSE statement  { $$ = AST_NODE_IF_Create($3, $5, $7); }
+
+statement_while
+  : WHILE OPAR expr CPAR statement      { $$ = AST_NODE_WHILE_Create($3, $5); }
 
 call
   : var_src OPAR expr_list CPAR         { $$ = AST_NODE_PCODE_Create(PC_Create(CALL, (PC_ARG)0UL), $1, $3); }

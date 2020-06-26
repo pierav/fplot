@@ -61,6 +61,13 @@ struct AST_NODE_IF {
 };
 typedef struct AST_NODE_IF AST_NODE_IF;
 
+struct AST_NODE_WHILE {
+  enum AST_NODE_TYPE type;
+  AST_NODE *test;
+  AST_NODE *while_true;
+};
+typedef struct AST_NODE_WHILE AST_NODE_WHILE;
+
 struct AST_NODE_STAT {
   // For all AST_NODE
   enum AST_NODE_TYPE type;
@@ -81,6 +88,7 @@ typedef struct AST_NODE_STAT AST_NODE_STAT;
 AST_NODE *AST_NODE_PCODE_Create(PCODE *code, AST_NODE *arg1, AST_NODE *arg2);
 AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
                              AST_NODE *if_false);
+AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);
 
 #endif /* _AST_H_ */
