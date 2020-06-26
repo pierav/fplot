@@ -31,6 +31,7 @@
 %left DOUBLEPT
 %left PLUS MOINS
 %left FOIS DIVISE
+%left EQ NE LT LE GT GE
 
 %token OPAR CPAR
 %token BEG END
@@ -92,6 +93,12 @@ expr
   | expr MOINS expr                     { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__SUB__), $1, $3); }
   | expr FOIS expr                      { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__MUL__), $1, $3); }
   | expr DIVISE expr                    { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__FDV__), $1, $3); }
+  | expr EQ expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__EQ__), $1, $3); }
+  | expr NE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__NE__), $1, $3); }
+  | expr LT expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LT__), $1, $3); }
+  | expr GT expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GT__), $1, $3); }
+  | expr LE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LE__), $1, $3); }
+  | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
 
 var_src

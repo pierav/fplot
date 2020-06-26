@@ -60,6 +60,12 @@ string 			\"[^\"]*
 "("    			{ECHO;  return(OPAR); }
 ")"					{ECHO;  return(CPAR); }
 
+"=="				{ECHO;  return(EQ); }
+"!="				{ECHO;  return(NE); }
+"<="				{ECHO;  return(LE); }
+"<" 				{ECHO;  return(LT); }
+">="				{ECHO;  return(GE); }
+">" 				{ECHO;  return(GT); }
 
 {comment2}	{ /* ignore */ }
 
