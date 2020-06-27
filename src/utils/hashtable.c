@@ -94,6 +94,41 @@ void HT_FPrint(FILE *pf, HashTable *ht) {
   }
 }
 
+void TU_HashTable(void) {
+
+  HashTable *ht = HT_Init();
+
+  HT_Insert(ht, "test1", (void *)1);
+  HT_Insert(ht, "test2", (void *)2);
+  HT_Insert(ht, "test3", (void *)3);
+  HT_Insert(ht, "test4", (void *)4);
+  HT_Insert(ht, "test5", (void *)5);
+  HT_Insert(ht, "test6", (void *)6);
+  HT_Insert(ht, "test7", (void *)7);
+  HT_Insert(ht, "test8", (void *)8);
+  HT_Insert(ht, "test9", (void *)9);
+  HT_Insert(ht, "test10", (void *)10);
+  HT_Insert(ht, "test11", (void *)11);
+  HT_Insert(ht, "azerty", (void *)12345);
+  HT_Insert(ht, "123456", (void *)99999);
+
+  assert(HT_Get(ht, "test1") == (void *)1);
+  assert(HT_Get(ht, "test2") == (void *)2);
+  assert(HT_Get(ht, "test3") == (void *)3);
+  assert(HT_Get(ht, "test4") == (void *)4);
+  assert(HT_Get(ht, "test5") == (void *)5);
+  assert(HT_Get(ht, "test6") == (void *)6);
+  assert(HT_Get(ht, "test7") == (void *)7);
+  assert(HT_Get(ht, "test8") == (void *)8);
+  assert(HT_Get(ht, "test9") == (void *)9);
+  assert(HT_Get(ht, "test10") == (void *)10);
+  assert(HT_Get(ht, "test11") == (void *)11);
+  assert(HT_Get(ht, "azerty") == (void *)12345);
+  assert(HT_Get(ht, "123456") == (void *)99999);
+
+  // HT_FPrint(stdout, ht);
+}
+
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
