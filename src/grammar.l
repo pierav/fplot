@@ -12,6 +12,7 @@ int oldstate;
 
 %option noyywrap
 %option nounput
+%option noinput
 
 /* Classe des caractères */
 DEC					[0-9]
