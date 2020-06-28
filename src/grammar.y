@@ -8,6 +8,8 @@
   #include "ast_displayer.h"
   #include "ast_traversal.h"
 
+  #include <assert.h>
+
   int yyparse(AST_NODE **root);
   int yyerror(AST_NODE **root, char *s);
   int yylex();
@@ -63,7 +65,10 @@ statement
   | statement_condition                 { $$ = $1; }
   | statement_while                     { $$ = $1; }
   | statement_expression                { $$ = AST_NODE_PCODE_Create(PC_CreatePop(), $1, NULL);}
-  | BEG statements END                  { $$ = $2; }
+  | statement_compound                  { $$ = $1; assert(0);}
+
+statement_compound
+  : BEG statements END                  { $$ = $2; }
 
 statement_expression
   : expr PTCOMMA                        { $$ = $1; }
@@ -73,11 +78,13 @@ statement_affectation
   : var_dst EQUAL expr PTCOMMA          { $$ = AST_NODE_PCODE_Create(PC_CreateAffect(), $1, $3); }
 
 statement_condition
-  : IF OPAR expr CPAR statement                 { $$ = AST_NODE_IF_Create($3, $5, NULL); }
-  | IF OPAR expr CPAR statement ELSE statement  { $$ = AST_NODE_IF_Create($3, $5, $7); }
+  : IF OPAR expr CPAR BEG statement END
+    { $$ = AST_NODE_IF_Create($3, $6, NULL); }
+  | IF OPAR expr CPAR BEG statement END ELSE BEG statement END
+    { $$ = AST_NODE_IF_Create($3, $6, $10); }
 
 statement_while
-  : WHILE OPAR expr CPAR statement      { $$ = AST_NODE_WHILE_Create($3, $5); }
+  : WHILE OPAR expr CPAR BEG statement END { $$ = AST_NODE_WHILE_Create($3, $6); }
 
 call
   : var_src OPAR expr_list CPAR         { $$ = AST_NODE_PCODE_Create(PC_Create(CALL, (PC_ARG)0UL), $1, $3); }

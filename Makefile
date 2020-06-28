@@ -52,6 +52,10 @@ display_ast: all
 	dot -Tpng out.dot > /tmp/ast.png
 	$(DISPLAY_IMAGE)  /tmp/ast.png
 
+display_grammar: all
+	dot -Tpng src/grammar.y.dot > /tmp/grm.png
+	$(DISPLAY_IMAGE)  /tmp/grm.png
+
 
 graphs:
 	mkdir -p graphs
