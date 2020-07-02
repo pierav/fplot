@@ -54,6 +54,7 @@ string 			\"[^\"]*
 "else"   		{ECHO; return(ELSE); }
 "for"				{ECHO;  return(FOR); }
 "while"			{ECHO;  return(WHILE); }
+"function"	{ECHO; return(FUNC);}
 
 "{"					{ECHO;  return(BEG); }
 "}"					{ECHO;  return(END); }

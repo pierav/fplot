@@ -30,7 +30,7 @@
  * Variables
  ******************************************************************************/
 
-const char *AST_NODE_TYPE_STR[] = {"PCODE", "IF", "WHILE", "STAT"};
+const char *AST_NODE_TYPE_STR[] = {"PCODE", "IF", "WHILE", "STAT", "FUNC"};
 
 /*******************************************************************************
  * Public function
@@ -73,6 +73,14 @@ AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true) {
   return (AST_NODE *)ret;
 }
 
+AST_NODE *AST_NODE_FUNC_Create(HashTable *namespace, AST_NODE *data) {
+  AST_NODE_FUNC *ret = malloc(sizeof(struct AST_NODE_WHILE));
+  assert(ret);
+  ret->type = AST_NODE_TYPE_FUNC;
+  ret->data = data;
+  ret->namespace = namespace;
+  return (AST_NODE *)ret;
+}
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

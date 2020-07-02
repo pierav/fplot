@@ -95,6 +95,13 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
     }
     break;
   }
+  case AST_NODE_TYPE_FUNC: {
+    printf("\n");
+    for (int i = 0; i < space; i++)
+      printf(" | ");
+    printf("content:\n");
+    AST_DISPLAY_Text(((AST_NODE_FUNC *)cur)->data, space + 1);
+  } break;
   default:
     break;
   }
@@ -114,12 +121,14 @@ void AST_DISPLAY_DotF(AST_NODE *root, char *namefile) {
  * Internal function
  ******************************************************************************/
 
+#define STYLE(_a) "colorscheme=set312, fillcolor=" _a ", style=\"filled\","
+
 void fprintRecuDot(AST_NODE *node, FILE *pf) {
   fprintf(pf, "n%p ", node);
 
   switch (AST_NODE_GET_TYPE(node)) {
   case AST_NODE_TYPE_PCODE: {
-    fprintf(pf, "[fillcolor=lightblue, style=\"filled\", ");
+    fprintf(pf, "[" STYLE("1"));
     fprintf(pf, "label = \"");
     PC_FPrint(pf, AST_NODE_CAST_PCODE(node)->code);
     fprintf(pf, "\"]\n");
@@ -137,7 +146,7 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
     break;
   }
   case AST_NODE_TYPE_IF: {
-    fprintf(pf, "[fillcolor=lightgreen, style=\"filled\", shape=diamond, ");
+    fprintf(pf, "[" STYLE("2") "shape=diamond, ");
     fprintf(pf, "label = \"IF\"]\n");
 
     fprintRecuDot(AST_NODE_CAST_IF(node)->test, pf);
@@ -156,7 +165,7 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
     break;
   }
   case AST_NODE_TYPE_WHILE: {
-    fprintf(pf, "[fillcolor=gold, style=\"filled\", shape=trapezium, ");
+    fprintf(pf, "[" STYLE("3") "shape=trapezium, ");
     fprintf(pf, "label = \"WHILE\"]\n");
 
     fprintRecuDot(AST_NODE_CAST_WHILE(node)->test, pf);
@@ -169,14 +178,23 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
     break;
   }
   case AST_NODE_TYPE_STAT: {
-    fprintf(pf, "[fillcolor=purple, style=\"filled\", shape=cylinder, ");
+    fprintf(pf, "[" STYLE("4") "shape=cylinder, ");
     fprintf(pf, "label = \"STATS\"]\n");
     size_t cpt = 1;
     for (AST_NODE_STAT *cur = node; cur != NULL; cur = cur->next, cpt++) {
       fprintRecuDot(cur->ptr, pf);
       fprintf(pf, "n%p -> n%p [ label=\"%ld\"]\n", node, cur->ptr, cpt);
     }
-  }
+  } break;
+  case AST_NODE_TYPE_FUNC: {
+    fprintf(pf, "[" STYLE("5") "shape=invhouse, ");
+    fprintf(pf, "label = \"FUNC :\n");
+    HT_FPrint(pf, AST_NODE_CAST_FUNC(node)->namespace);
+    fprintf(pf, "\n\"]\n");
+    fprintRecuDot(AST_NODE_CAST_FUNC(node)->data, pf);
+    fprintf(pf, "n%p -> n%p [ label=\"data\"]\n", node,
+            AST_NODE_CAST_FUNC(node)->data);
+  } break;
   default:
     break;
   }

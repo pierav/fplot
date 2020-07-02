@@ -8,6 +8,9 @@
   #include "ast_displayer.h"
   #include "ast_traversal.h"
 
+
+  #include "utils/hashtable.h"
+
   #include <assert.h>
 
   int yyparse(AST_NODE **root);
@@ -39,6 +42,7 @@
 %token BEG END
 %token IF ELSIF ELSE
 %token FOR WHILE
+%token FUNC
 
 %token COMMA
 %token PTCOMMA
@@ -107,12 +111,18 @@ expr
   | expr LE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LE__), $1, $3); }
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
+  | FUNC OPAR var_dst_list CPAR BEG statement END
+                                        { $$ = AST_NODE_FUNC_Create($3 /* ns*/, $6 /*code */);}
 
 var_src
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushSrc((char *)$1), NULL, NULL);}
   | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_INT, $1, NULL)), NULL, NULL); }
   | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STR, $1, NULL)), NULL, NULL); }
   | call
+
+var_dst_list
+  : var_dst_list COMMA var_dst          { $$ = HT_Insert($$, $2, NULL); }
+  | var_dst                             { $$ = HT_Init(); HT_Insert($$, $1, NULL); /* Init namespace */}
 
 var_dst
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushDst((char *)$1), NULL, NULL); }

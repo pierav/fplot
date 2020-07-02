@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "utils/hashtable.h"
+
 /*******************************************************************************
  * Macros
  ******************************************************************************/
@@ -26,6 +28,19 @@ typedef enum {
   OBJ_STR = 3,
   OBJ_FUNC = 4
 } OBJ_TYPE;
+
+typedef struct OBJ_DATA_FUNC {
+  HashTable *namespace;
+
+} OBJ_DATA_FUNC;
+
+typedef union OBJ_DATA {
+  bool *pbool;
+  int *pint;
+  char *pchar;
+  char *pstr;
+  OBJ_DATA_FUNC *func;
+} OBJ_DATA;
 
 #define NB_OBJ_FUNC (22)
 typedef enum {

@@ -65,7 +65,7 @@ HashTable *HT_Init(void) {
   return ret;
 }
 
-void HT_Insert(HashTable *ht, char *str, void *dat) {
+HashTable *HT_Insert(HashTable *ht, char *str, void *dat) {
   hash_t key = compute_hash(str);
   // Ajout en tete
   Cell *cell = malloc(sizeof(struct Cell *));
@@ -74,6 +74,7 @@ void HT_Insert(HashTable *ht, char *str, void *dat) {
   cell->dat = dat;
 
   ht->tab[key % ht->len] = cell;
+  return ht;
 }
 
 // get ht[str]. NULL if none
