@@ -37,7 +37,8 @@ HashTable *HT_Init(void);
 HashTable *HT_Insert(HashTable *ht, char *str, void *dat);
 // get ht[str]. NULL if none
 void *HT_Get(HashTable *ht, char *str);
-void HT_FPrint(FILE *pf, HashTable *ht);
+void HT_FPrintRaw(FILE *pf, HashTable *ht);
+void HT_FPrintKeys(FILE *pf, HashTable *ht, char *delimitor);
 
 void TU_HashTable(void);
 

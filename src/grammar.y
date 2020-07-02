@@ -111,7 +111,7 @@ expr
   | expr LE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LE__), $1, $3); }
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
-  | FUNC OPAR var_dst_list CPAR BEG statement END
+  | FUNC OPAR var_list CPAR BEG statement END
                                         { $$ = AST_NODE_FUNC_Create($3 /* ns*/, $6 /*code */);}
 
 var_src
@@ -120,13 +120,13 @@ var_src
   | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STR, $1, NULL)), NULL, NULL); }
   | call
 
-var_dst_list
-  : var_dst_list COMMA var_dst          { $$ = HT_Insert($$, $2, NULL); }
-  | var_dst                             { $$ = HT_Init(); HT_Insert($$, $1, NULL); /* Init namespace */}
-
 var_dst
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushDst((char *)$1), NULL, NULL); }
 
+
+var_list
+  : var_list COMMA VAR                  { $$ = HT_Insert($$, $3, 0); }
+  | VAR                                 { $$ = HT_Init(); HT_Insert($$, $1, 0); }
 
 %%
 

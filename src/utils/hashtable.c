@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*******************************************************************************
  * Macros
@@ -29,6 +30,7 @@ typedef uint64_t hash_t;
 
 struct Cell {
   hash_t key;
+  char *name;
   void *dat;
   struct Cell *next;
 };
@@ -66,12 +68,15 @@ HashTable *HT_Init(void) {
 }
 
 HashTable *HT_Insert(HashTable *ht, char *str, void *dat) {
+  printf("insert %s with %d\n", str, dat);
   hash_t key = compute_hash(str);
   // Ajout en tete
-  Cell *cell = malloc(sizeof(struct Cell *));
+  Cell *cell = malloc(sizeof(struct Cell));
+  assert(cell);
   cell->next = ht->tab[key % ht->len];
   cell->key = key;
   cell->dat = dat;
+  cell->name = strdup(str);
 
   ht->tab[key % ht->len] = cell;
   return ht;
@@ -86,12 +91,19 @@ void *HT_Get(HashTable *ht, char *str) {
   return NULL;
 }
 
-void HT_FPrint(FILE *pf, HashTable *ht) {
+void HT_FPrintRaw(FILE *pf, HashTable *ht) {
   printf("***     HashTable     ***\n");
   for (size_t i = 0; i < ht->len; i++) {
     printf("---\n");
     for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next)
-      fprintf(pf, "K_%lu -> mem[%p]\n", cur->key, cur->dat);
+      fprintf(pf, "%s / K_%lu -> mem[%p]\n", cur->name, cur->key, cur->dat);
+  }
+}
+
+void HT_FPrintKeys(FILE *pf, HashTable *ht, char *delimitor) {
+  for (size_t i = 0; i < ht->len; i++) {
+    for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next)
+      fprintf(pf, "%s%s", cur->name, delimitor);
   }
 }
 
@@ -127,7 +139,9 @@ void TU_HashTable(void) {
   assert(HT_Get(ht, "azerty") == (void *)12345);
   assert(HT_Get(ht, "123456") == (void *)99999);
 
-  // HT_FPrint(stdout, ht);
+  HT_FPrintRaw(stdout, ht);
+  HT_FPrintKeys(stdout, ht, "\n");
+  HT_FPrintKeys(stdout, ht, " ");
 }
 
 /*******************************************************************************

@@ -29,7 +29,7 @@ AST_NODE *BISON_Parse(void) {
 }
 
 int main(void) {
-  TU_HashTable();
+  // TU_HashTable();
 
   // auto flush stdout
   setvbuf(stdout, NULL, _IONBF, 0);
