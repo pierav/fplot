@@ -123,6 +123,12 @@ PrgmCode AST_ToCodeRec(AST_NODE *node) {
       }
       break;
     }
+    case AST_NODE_TYPE_FUNC_DEC: {
+      PrgmCode code = AST_ToCodeRec(AST_NODE_CAST_FUNC_DEC(node)->data);
+      PC_AddEnd(&pc,
+                PC_CreatePushCst(OBJ_Create(OBJ_FUNC, NULL /* TODO */, NULL)));
+      break;
+    }
     }
   }
   return pc;

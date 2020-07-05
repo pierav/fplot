@@ -23,7 +23,7 @@
 #define AST_NODE_CAST_IF(_n) ((AST_NODE_IF *)(_n))
 #define AST_NODE_CAST_WHILE(_n) ((AST_NODE_WHILE *)(_n))
 #define AST_NODE_CAST_STAT(_n) ((AST_NODE_STAT *)(_n))
-#define AST_NODE_CAST_FUNC(_n) ((AST_NODE_FUNC *)(_n))
+#define AST_NODE_CAST_FUNC_DEC(_n) ((AST_NODE_FUNC_DEC *)(_n))
 
 #define AST_NODE_GET_TYPE(_n) (((AST_NODE_PCODE *)(_n))->type)
 
@@ -36,7 +36,8 @@ enum AST_NODE_TYPE {
   AST_NODE_TYPE_IF,
   AST_NODE_TYPE_WHILE,
   AST_NODE_TYPE_STAT,
-  AST_NODE_TYPE_FUNC
+  AST_NODE_TYPE_FUNC_DEC,
+  AST_NODE_TYPE_FUNC_CALL
 };
 typedef enum AST_NODE_TYPE AST_NODE_TYPE;
 extern const char *AST_NODE_TYPE_STR[];
@@ -80,14 +81,14 @@ struct AST_NODE_STAT {
 };
 typedef struct AST_NODE_STAT AST_NODE_STAT;
 
-struct AST_NODE_FUNC {
+struct AST_NODE_FUNC_DEC {
   // For all AST_NODE
   enum AST_NODE_TYPE type;
   // for FUNC
   struct AST_NODE *data;
   HashTable *namespace;
 };
-typedef struct AST_NODE_FUNC AST_NODE_FUNC;
+typedef struct AST_NODE_FUNC_DEC AST_NODE_FUNC_DEC;
 
 /*******************************************************************************
  * Variables
@@ -102,6 +103,6 @@ AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
                              AST_NODE *if_false);
 AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);
-AST_NODE *AST_NODE_FUNC_Create(HashTable *namespace, AST_NODE *data);
+AST_NODE *AST_NODE_FUNC_DEC_Create(HashTable *namespace, AST_NODE *data);
 
 #endif /* _AST_H_ */

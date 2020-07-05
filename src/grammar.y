@@ -112,7 +112,7 @@ expr
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
   | FUNC OPAR var_list CPAR BEG statement END
-                                        { $$ = AST_NODE_FUNC_Create($3 /* ns*/, $6 /*code */);}
+                                        { $$ = AST_NODE_FUNC_DEC_Create($3 /* ns*/, $6 /*code */);}
 
 var_src
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushSrc((char *)$1), NULL, NULL);}

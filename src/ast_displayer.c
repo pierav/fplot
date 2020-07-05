@@ -95,17 +95,17 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
     }
     break;
   }
-  case AST_NODE_TYPE_FUNC: {
+  case AST_NODE_TYPE_FUNC_DEC: {
     printf("\n");
     for (int i = 0; i < space; i++)
       printf(" | ");
     printf("namespace: ");
-    HT_FPrintKeys(stdout, ((AST_NODE_FUNC *)cur)->namespace, ", ");
+    HT_FPrintKeys(stdout, ((AST_NODE_FUNC_DEC *)cur)->namespace, ", ");
     printf("\n");
     for (int i = 0; i < space; i++)
       printf(" | ");
     printf("content:\n");
-    AST_DISPLAY_Text(((AST_NODE_FUNC *)cur)->data, space + 1);
+    AST_DISPLAY_Text(((AST_NODE_FUNC_DEC *)cur)->data, space + 1);
   } break;
   default:
     break;
@@ -191,14 +191,14 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
       fprintf(pf, "n%p -> n%p [ label=\"%ld\"]\n", node, cur->ptr, cpt);
     }
   } break;
-  case AST_NODE_TYPE_FUNC: {
+  case AST_NODE_TYPE_FUNC_DEC: {
     fprintf(pf, "[" STYLE("5") "shape=invhouse, ");
-    fprintf(pf, "label = \"FUNC :\n");
-    HT_FPrintKeys(pf, AST_NODE_CAST_FUNC(node)->namespace, "\n");
+    fprintf(pf, "label = \"FUNC DEC :\n");
+    HT_FPrintKeys(pf, AST_NODE_CAST_FUNC_DEC(node)->namespace, "\n");
     fprintf(pf, "\n\"]\n");
-    fprintRecuDot(AST_NODE_CAST_FUNC(node)->data, pf);
+    fprintRecuDot(AST_NODE_CAST_FUNC_DEC(node)->data, pf);
     fprintf(pf, "n%p -> n%p [ label=\"data\"]\n", node,
-            AST_NODE_CAST_FUNC(node)->data);
+            AST_NODE_CAST_FUNC_DEC(node)->data);
   } break;
   default:
     break;

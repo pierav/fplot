@@ -68,7 +68,6 @@ HashTable *HT_Init(void) {
 }
 
 HashTable *HT_Insert(HashTable *ht, char *str, void *dat) {
-  printf("insert %s with %d\n", str, dat);
   hash_t key = compute_hash(str);
   // Ajout en tete
   Cell *cell = malloc(sizeof(struct Cell));
