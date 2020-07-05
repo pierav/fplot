@@ -104,7 +104,7 @@ expr
   | expr LE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LE__), $1, $3); }
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
-  | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, (size_t)$3/* size*/ ); }
+  | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, (uint64_t)$3/* size*/ ); }
   | FUNC OPAR name_list CPAR BEG statement END
                                         { $$ = AST_NODE_FUNC_DEC_Create($3/* ns*/, $6/*code */);}
 

@@ -114,5 +114,5 @@ AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
 AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);
 AST_NODE *AST_NODE_FUNC_DEC_Create(HashTable *namespace, AST_NODE *data);
-AST_NODE *AST_NODE_FUNC_CALL_Create(AST_NODE *, size_t);
+AST_NODE *AST_NODE_FUNC_CALL_Create(AST_NODE *, uint64_t nb_args);
 #endif /* _AST_H_ */
