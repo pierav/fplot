@@ -91,7 +91,7 @@ void *HT_Get(HashTable *ht, char *str) {
 }
 
 void HT_FPrintRaw(FILE *pf, HashTable *ht) {
-  printf("***     HashTable     ***\n");
+  printf("***     HashTable(%ld)     ***\n", ht->len);
   for (size_t i = 0; i < ht->len; i++) {
     printf("---\n");
     for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next)
@@ -100,9 +100,11 @@ void HT_FPrintRaw(FILE *pf, HashTable *ht) {
 }
 
 void HT_FPrintKeys(FILE *pf, HashTable *ht, char *delimitor) {
+  assert(ht);
   for (size_t i = 0; i < ht->len; i++) {
-    for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next)
+    for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next) {
       fprintf(pf, "%s%s", cur->name, delimitor);
+    }
   }
 }
 

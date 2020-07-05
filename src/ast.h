@@ -24,6 +24,7 @@
 #define AST_NODE_CAST_WHILE(_n) ((AST_NODE_WHILE *)(_n))
 #define AST_NODE_CAST_STAT(_n) ((AST_NODE_STAT *)(_n))
 #define AST_NODE_CAST_FUNC_DEC(_n) ((AST_NODE_FUNC_DEC *)(_n))
+#define AST_NODE_CAST_FUNC_CALL(_n) ((AST_NODE_FUNC_CALL *)(_n))
 
 #define AST_NODE_GET_TYPE(_n) (((AST_NODE_PCODE *)(_n))->type)
 
@@ -90,6 +91,15 @@ struct AST_NODE_FUNC_DEC {
 };
 typedef struct AST_NODE_FUNC_DEC AST_NODE_FUNC_DEC;
 
+struct AST_NODE_FUNC_CALL {
+  // For all AST_NODE
+  enum AST_NODE_TYPE type;
+  // for FUNC
+  AST_NODE *function;
+  size_t nb_args;
+};
+typedef struct AST_NODE_FUNC_CALL AST_NODE_FUNC_CALL;
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -104,5 +114,5 @@ AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
 AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);
 AST_NODE *AST_NODE_FUNC_DEC_Create(HashTable *namespace, AST_NODE *data);
-
+AST_NODE *AST_NODE_FUNC_CALL_Create(AST_NODE *, size_t);
 #endif /* _AST_H_ */

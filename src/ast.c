@@ -82,6 +82,15 @@ AST_NODE *AST_NODE_FUNC_DEC_Create(HashTable *namespace, AST_NODE *data) {
   ret->namespace = namespace;
   return (AST_NODE *)ret;
 }
+
+AST_NODE *AST_NODE_FUNC_CALL_Create(AST_NODE *function, size_t nb_args) {
+  AST_NODE_FUNC_CALL *ret = malloc(sizeof(struct AST_NODE_FUNC_CALL));
+  assert(ret);
+  ret->type = AST_NODE_TYPE_FUNC_CALL;
+  ret->function = function;
+  ret->nb_args = nb_args;
+  return (AST_NODE *)ret;
+}
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

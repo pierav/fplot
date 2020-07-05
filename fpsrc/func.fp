@@ -4,4 +4,7 @@ addition = function(x, y){
  x + y;
 };
 
-fin = 1;
+test = addition(2, 4 * 2);
+/* 10 */
+
+valide = (10 == test);
