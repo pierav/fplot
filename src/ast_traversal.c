@@ -137,13 +137,13 @@ PrgmCode AST_ToCodeRec(AST_NODE *node, PrgmPkg *outPkg) {
       PrgmCode iff = AST_ToCodeRec(AST_NODE_CAST_IF(node)->if_false, outPkg);
       if (!AST_NODE_CAST_IF(node)->if_false) { // only "if"
         PC_FusionEnd(&pc, &test);              // test
-        PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP, (PC_ARG)(1 + ift.size)));
+        PC_AddEnd(&pc, PC_CreateJumpCond(1 + ift.size));
         PC_FusionEnd(&pc, &ift); // if true
       } else {
         PC_FusionEnd(&pc, &test); // test
-        PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP, (PC_ARG)(1 + ift.size + 1)));
+        PC_AddEnd(&pc, PC_CreateJumpCond(1 + ift.size + 1));
         PC_FusionEnd(&pc, &ift); // if true
-        PC_AddEnd(&pc, PC_Create(JUMP, (PC_ARG)(1 + iff.size)));
+        PC_AddEnd(&pc, PC_CreateJump(1 + iff.size));
         PC_FusionEnd(&pc, &iff); // if false
       }
       break;
@@ -153,9 +153,9 @@ PrgmCode AST_ToCodeRec(AST_NODE *node, PrgmPkg *outPkg) {
       PrgmCode code =
           AST_ToCodeRec(AST_NODE_CAST_WHILE(node)->while_true, outPkg);
       PC_FusionEnd(&pc, &test);
-      PC_AddEnd(&pc, PC_Create(CONDITIONAL_JUMP, (PC_ARG)(1 + code.size + 1)));
+      PC_AddEnd(&pc, PC_CreateJumpCond(1 + code.size + 1));
       PC_FusionEnd(&pc, &code);
-      PC_AddEnd(&pc, PC_Create(JUMP, (PC_ARG)(-test.size - 1 - code.size)));
+      PC_AddEnd(&pc, PC_CreateJump(-test.size - 1 - code.size));
       break;
     }
     case AST_NODE_TYPE_STAT: {
@@ -170,10 +170,16 @@ PrgmCode AST_ToCodeRec(AST_NODE *node, PrgmPkg *outPkg) {
       // Code de la fonction
       PrgmCode code = AST_ToCodeRec(AST_NODE_CAST_FUNC_DEC(node)->data, outPkg);
       // Force return if not set
-      if (code.queu->code->type != RETURN) {
+      if (code.queu) {
+        if (code.queu->code->type != PC_TYPE_RETURN) {
+          PC_AddEnd(&code, PC_CreatePushCst(OBJ_NULL));
+          PC_AddEnd(&code, PC_CreateReturn());
+        }
+      } else {
         PC_AddEnd(&code, PC_CreatePushCst(OBJ_NULL));
         PC_AddEnd(&code, PC_CreateReturn());
       }
+
       PrgmCodePoint *point = malloc(sizeof(PrgmCodePoint));
       point->code = code.head; // première instruction
       point->id = outPkg->size;

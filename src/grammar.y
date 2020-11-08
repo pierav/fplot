@@ -43,6 +43,7 @@
 %token IF ELSIF ELSE
 %token FOR WHILE
 %token FUNC
+%token RETURN
 
 %token COMMA
 %token PTCOMMA
@@ -69,7 +70,8 @@ statement
   | statement_condition                 { $$ = $1; }
   | statement_while                     { $$ = $1; }
   | statement_expression                { $$ = AST_NODE_PCODE_Create(PC_CreatePop(), $1, NULL);}
-  | statement_compound                  { $$ = $1; assert(0);}
+  | statement_compound                  { $$ = $1; }
+  | statement_return                    { $$ = $1; }
 
 statement_compound
   : BEG statements END                  { $$ = $2; }
@@ -90,6 +92,13 @@ statement_condition
 statement_while
   : WHILE OPAR expr CPAR BEG statement END { $$ = AST_NODE_WHILE_Create($3, $6); }
 
+statement_return
+  : RETURN return_value PTCOMMA         { $$ = AST_NODE_PCODE_Create(PC_CreateReturn(), $2, NULL); }
+
+return_value
+  : %empty                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(NULL), NULL, NULL); }
+  | expr                                { $$ = $1; }
+
 expr
   : var_src                             { $$ = $1; }
   | expr DOUBLEPT expr                  { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__ADD__), $1, $3); printf("LISTE : TODO\n"); }
@@ -105,7 +114,7 @@ expr
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
   | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, (uint64_t)$3/* size*/ ); }
-  | FUNC OPAR name_list CPAR BEG statement END
+  | FUNC OPAR name_list CPAR BEG statements END
                                         { $$ = AST_NODE_FUNC_DEC_Create($3/* ns*/, $6/*code */);}
 
 expr_list
@@ -120,9 +129,16 @@ var_src
 var_dst
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushDst((char *)$1), NULL, NULL); }
 
+
 name_list
-  : name_list COMMA VAR                  { $$ = HT_Insert($$, $3, 0); }
+  : name_list_not_empty                 { $$ = $1; }
+  | %empty                              { $$ = HT_Init(); }
+
+name_list_not_empty
+  : name_list_not_empty COMMA VAR       { $$ = HT_Insert($$, $3, 0); }
   | VAR                                 { $$ = HT_Init(); HT_Insert($$, $1, 0); }
+
+
 
 %%
 

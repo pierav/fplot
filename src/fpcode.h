@@ -19,16 +19,16 @@
  ******************************************************************************/
 
 enum PC_TYPE {
-  PUSH_SRC_VAR,     // char * | Push variable existante
-  PUSH_DST_VAR,     // char * | Push variable existante ou indéfinie
-  PUSH_CST,         // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
-  POP,              // void   | Pop
-  APPLY_OBJ_FUNC,   // void   | Applique une OBJ__FUNC__ en tete de pile
-  CALL,             // void   | Applique une fonction utilisateur
-  AFFECT,           // void   | Affecte le premier element de pile sur le second
-  JUMP,             // INT    | Jump à l'adresse INT du programme
-  CONDITIONAL_JUMP, // INT    | Jump si pop() == False
-  RETURN            // OBJ *  | PC <- POP(); PUSH(OBJ)
+  PC_TYPE_PUSH_SRC_VAR,   // char * | Push variable existante
+  PC_TYPE_PUSH_DST_VAR,   // char * | Push variable existante ou indéfinie
+  PC_TYPE_PUSH_CST,       // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
+  PC_TYPE_POP,            // void   | Pop
+  PC_TYPE_APPLY_OBJ_FUNC, // void   | Applique une OBJ__FUNC__ en tete de pile
+  PC_TYPE_CALL,           // void   | Applique une fonction utilisateur
+  PC_TYPE_AFFECT, // void   | Affecte le premier element de pile sur le second
+  PC_TYPE_JUMP,   // INT    | Jump à l'adresse INT du programme
+  PC_TYPE_CONDITIONAL_JUMP, // INT    | Jump si pop() == False
+  PC_TYPE_RETURN            // OBJ *  | PC <- POP(); PUSH(OBJ)
 };
 typedef enum PC_TYPE PC_TYPE;
 

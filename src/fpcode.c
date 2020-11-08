@@ -37,27 +37,27 @@ void PC_FPrint(FILE *pf, PCODE *code) {
   assert(code);
   fprintf(pf, "(%s / ", PC_TYPE_NAME[code->type]);
   switch (code->type) {
-  case PUSH_SRC_VAR: // fallthrough
-  case PUSH_DST_VAR:
+  case PC_TYPE_PUSH_SRC_VAR: // fallthrough
+  case PC_TYPE_PUSH_DST_VAR:
     fprintf(pf, "%s", code->arg.pchar_t);
     break;
-  case PUSH_CST:
+  case PC_TYPE_PUSH_CST:
     OBJ_FPrint(pf, code->arg.pobj_t);
     break;
-  case POP:
+  case PC_TYPE_POP:
     break;
-  case APPLY_OBJ_FUNC:
+  case PC_TYPE_APPLY_OBJ_FUNC:
     fprintf(pf, "%s", OBJ_FUNCS_NAMES[code->arg.int_t]);
     break;
-  case CALL:
+  case PC_TYPE_CALL:
     break;
-  case AFFECT:
+  case PC_TYPE_AFFECT:
     break;
-  case JUMP: // fallthrough
-  case CONDITIONAL_JUMP:
+  case PC_TYPE_JUMP: // fallthrough
+  case PC_TYPE_CONDITIONAL_JUMP:
     fprintf(pf, "(%ld)", code->arg.int_t);
     break;
-  case RETURN:
+  case PC_TYPE_RETURN:
     break;
   }
   fprintf(pf, ")");
@@ -75,31 +75,35 @@ PCODE *PC_Create(PC_TYPE type, PC_ARG arg) {
   return ret;
 }
 
-PCODE *PC_CreateJump(size_t arg) { return PC_Create(JUMP, (PC_ARG)arg); }
+PCODE *PC_CreateJump(size_t arg) {
+  return PC_Create(PC_TYPE_JUMP, (PC_ARG)arg);
+}
 
 PCODE *PC_CreateJumpCond(size_t arg) {
-  return PC_Create(CONDITIONAL_JUMP, (PC_ARG)arg);
+  return PC_Create(PC_TYPE_CONDITIONAL_JUMP, (PC_ARG)arg);
 }
 
 PCODE *PC_CreatePushSrc(char *name) {
-  return PC_Create(PUSH_SRC_VAR, (PC_ARG)name);
+  return PC_Create(PC_TYPE_PUSH_SRC_VAR, (PC_ARG)name);
 }
 
 PCODE *PC_CreatePushDst(char *name) {
-  return PC_Create(PUSH_DST_VAR, (PC_ARG)name);
+  return PC_Create(PC_TYPE_PUSH_DST_VAR, (PC_ARG)name);
 }
 
-PCODE *PC_CreatePushCst(OBJ *obj) { return PC_Create(PUSH_CST, (PC_ARG)obj); }
+PCODE *PC_CreatePushCst(OBJ *obj) {
+  return PC_Create(PC_TYPE_PUSH_CST, (PC_ARG)obj);
+}
 
-PCODE *PC_CreatePop(void) { return PC_Create(POP, (PC_ARG)0UL); }
+PCODE *PC_CreatePop(void) { return PC_Create(PC_TYPE_POP, (PC_ARG)0UL); }
 
 PCODE *PC_CreateApply(size_t func) {
-  return PC_Create(APPLY_OBJ_FUNC, (PC_ARG)func);
+  return PC_Create(PC_TYPE_APPLY_OBJ_FUNC, (PC_ARG)func);
 }
 
-PCODE *PC_CreateAffect(void) { return PC_Create(AFFECT, (PC_ARG)0UL); }
+PCODE *PC_CreateAffect(void) { return PC_Create(PC_TYPE_AFFECT, (PC_ARG)0UL); }
 
-PCODE *PC_CreateReturn(void) { return PC_Create(RETURN, (PC_ARG)0UL); }
+PCODE *PC_CreateReturn(void) { return PC_Create(PC_TYPE_RETURN, (PC_ARG)0UL); }
 
 /*******************************************************************************
  * Internal function

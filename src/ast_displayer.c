@@ -123,6 +123,7 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
 }
 
 void AST_DISPLAY_DotF(AST_NODE *root, char *namefile) {
+  printf("Write out.dot ...");
   FILE *pf = fopen(namefile, "w");
   assert(pf);
   fprintf(pf, "digraph AST {\n");
@@ -130,6 +131,7 @@ void AST_DISPLAY_DotF(AST_NODE *root, char *namefile) {
   fprintRecuDot(root, pf);
   fprintf(pf, "}\n");
   fclose(pf);
+  printf(" DONE\n");
 }
 
 /*******************************************************************************
@@ -140,14 +142,12 @@ void AST_DISPLAY_DotF(AST_NODE *root, char *namefile) {
 
 void fprintRecuDot(AST_NODE *node, FILE *pf) {
   fprintf(pf, "n%p ", node);
-
   switch (AST_NODE_GET_TYPE(node)) {
   case AST_NODE_TYPE_PCODE: {
     fprintf(pf, "[" STYLE("1"));
     fprintf(pf, "label = \"");
     PC_FPrint(pf, AST_NODE_CAST_PCODE(node)->code);
     fprintf(pf, "\"]\n");
-
     if (AST_NODE_CAST_PCODE(node)->arg1) {
       fprintRecuDot(AST_NODE_CAST_PCODE(node)->arg1, pf);
       fprintf(pf, "n%p -> n%p [ label=\"a1\"];\n", node,
@@ -187,9 +187,11 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
     fprintf(pf, "n%p -> n%p [ label=\"test\"]\n", node,
             AST_NODE_CAST_WHILE(node)->test);
 
-    fprintRecuDot(AST_NODE_CAST_WHILE(node)->while_true, pf);
-    fprintf(pf, "n%p -> n%p [ label=\"T\"]\n", node,
-            AST_NODE_CAST_WHILE(node)->while_true);
+    if (AST_NODE_CAST_WHILE(node)->while_true) {
+      fprintRecuDot(AST_NODE_CAST_WHILE(node)->while_true, pf);
+      fprintf(pf, "n%p -> n%p [ label=\"T\"]\n", node,
+              AST_NODE_CAST_WHILE(node)->while_true);
+    }
     break;
   }
   case AST_NODE_TYPE_STAT: {
@@ -206,9 +208,11 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
     fprintf(pf, "label = \"FUNC DEC :\n");
     HT_FPrintKeys(pf, AST_NODE_CAST_FUNC_DEC(node)->namespace, "\n");
     fprintf(pf, "\n\"]\n");
-    fprintRecuDot(AST_NODE_CAST_FUNC_DEC(node)->data, pf);
-    fprintf(pf, "n%p -> n%p [ label=\"data\"]\n", node,
-            AST_NODE_CAST_FUNC_DEC(node)->data);
+    if (AST_NODE_CAST_FUNC_DEC(node)->data) {
+      fprintRecuDot(AST_NODE_CAST_FUNC_DEC(node)->data, pf);
+      fprintf(pf, "n%p -> n%p [ label=\"data\"]\n", node,
+              AST_NODE_CAST_FUNC_DEC(node)->data);
+    }
   } break;
   case AST_NODE_TYPE_FUNC_CALL: {
     fprintf(pf, "[" STYLE("5") "shape=square, ");
@@ -221,4 +225,5 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
   default:
     break;
   }
+  fflush(pf);
 }

@@ -78,7 +78,7 @@ void PO_Iter(void) {
 
   // Exec code
   switch (code->type) {
-  case PUSH_SRC_VAR: {
+  case PC_TYPE_PUSH_SRC_VAR: {
     char *name = code->arg.pchar_t;
     OBJ *obj = MEM_GetObj(name);
     fprintf(stdout_po, "\"%s\":", name);
@@ -87,7 +87,7 @@ void PO_Iter(void) {
     PO_PC_Inc();
     break;
   }
-  case PUSH_DST_VAR: {
+  case PC_TYPE_PUSH_DST_VAR: {
     char *name = code->arg.pchar_t;
     OBJ *obj = MEM_GetOrCreateObj(name);
     fprintf(stdout_po, "\"%s\":", name);
@@ -96,18 +96,18 @@ void PO_Iter(void) {
     PO_PC_Inc();
     break;
   }
-  case PUSH_CST: {
+  case PC_TYPE_PUSH_CST: {
     OBJ *obj = code->arg.pobj_t;
     OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
     PO_PC_Inc();
     break;
   }
-  case POP:
+  case PC_TYPE_POP:
     PO_OBJSTACK_Pop();
     PO_PC_Inc();
     break;
-  case APPLY_OBJ_FUNC: {
+  case PC_TYPE_APPLY_OBJ_FUNC: {
     fprintf(stdout_po, "\"%s\"", OBJ_FUNCS_NAMES[code->arg.int_t]);
     if (OBJ_NB_ARGS[code->arg.int_t] >= 1) {
       fprintf(stdout_po, ", ");
@@ -130,11 +130,11 @@ void PO_Iter(void) {
     }
     PO_PC_Inc();
   } break;
-  case CALL:
+  case PC_TYPE_CALL:
     PO_PC_Inc();
     // TODO
     break;
-  case AFFECT: {
+  case PC_TYPE_AFFECT: {
     OBJ *src = PO_OBJSTACK_Pop();
     OBJ *dst = PO_OBJSTACK_Pop();
     OBJ_Affect(dst, src);
@@ -143,10 +143,10 @@ void PO_Iter(void) {
     OBJ_FPrint(stdout_po, dst);
     PO_PC_Inc();
   } break;
-  case JUMP:
+  case PC_TYPE_JUMP:
     PO_PC_Add(code->arg.int_t);
     break;
-  case CONDITIONAL_JUMP: {
+  case PC_TYPE_CONDITIONAL_JUMP: {
     OBJ *test = PO_OBJSTACK_Pop();
     fprintf(stdout_po, "test:");
     OBJ_FPrint(stdout_po, test);
