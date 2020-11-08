@@ -25,9 +25,9 @@
  ******************************************************************************/
 
 const char *PC_TYPE_NAME[] = {
-    "PUSH_SRC_VAR", "PUSH_DST_VAR",   "PUSH_CST",
-    "POP",          "APPLY_OBJ_FUNC", "CALL",
-    "AFFECT",       "JUMP",           "CONDITIONAL_JUMP"};
+    "PUSH_SRC_VAR",     "PUSH_DST_VAR", "PUSH_CST", "POP",
+    "APPLY_OBJ_FUNC",   "CALL",         "AFFECT",   "JUMP",
+    "CONDITIONAL_JUMP", "RETURN"};
 
 /*******************************************************************************
  * Public function
@@ -56,6 +56,8 @@ void PC_FPrint(FILE *pf, PCODE *code) {
   case JUMP: // fallthrough
   case CONDITIONAL_JUMP:
     fprintf(pf, "(%ld)", code->arg.int_t);
+    break;
+  case RETURN:
     break;
   }
   fprintf(pf, ")");
@@ -96,6 +98,8 @@ PCODE *PC_CreateApply(size_t func) {
 }
 
 PCODE *PC_CreateAffect(void) { return PC_Create(AFFECT, (PC_ARG)0UL); }
+
+PCODE *PC_CreateReturn(void) { return PC_Create(RETURN, (PC_ARG)0UL); }
 
 /*******************************************************************************
  * Internal function

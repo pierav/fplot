@@ -19,15 +19,16 @@
  ******************************************************************************/
 
 enum PC_TYPE {
-  PUSH_SRC_VAR,    // char * | Push variable existante
-  PUSH_DST_VAR,    // char * | Push variable existante ou indéfinie
-  PUSH_CST,        // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
-  POP,             // void   | Pop
-  APPLY_OBJ_FUNC,  // void   | Applique une OBJ__FUNC__ en tete de pile
-  CALL,            // void   | Applique une fonction utilisateur
-  AFFECT,          // void   | Affecte le premier element de pile sur le second
-  JUMP,            // INT    | Jump à l'adresse INT du programme
-  CONDITIONAL_JUMP // void   | Jump si pop() == False
+  PUSH_SRC_VAR,     // char * | Push variable existante
+  PUSH_DST_VAR,     // char * | Push variable existante ou indéfinie
+  PUSH_CST,         // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
+  POP,              // void   | Pop
+  APPLY_OBJ_FUNC,   // void   | Applique une OBJ__FUNC__ en tete de pile
+  CALL,             // void   | Applique une fonction utilisateur
+  AFFECT,           // void   | Affecte le premier element de pile sur le second
+  JUMP,             // INT    | Jump à l'adresse INT du programme
+  CONDITIONAL_JUMP, // INT    | Jump si pop() == False
+  RETURN            // OBJ *  | PC <- POP(); PUSH(OBJ)
 };
 typedef enum PC_TYPE PC_TYPE;
 
@@ -67,4 +68,6 @@ PCODE *PC_CreatePushCst(OBJ *obj);
 PCODE *PC_CreatePop(void);
 PCODE *PC_CreateApply(size_t func);
 PCODE *PC_CreateAffect(void);
+PCODE *PC_CreateReturn(void);
+
 #endif /* _PC_FPCODE_H_ */

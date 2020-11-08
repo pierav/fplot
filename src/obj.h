@@ -84,6 +84,9 @@ typedef struct OBJ {
   uint32_t cpt_usage;
 } OBJ;
 
+// NULL ou OBJ {OBJ_TYPE_NULL, NULL, NULL, 0}
+#define OBJ_NULL NULL
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
