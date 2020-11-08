@@ -20,50 +20,23 @@
  * Internal function declaration
  ******************************************************************************/
 
+void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm);
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
 const char *PC_TYPE_NAME[] = {
-    "PUSH_SRC_VAR",     "PUSH_DST_VAR", "PUSH_CST", "POP",
-    "APPLY_OBJ_FUNC",   "CALL",         "AFFECT",   "JUMP",
-    "CONDITIONAL_JUMP", "RETURN"};
+    "PUSH_SRC_VAR",     "PUSH_DST_VAR", "PUSH_CST",  "POP",
+    "APPLY_OBJ_FUNC",   "CALL",         "AFFECT",    "JUMP",
+    "CONDITIONAL_JUMP", "RETURN",       "AFFECT_ARG"};
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
-void PC_FPrint(FILE *pf, PCODE *code) {
-  assert(code);
-  fprintf(pf, "(%s / ", PC_TYPE_NAME[code->type]);
-  switch (code->type) {
-  case PC_TYPE_PUSH_SRC_VAR: // fallthrough
-  case PC_TYPE_PUSH_DST_VAR:
-    fprintf(pf, "%s", code->arg.pchar_t);
-    break;
-  case PC_TYPE_PUSH_CST:
-    OBJ_FPrint(pf, code->arg.pobj_t);
-    break;
-  case PC_TYPE_POP:
-    break;
-  case PC_TYPE_APPLY_OBJ_FUNC:
-    fprintf(pf, "%s", OBJ_FUNCS_NAMES[code->arg.int_t]);
-    break;
-  case PC_TYPE_CALL:
-    break;
-  case PC_TYPE_AFFECT:
-    break;
-  case PC_TYPE_JUMP: // fallthrough
-  case PC_TYPE_CONDITIONAL_JUMP:
-    fprintf(pf, "(%ld)", code->arg.int_t);
-    break;
-  case PC_TYPE_RETURN:
-    break;
-  }
-  fprintf(pf, ")");
-}
-
-void PC_Print(PCODE *code) { PC_FPrint(stdout, code); }
+void PC_Print(PCODE *code) { PC_FPrintGen(stdout, code, 1); }
+void PC_FPrint(FILE *pf, PCODE *code) { PC_FPrintGen(pf, code, 0); }
 
 const char *PC_GetName(PCODE *code) { return PC_TYPE_NAME[code->type]; }
 
@@ -105,6 +78,42 @@ PCODE *PC_CreateAffect(void) { return PC_Create(PC_TYPE_AFFECT, (PC_ARG)0UL); }
 
 PCODE *PC_CreateReturn(void) { return PC_Create(PC_TYPE_RETURN, (PC_ARG)0UL); }
 
+PCODE *PC_CreateAffectArg(char *name) {
+  return PC_Create(PC_TYPE_AFFECT_ARG, (PC_ARG)name);
+}
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
+
+void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm) {
+  assert(code);
+  fprintf(pf, "%s ", PC_TYPE_NAME[code->type]);
+  if (forTerm) {
+    for (int i = strlen(PC_TYPE_NAME[code->type]); i < 19; i++)
+      fprintf(pf, "-");
+    fprintf(pf, " ");
+  }
+  switch (code->type) {
+  case PC_TYPE_PUSH_SRC_VAR: // fallthrough
+  case PC_TYPE_PUSH_DST_VAR:
+  case PC_TYPE_AFFECT_ARG:
+    fprintf(pf, "%s", code->arg.pchar_t);
+    break;
+  case PC_TYPE_PUSH_CST:
+    OBJ_FPrint(pf, code->arg.pobj_t);
+    break;
+  case PC_TYPE_APPLY_OBJ_FUNC:
+    fprintf(pf, "%s", OBJ_FUNCS_NAMES[code->arg.int_t]);
+    break;
+  case PC_TYPE_JUMP: // fallthrough
+  case PC_TYPE_CONDITIONAL_JUMP:
+    fprintf(pf, "(%ld)", code->arg.int_t);
+    break;
+  case PC_TYPE_CALL: // fallthrough
+  case PC_TYPE_AFFECT:
+  case PC_TYPE_POP:
+  case PC_TYPE_RETURN:
+    break;
+  }
+  fprintf(pf, " ");
+}

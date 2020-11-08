@@ -167,28 +167,30 @@ PrgmCode AST_ToCodeRec(AST_NODE *node, PrgmPkg *outPkg) {
       break;
     }
     case AST_NODE_TYPE_FUNC_DEC: {
+      // Création du code de la fonction
       // Code de la fonction
+      PrgmCode args = AST_ToCodeRec(AST_NODE_CAST_FUNC_DEC(node)->args, outPkg);
       PrgmCode code = AST_ToCodeRec(AST_NODE_CAST_FUNC_DEC(node)->data, outPkg);
+      PC_FusionEnd(&args, &code);
       // Force return if not set
-      if (code.queu) {
-        if (code.queu->code->type != PC_TYPE_RETURN) {
-          PC_AddEnd(&code, PC_CreatePushCst(OBJ_NULL));
-          PC_AddEnd(&code, PC_CreateReturn());
+      if (args.queu) {
+        if (args.queu->code->type != PC_TYPE_RETURN) {
+          PC_AddEnd(&args, PC_CreatePushCst(OBJ_NULL));
+          PC_AddEnd(&args, PC_CreateReturn());
         }
       } else {
-        PC_AddEnd(&code, PC_CreatePushCst(OBJ_NULL));
-        PC_AddEnd(&code, PC_CreateReturn());
+        PC_AddEnd(&args, PC_CreatePushCst(OBJ_NULL));
+        PC_AddEnd(&args, PC_CreateReturn());
       }
-
       PrgmCodePoint *point = malloc(sizeof(PrgmCodePoint));
-      point->code = code.head; // première instruction
+      point->code = args.head; // première instruction
       point->id = outPkg->size;
       // Ajout en tete
       point->next = outPkg->head;
       outPkg->head = point;
       outPkg->size += 1;
 
-      // Push FUNCTION
+      // Code hors de la fonction
       PC_AddEnd(&pc, PC_CreatePushCst(OBJ_Create(OBJ_FUNC, &point->id, NULL)));
       break;
     }

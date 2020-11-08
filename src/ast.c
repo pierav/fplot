@@ -74,12 +74,12 @@ AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true) {
   return (AST_NODE *)ret;
 }
 
-AST_NODE *AST_NODE_FUNC_DEC_Create(HashTable *namespace, AST_NODE *data) {
+AST_NODE *AST_NODE_FUNC_DEC_Create(AST_NODE *args, AST_NODE *data) {
   AST_NODE_FUNC_DEC *ret = malloc(sizeof(struct AST_NODE_FUNC_DEC));
   assert(ret);
   ret->type = AST_NODE_TYPE_FUNC_DEC;
   ret->data = data;
-  ret->namespace = namespace;
+  ret->args = args;
   return (AST_NODE *)ret;
 }
 

@@ -86,8 +86,8 @@ struct AST_NODE_FUNC_DEC {
   // For all AST_NODE
   enum AST_NODE_TYPE type;
   // for FUNC
-  struct AST_NODE *data;
-  HashTable *namespace;
+  AST_NODE *data;
+  AST_NODE *args;
 };
 typedef struct AST_NODE_FUNC_DEC AST_NODE_FUNC_DEC;
 
@@ -113,6 +113,6 @@ AST_NODE *AST_NODE_IF_Create(AST_NODE *test, AST_NODE *if_true,
                              AST_NODE *if_false);
 AST_NODE *AST_NODE_WHILE_Create(AST_NODE *test, AST_NODE *while_true);
 AST_NODE *AST_NODE_STAT_Create(AST_NODE_STAT *next, AST_NODE *ptr);
-AST_NODE *AST_NODE_FUNC_DEC_Create(HashTable *namespace, AST_NODE *data);
+AST_NODE *AST_NODE_FUNC_DEC_Create(AST_NODE *args, AST_NODE *data);
 AST_NODE *AST_NODE_FUNC_CALL_Create(AST_NODE *, uint64_t nb_args);
 #endif /* _AST_H_ */

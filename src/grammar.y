@@ -115,7 +115,7 @@ expr
   | OPAR expr CPAR                      { $$ = $2; }
   | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, (uint64_t)$3/* size*/ ); }
   | FUNC OPAR name_list CPAR BEG statements END
-                                        { $$ = AST_NODE_FUNC_DEC_Create($3/* ns*/, $6/*code */);}
+                                        { $$ = AST_NODE_FUNC_DEC_Create($3/* args*/, $6/*code */);}
 
 expr_list
   : expr_list COMMA expr                { $$ = $1 + 1; /* expr in stack */ }
@@ -132,11 +132,11 @@ var_dst
 
 name_list
   : name_list_not_empty                 { $$ = $1; }
-  | %empty                              { $$ = HT_Init(); }
+  | %empty                              { $$ = NULL; }
 
 name_list_not_empty
-  : name_list_not_empty COMMA VAR       { $$ = HT_Insert($$, $3, 0); }
-  | VAR                                 { $$ = HT_Init(); HT_Insert($$, $1, 0); }
+  : name_list_not_empty COMMA VAR       { $$ = /*HT_Insert($$, $3, 0);*/ AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$3), $1, NULL); }
+  | VAR                                 { $$ = /*HT_Init(); HT_Insert($$, $1, 0);*/ AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$1), NULL, NULL); }
 
 
 

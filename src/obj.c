@@ -151,13 +151,11 @@ OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2) {
 
 // print(obj) __str__
 void OBJ_FPrint(FILE *pf, OBJ *obj) {
-  if (obj == NULL) {
-    fprintf(pf, "(#/!\\ NULL /!\\)");
-    fflush(pf);
+  if (obj == NULL) { //
+    fprintf(pf, "<NULL>");
     return;
-    // exit(1);
   }
-  fprintf(pf, "(%s#%s:", OBJ_TYPES_NAMES[obj->type],
+  fprintf(pf, "<%s#%s:", OBJ_TYPES_NAMES[obj->type],
           obj->name ? obj->name : "_");
   switch (obj->type) {
   case OBJ_INT:
@@ -167,10 +165,13 @@ void OBJ_FPrint(FILE *pf, OBJ *obj) {
   case OBJ_STR:
     fprintf(pf, "%s", (char *)obj->data);
     break;
+  case OBJ_FUNC:
+    fprintf(pf, "%d", *(int *)obj->data);
+    break;
   default:
     fprintf(pf, "TODO");
   }
-  fprintf(pf, ")");
+  fprintf(pf, ">");
 }
 
 void OBJ_Print(OBJ *obj) { OBJ_FPrint(stdout, obj); }

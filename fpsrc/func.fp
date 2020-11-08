@@ -1,4 +1,4 @@
-x = 12345;
+x = 12345; // magic number
 
 nullnull = function(){
 };
@@ -17,6 +17,8 @@ ret4 = function(){
 areta = function(a){
   return a;
 };
+
+
 
 
 addition = function(x, y){
