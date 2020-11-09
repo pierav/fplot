@@ -24,7 +24,7 @@ enum PC_TYPE {
   PC_TYPE_PUSH_CST,         // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
   PC_TYPE_POP,              // void   | Pop
   PC_TYPE_APPLY_OBJ_FUNC,   // void   | Applique une OBJ__FUNC__ en tete de pile
-  PC_TYPE_CALL,             // void   | Applique une fonction utilisateur
+  PC_TYPE_CALL,             // void   | Applique une fonction anonyme
   PC_TYPE_AFFECT,           // void   | POP() <- POP()
   PC_TYPE_JUMP,             // INT    | Jump à l'adresse INT du programme
   PC_TYPE_CONDITIONAL_JUMP, // INT    | Jump si pop() == False
@@ -68,6 +68,7 @@ PCODE *PC_CreatePushDst(char *name);
 PCODE *PC_CreatePushCst(OBJ *obj);
 PCODE *PC_CreatePop(void);
 PCODE *PC_CreateApply(size_t func);
+PCODE *PC_CreateCall(void);
 PCODE *PC_CreateAffect(void);
 PCODE *PC_CreateReturn(void);
 PCODE *PC_CreateAffectArg(char *);

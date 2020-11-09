@@ -74,6 +74,8 @@ PCODE *PC_CreateApply(size_t func) {
   return PC_Create(PC_TYPE_APPLY_OBJ_FUNC, (PC_ARG)func);
 }
 
+PCODE *PC_CreateCall(void) { return PC_Create(PC_TYPE_CALL, (PC_ARG)0UL); }
+
 PCODE *PC_CreateAffect(void) { return PC_Create(PC_TYPE_AFFECT, (PC_ARG)0UL); }
 
 PCODE *PC_CreateReturn(void) { return PC_Create(PC_TYPE_RETURN, (PC_ARG)0UL); }

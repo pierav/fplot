@@ -113,13 +113,18 @@ expr
   | expr LE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LE__), $1, $3); }
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
-  | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, (uint64_t)$3/* size*/ ); }
+  | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, $3/* args*/ ); }
   | FUNC OPAR name_list CPAR BEG statements END
                                         { $$ = AST_NODE_FUNC_DEC_Create($3/* args*/, $6/*code */);}
 
+
 expr_list
-  : expr_list COMMA expr                { $$ = $1 + 1; /* expr in stack */ }
-  | expr                                { $$ = (void *)1; /* expr in stack */ }
+  : expr_list_not_empty                 { $$ = $1; }
+  | %empty                              { $$ = NULL; }
+
+expr_list_not_empty
+  : expr COMMA expr_list_not_empty      { $$ = $1; AST_NODE_CAST_PCODE($$)->arg1 = $3; /* link args reverse order */}
+  | expr                                { $$ = $1; }
 
 var_src
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushSrc((char *)$1), NULL, NULL);}

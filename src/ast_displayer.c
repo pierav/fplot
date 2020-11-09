@@ -111,10 +111,8 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
     for (int i = 0; i < space; i++)
       printf(" | ");
     printf("function:\n");
-    AST_DISPLAY_Text(((AST_NODE_FUNC_CALL *)cur)->function, space + 1);
-    for (int i = 0; i < space; i++)
-      printf(" | ");
-    printf("nbargs = %ld\n", ((AST_NODE_FUNC_CALL *)cur)->nb_args);
+    AST_DISPLAY_Text(((AST_NODE_FUNC_CALL *)cur)->args, space + 1);
+    AST_DISPLAY_Text(((AST_NODE_FUNC_CALL *)cur)->func, space + 1);
   } break;
   default:
     break;
@@ -219,11 +217,17 @@ void fprintRecuDot(AST_NODE *node, FILE *pf) {
   } break;
   case AST_NODE_TYPE_FUNC_CALL: {
     fprintf(pf, "[" STYLE("5") "shape=square, ");
-    fprintf(pf, "label = \"FUNC CALL\n(Nb args: %ld)\"]\n",
-            AST_NODE_CAST_FUNC_CALL(node)->nb_args);
-    fprintRecuDot(AST_NODE_CAST_FUNC_CALL(node)->function, pf);
-    fprintf(pf, "n%p -> n%p [ label=\"function\"]\n", node,
-            AST_NODE_CAST_FUNC_CALL(node)->function);
+    fprintf(pf, "label = \"FUNC CALL\n(Nb args: X)\"]\n");
+    if (AST_NODE_CAST_FUNC_CALL(node)->args) {
+      fprintRecuDot(AST_NODE_CAST_FUNC_CALL(node)->args, pf);
+      fprintf(pf, "n%p -> n%p [ label=\"args\"]\n", node,
+              AST_NODE_CAST_FUNC_CALL(node)->args);
+    }
+    if (AST_NODE_CAST_FUNC_CALL(node)->func) {
+      fprintRecuDot(AST_NODE_CAST_FUNC_CALL(node)->func, pf);
+      fprintf(pf, "n%p -> n%p [ label=\"function\"]\n", node,
+              AST_NODE_CAST_FUNC_CALL(node)->func);
+    }
   } break;
   default:
     break;

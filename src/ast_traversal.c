@@ -195,7 +195,13 @@ PrgmCode AST_ToCodeRec(AST_NODE *node, PrgmPkg *outPkg) {
       break;
     }
     case AST_NODE_TYPE_FUNC_CALL: {
-      PC_AddEnd(&pc, PC_CreateJump(/* TODO */ 0));
+      PrgmCode args =
+          AST_ToCodeRec(AST_NODE_CAST_FUNC_CALL(node)->args, outPkg);
+      PrgmCode func =
+          AST_ToCodeRec(AST_NODE_CAST_FUNC_CALL(node)->func, outPkg);
+      PC_FusionEnd(&pc, &args);
+      PC_FusionEnd(&pc, &func);
+      PC_AddEnd(&pc, PC_CreateCall());
       break;
     }
     }

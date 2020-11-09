@@ -2,9 +2,11 @@ x = 12345; // magic number
 
 nullnull = function(){
 };
+nullnull();
 
 anull = function(a){
 };
+anull(x);
 
 ret = function(){
   return;
@@ -19,11 +21,12 @@ areta = function(a){
 };
 
 
-
-
 addition = function(x, y){
  return x + y;
 };
+test_addition = addition(2, 4 * 2);
+/* 10 */
+valide = (10 == test_addition);
 
 test = function(a){
   while(a){
@@ -41,7 +44,8 @@ mret = function(a){
   return a;
 };
 
-test = addition(2, 4 * 2);
-/* 10 */
+ret = function(a, b, c, d, e){
+  return;
+};
 
-valide = (10 == test);
+ret(1, 2, 3, 4, 5);
