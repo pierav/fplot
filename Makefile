@@ -60,13 +60,22 @@ display_grammar: all
 graphs:
 	mkdir -p graphs
 
+scripts/gprof2dot.py:
+	mkdir -p scripts
+	wget https://raw.githubusercontent.com/jrfonseca/gprof2dot/master/gprof2dot.py -O $@
+	chmod u+x $@
+
 profile: EXTRA_CFLAGS=-pg
 profile: EXTRA_LFLAGS=-pg
 profile: scripts/gprof2dot.py graphs clean all
-	bin/main
+	bin/main < fpsrc/func.fp
 	echo -e "\n\n"
 	gprof bin/main | scripts/gprof2dot.py | dot -Tpng -o graphs/profile-graph.png
 	$(DISPLAY_IMAGE) graphs/profile-graph.png
+
+
+memckeck:
+	valgrind --leak-check=full bin/main < fpsrc/func.fp
 
 clean:
 	rm -rf obj/
