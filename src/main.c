@@ -44,9 +44,10 @@ int main(void) {
   AST_DISPLAY_DotF(root, "out.dot");
   printf("DONE2\n");
 
-  size_t size;
-  PCODE **prgm = AST_ComputePrgm(root, &size);
-  MEMPRGM_Init(prgm, size);
+  size_t mainsize;
+  size_t *subsizes;
+  PCODE ***prgm = AST_ComputePrgm(root, &mainsize, &subsizes);
+  MEMPRGM_Init(prgm, mainsize, subsizes);
   printf("DONE3\n");
 
   MEMPRGM_Print();

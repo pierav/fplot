@@ -28,29 +28,32 @@
  * Variables
  ******************************************************************************/
 
-size_t mem_size;
-PCODE **memprgm = NULL;
+size_t memmainsize;
+size_t *memsubsizes;
+
+PCODE ***memprgm = NULL;
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
-void MEMPRGM_Init(PCODE **prgm, size_t prgmsize) {
+void MEMPRGM_Init(PCODE ***prgm, size_t mainsize, size_t *subsizes) {
   memprgm = prgm;
-  mem_size = prgmsize;
+  memmainsize = mainsize;
+  memsubsizes = subsizes;
 }
 
-PCODE *MEMPRGM_Get(size_t i) {
-  if (i >= mem_size)
-    return NULL; // EOP
-  return memprgm[i];
+PCODE *MEMPRGM_Get(size_t i) { // ONLY ENTRY POINT TODO /!\//
+  if (i >= memsubsizes[0])
+    return NULL;        // EOP
+  return memprgm[0][i]; // TODO;
 }
 
 void MEMPRGM_Print(void) {
-  printf("***     MEM-PRGM(%ld)     ***\n", mem_size);
-  for (size_t i = 0; i < mem_size; i++) {
+  printf("***     MEM-PRGM(%ld)     ***\n", memsubsizes[0]);
+  for (size_t i = 0; i < memsubsizes[0]; i++) {
     printf("[%.5ld] ", i);
-    PC_Print(memprgm[i]);
+    PC_Print(memprgm[0][i]);
     printf("\n");
   }
 }

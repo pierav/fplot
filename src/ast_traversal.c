@@ -75,7 +75,8 @@ void PrgmPointFreeOnlyWrapper(PrgmPoint *point);
  * Public function
  ******************************************************************************/
 
-PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size) {
+PCODE ***AST_ComputePrgm(AST_NODE *root, size_t *outmainsize,
+                         size_t **outsubsizes) {
   PrgmPkg *pkg = malloc(sizeof(struct PrgmPkg));
   pkg->name = "PKGNAME";
   pkg->head = NULL;
@@ -86,9 +87,9 @@ PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size) {
   pkg->entrypoint = pc.head;
 
   // Display
-  size_t cpt = 0;
   printf("PKG[%s]\n", pkg->name);
   printf("\tID[ENTRY]\n");
+  size_t cpt = 0;
   for (PrgmPoint *pp = pkg->entrypoint; pp != NULL; pp = pp->next, cpt++) {
     printf("\t\t[%4ld] ", cpt);
     PC_Print(pp->code);
@@ -96,6 +97,7 @@ PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size) {
   }
   for (PrgmCodePoint *cur = pkg->head; cur != NULL; cur = cur->next) {
     printf("\tID[%ld]\n", cur->id);
+    cpt = 0;
     for (PrgmPoint *pp = cur->code; pp != NULL; pp = pp->next, cpt++) {
       printf("\t\t[%4ld] ", cpt);
       PC_Print(pp->code);
@@ -103,16 +105,49 @@ PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size) {
     }
   }
 
-  /*
-  PCODE **prgm = malloc(sizeof(struct PCODE *) * pc.size);
-  *size = 0;
-  for (PrgmPoint *cur = pc.head; cur != NULL; cur = cur->next, *size += 1) {
-    prgm[*size] = cur->code;
+  /* Inline PrgmPkg */
+  // Tableau de tableau de pointeur de PCODE;
+  size_t mainsize = pkg->size + 1;
+  size_t *subsizes = malloc(sizeof(size_t) * mainsize);
+  assert(subsizes);
+  PCODE ***prgm = malloc(sizeof(struct PCODE **) * mainsize);
+  assert(prgm);
+  size_t size = 0;
+  for (PrgmPoint *pp = pkg->entrypoint; pp != NULL; pp = pp->next, size++)
+    ;
+  subsizes[0] = size;
+  prgm[0] = malloc(sizeof(struct PCODE *) * subsizes[0]);
+  size_t i = 0;
+  for (PrgmPoint *pp = pkg->entrypoint; pp != NULL; pp = pp->next, i++) {
+    prgm[0][i] = pp->code;
   }
-  PrgmFreeOnlyPointsRec(pc.head);
-  */
-  *size = 0;
-  return NULL;
+
+  for (PrgmCodePoint *cur = pkg->head; cur != NULL; cur = cur->next) {
+    size_t size = 0;
+    for (PrgmPoint *pp = cur->code; pp != NULL; pp = pp->next, size++)
+      ;
+    subsizes[cur->id + 1] = size;
+    prgm[cur->id + 1] = calloc(sizeof(struct PCODE *), subsizes[cur->id + 1]);
+    assert(prgm[cur->id + 1]);
+    size_t i = 0;
+    for (PrgmPoint *pp = cur->code; pp != NULL; pp = pp->next, i++) {
+      prgm[cur->id + 1][i] = pp->code;
+    }
+  }
+
+  printf("PKG[%s]\n", pkg->name);
+  for (size_t fi = 0; fi < mainsize; fi++) {
+    printf("\tID[%ld]\n", fi - 1);
+    for (size_t i = 0; i < subsizes[fi]; i++) {
+      printf("\t\t[%4ld] ", i);
+      PC_Print(prgm[fi][i]);
+      printf("\n");
+    }
+  }
+
+  *outmainsize = mainsize;
+  *outsubsizes = subsizes;
+  return prgm;
 }
 
 /*******************************************************************************

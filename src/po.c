@@ -130,10 +130,6 @@ void PO_Iter(void) {
     }
     PO_PC_Inc();
   } break;
-  case PC_TYPE_CALL:
-    PO_PC_Inc();
-    // TODO
-    break;
   case PC_TYPE_AFFECT: {
     OBJ *src = PO_OBJSTACK_Pop();
     OBJ *dst = PO_OBJSTACK_Pop();
@@ -163,7 +159,14 @@ void PO_Iter(void) {
     printf("Invalid CODE\n");
     assert(0);
     break;
+  case PC_TYPE_CALL:
+    assert(0);
+    PO_OBJSTACK_Pop(); // POP func //
+    PO_PC_Inc();
+    // TODO
+    break;
   }
+
   fprintf(stdout_po, ")\e[39m\n");
   fflush(stdout_po);
   return;

@@ -31,7 +31,7 @@
  * Prototypes
  ******************************************************************************/
 
-void MEMPRGM_Init(PCODE **prgm, size_t prgmsize);
+void MEMPRGM_Init(PCODE ***prgm, size_t mainsize, size_t *subsizes);
 PCODE *MEMPRGM_Get(size_t i);
 void MEMPRGM_Print(void);
 

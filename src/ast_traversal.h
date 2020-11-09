@@ -31,6 +31,6 @@
  * Prototypes
  ******************************************************************************/
 
-PCODE **AST_ComputePrgm(AST_NODE *root, size_t *size);
-
+PCODE ***AST_ComputePrgm(AST_NODE *root, size_t *outmainsize,
+                         size_t **outsubsizes);
 #endif /* _ast_traversal_H_ */
