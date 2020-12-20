@@ -39,7 +39,8 @@ HashTable *HT_Insert(HashTable *ht, char *str, void *dat);
 void *HT_Get(HashTable *ht, char *str);
 void HT_FPrintRaw(FILE *pf, HashTable *ht);
 void HT_FPrintKeys(FILE *pf, HashTable *ht, char *delimitor);
-
+void HF_fprintFormat(FILE *pf, HashTable *ht,
+                     void (*fprintelem)(FILE *, char *name, void *));
 void TU_HashTable(void);
 
 #endif /* _hashtable_H_ */

@@ -9,6 +9,7 @@
  ******************************************************************************/
 
 #include "mem.h"
+#include "po_ctxstack.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,8 +18,6 @@
 /*******************************************************************************
  * Macros
  ******************************************************************************/
-
-#define MEM_SIZE 255
 
 /*******************************************************************************
  * Types
@@ -29,16 +28,11 @@
  ******************************************************************************/
 
 OBJ *get(char *name);
-OBJ *set(OBJ *obj);
+OBJ *set(char *name, OBJ *obj);
 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-
-static OBJ *MEM_data[MEM_SIZE];
-static size_t MEM_current_size = 0;
-
-extern OBJ *MEM_ans; // TODO
 
 /*******************************************************************************
  * Public function
@@ -61,7 +55,7 @@ OBJ *MEM_CreateObj(OBJ_TYPE type, void *value, char *name) {
     printf("USR# ever defined varable : %s", name);
     exit(1);
   }
-  return set(OBJ_Create(type, value, name));
+  return set(name, OBJ_Create(type, value));
 }
 
 // Retourne l'objet pointe par name. On le créer si inexistant
@@ -69,14 +63,11 @@ OBJ *MEM_GetOrCreateObj(char *name) {
   OBJ *ret = get(name);
   if (ret != NULL)
     return ret;
-  return set(OBJ_Create(OBJ_STR, "NULL OBJ", name));
+  return set(name, OBJ_Create(OBJ_STR, "NULL OBJ"));
 }
 
-void MEM_Clear(void) { MEM_current_size = 0; }
-
-float MEM_GetUsage(void) { return (float)MEM_current_size / MEM_SIZE; }
-
-void MEM_Print(void) {
+/*
+void MEM_Printz(void) {
   printf("***   MEMORY[SIZE = %ld]   ***\n", MEM_current_size);
   for (size_t i = 0; i < MEM_current_size; i++) {
     printf("[%.5ld] >> ", i);
@@ -84,42 +75,17 @@ void MEM_Print(void) {
     printf("\n");
   }
 }
-
-void MEM_Tu(void) {
-  MEM_Clear();
-  printf("MEM clear DONE\n");
-  OBJ *obj;
-  obj = MEM_CreateObj(OBJ_STR, "hello", "x");
-  printf("OBJ ADDR: %p\n", obj);
-  OBJ_Print(obj);
-  OBJ_Print(MEM_CreateObj(OBJ_STR, "world", "y"));
-  OBJ_Print(MEM_GetObj("x"));
-  OBJ_Print(MEM_GetObj("y"));
-  MEM_Print();
-  printf("\nUsage : %f\n", MEM_GetUsage());
-  OBJ_Print(MEM_CreateObj(OBJ_STR, "xx", "xx"));
-  OBJ_Print(MEM_CreateObj(OBJ_STR, "xyz", "xyz"));
-  printf("MEM_Tu OK");
-  MEM_Print();
-}
+*/
 
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
 
 // TODO HASH TABLE
-OBJ *get(char *name) {
-  for (size_t i = 0; i < MEM_current_size; i++) {
-    if (strcmp(name, MEM_data[i]->name) == 0) {
-      return MEM_data[i];
-    }
-  }
-  return NULL;
-}
+OBJ *get(char *name) { return CTX_get(name); }
 
-OBJ *set(OBJ *obj) {
+OBJ *set(char *name, OBJ *obj) {
   assert(obj);
-  assert(MEM_current_size < MEM_SIZE);
-  MEM_data[MEM_current_size++] = obj;
+  CTX_set(name, obj);
   return obj;
 }

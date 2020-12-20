@@ -13,6 +13,7 @@
 #include "ast_traversal.h"
 
 #include "po.h"
+#include "po_ctxstack.h"
 #include "po_objstack.h"
 
 #include "utils/hashtable.h"
@@ -56,8 +57,8 @@ int main(void) {
   PO_Run();
 
   // State of PO
-  MEM_Print();
   PO_OBJSTACK_Print();
+  CTX_printCur();
   // Free
   // PRGM_Free();
 

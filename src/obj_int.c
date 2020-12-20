@@ -120,7 +120,7 @@ OBJ *OBJ_INT__bool__(OBJ *obj) { return obj; }
 static inline OBJ *OBJ_INT_Init(OBJ_int_t value) {
   OBJ_int_t *p_data = (int *)malloc(sizeof(int));
   *p_data = value;
-  return OBJ_Create(OBJ_INT, p_data, NULL);
+  return OBJ_Create(OBJ_INT, p_data);
 }
 
 // Acces

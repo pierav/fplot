@@ -15,3 +15,7 @@ scripts/
 graphs/
 
 *.out
+
+.tags
+
+vgcore.*

@@ -80,7 +80,7 @@ typedef enum {
 typedef struct OBJ {
   OBJ_TYPE type;
   void *data;
-  char *name;
+  //  char *name;
   uint32_t cpt_usage;
 } OBJ;
 
@@ -104,7 +104,7 @@ extern FILE *stdout_po_alu;
 
 void PO_ALU_Init(void);
 
-OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name);
+OBJ *OBJ_Create(OBJ_TYPE type, void *value);
 
 OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
 OBJ *OBJ_Call(OBJ *func);

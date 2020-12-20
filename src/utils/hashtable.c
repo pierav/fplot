@@ -68,6 +68,7 @@ HashTable *HT_Init(void) {
 }
 
 HashTable *HT_Insert(HashTable *ht, char *str, void *dat) {
+  assert(ht);
   hash_t key = compute_hash(str);
   // Ajout en tete
   Cell *cell = malloc(sizeof(struct Cell));
@@ -83,6 +84,7 @@ HashTable *HT_Insert(HashTable *ht, char *str, void *dat) {
 
 // get ht[str]. NULL if none
 void *HT_Get(HashTable *ht, char *str) {
+  assert(ht);
   hash_t key = compute_hash(str);
   for (Cell *cur = ht->tab[key % ht->len]; cur->next != NULL; cur = cur->next)
     if (cur->key == key)
@@ -104,6 +106,16 @@ void HT_FPrintKeys(FILE *pf, HashTable *ht, char *delimitor) {
   for (size_t i = 0; i < ht->len; i++) {
     for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next) {
       fprintf(pf, "%s%s", cur->name, delimitor);
+    }
+  }
+}
+
+void HF_fprintFormat(FILE *pf, HashTable *ht,
+                     void (*fprintelem)(FILE *, char *name, void *)) {
+  assert(ht);
+  for (size_t i = 0; i < ht->len; i++) {
+    for (Cell *cur = ht->tab[i]; cur->next != NULL; cur = cur->next) {
+      fprintelem(pf, cur->name, cur->dat);
     }
   }
 }

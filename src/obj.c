@@ -51,13 +51,12 @@ const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, NULL, NULL};
 
 void PO_ALU_Init(void) { stdout_po_alu = LB_Init(1024); }
 
-OBJ *OBJ_Create(OBJ_TYPE type, void *value, char *name) {
+OBJ *OBJ_Create(OBJ_TYPE type, void *value) {
   // printf("[\e[33mOBJ\e[39m]>>> ");
   // printf("NEW (%s) ", name);
   OBJ *ret = malloc(sizeof(struct OBJ));
   ret->type = type;
   ret->data = value;
-  ret->name = name;
   ret->cpt_usage = 0;
   // OBJ_Print(ret);
   // printf("\n");
@@ -88,7 +87,7 @@ OBJ *OBJ_Affect(OBJ *dst, OBJ *src) {
 // TODO
 OBJ *OBJ_Call(OBJ *func) {
   fprintf(stdout_po_alu, "[\e[33mOBJ\e[39m]>>> ");
-  fprintf(stdout_po_alu, "CALL %s(%s)>\n", func->name, "TODO");
+  fprintf(stdout_po_alu, "CALL %s(%s)>\n", "TODO", "TODO");
   return func;
 }
 
@@ -155,8 +154,7 @@ void OBJ_FPrint(FILE *pf, OBJ *obj) {
     fprintf(pf, "(NULL)");
     return;
   }
-  fprintf(pf, "(%s#%s:", OBJ_TYPES_NAMES[obj->type],
-          obj->name ? obj->name : "_");
+  fprintf(pf, "(%s:", OBJ_TYPES_NAMES[obj->type]);
   switch (obj->type) {
   case OBJ_INT:
     assert(obj->data);

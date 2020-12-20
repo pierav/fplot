@@ -1,22 +1,23 @@
 /*
- * po_objstack.c
+ * po_ctxstack.c
  *
- *  Created on: 23/06/2020
- *      Author: pirx
+ *  Created on: 20/12/2020
  */
 
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "po_objstack.h"
-#include <assert.h>
+#include "po_ctxstack.h"
+#include "obj.h"
+#include "utils/hashtable.h"
+#include <stdint.h>
 
 /*******************************************************************************
  * Macros
  ******************************************************************************/
 
-#define STACK_SIZE 1024
+#define CTX_STACK_SIZE 1000
 
 /*******************************************************************************
  * Types
@@ -26,39 +27,44 @@
  * Internal function declaration
  ******************************************************************************/
 
+static void htformat(FILE *pf, char *name, void *obj);
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
-static OBJ *stack[STACK_SIZE];
-static size_t i_stack = 0; // Point sur un case vide
+HashTable *ctxstack[CTX_STACK_SIZE] = {0};
+uint32_t ctxIndex = 0;
+
+HashTable *curctx = NULL;
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
-void PO_OBJSTACK_Push(OBJ *obj) {
-  assert(i_stack < STACK_SIZE - 1);
-  stack[i_stack++] = obj;
+void CTX_enter() {
+  ctxstack[ctxIndex] = HT_Init();
+  curctx = ctxstack[ctxIndex++];
 }
 
-OBJ *PO_OBJSTACK_Pop(void) {
-  assert(i_stack > 0);
-  return stack[i_stack-- - 1];
+void CTX_leave() {
+  // HT_free(ctxstack[ctxIndex]);
+  ctxstack[ctxIndex] = NULL;
+  curctx = ctxstack[ctxIndex--];
 }
 
-void PO_OBJSTACK_Print(void) {
-  for (size_t i = 0; i < i_stack; i++) {
-    printf("OBJSTACK[%.5ld]:", i);
-    OBJ_Print(stack[i]);
-    printf("\n");
-  }
-}
+void CTX_set(char *name, OBJ *o) { HT_Insert(curctx, name, o); }
 
-void PO_OBJSTACK_PrintDebugOBJ(FILE *f, size_t offset) {
-  OBJ_FPrint(f, stack[i_stack - offset - 1]);
-}
+OBJ *CTX_get(char *name) { return HT_Get(curctx, name); }
+
+void CTX_printCur() { HF_fprintFormat(stdout, curctx, htformat); }
 
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
+
+static void htformat(FILE *pf, char *name, void *obj) {
+  fprintf(pf, "%s:", name);
+  OBJ_FPrint(pf, obj);
+  fprintf(pf, "\n");
+}

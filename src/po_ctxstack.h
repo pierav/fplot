@@ -1,13 +1,17 @@
-#ifndef _MEM_H_
-#define _MEM_H_
+/*
+ * po_ctxstack.h
+ *
+ *  Created on: 20/12/2020
+ */
+
+#ifndef _PO_CTXSTACK_H_
+#define _PO_CTXSTACK_H_
 
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
 #include "obj.h"
-#include <stdbool.h>
-#include <stdint.h>
 
 /*******************************************************************************
  * Macros
@@ -25,13 +29,10 @@
  * Prototypes
  ******************************************************************************/
 
-// Retourne l'objet de nom name. NULL si inexistant
-OBJ *MEM_GetObj(char *name);
+void CTX_enter();
+void CTX_leave();
+void CTX_set(char *name, OBJ *o);
+OBJ *CTX_get(char *name);
+void CTX_printCur();
 
-// Crée un objet de nom name. NULL si déja existant
-OBJ *MEM_CreateObj(OBJ_TYPE type, void *value, char *name);
-
-// Retourne l'objet pointe par name. On le créer si inexistant
-OBJ *MEM_GetOrCreateObj(char *name);
-
-#endif /* _OBJ_H_ */
+#endif /* _PO_CTXSTACK_H_ */

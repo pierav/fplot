@@ -128,8 +128,8 @@ expr_list_not_empty
 
 var_src
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushSrc((char *)$1), NULL, NULL);}
-  | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_INT, $1, NULL)), NULL, NULL); }
-  | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STR, $1, NULL)), NULL, NULL); }
+  | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_INT, $1)), NULL, NULL); }
+  | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STR, $1)), NULL, NULL); }
 
 var_dst
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushDst((char *)$1), NULL, NULL); }

@@ -14,6 +14,7 @@
 
 #include "mem.h"
 #include "mem_prgm.h"
+#include "po_ctxstack.h"
 #include "po_objstack.h"
 
 #include "logbuffer.h"
@@ -52,8 +53,12 @@ FILE *stdout_po;
 
 void PO_Run(void) {
   stdout_po = LB_Init(1024);
+  fprintf(stdout_po, "=== Launch PO ===\n");
+  fflush(stdout_po);
+
   PO_PC_Init();
   PO_ALU_Init();
+  CTX_enter(); // On entre dans le contexte d'entree
 
   run = true;
   while (run) {
@@ -160,8 +165,10 @@ void PO_Iter(void) {
     assert(0);
     break;
   case PC_TYPE_CALL:
-    assert(0);
-    PO_OBJSTACK_Pop(); // POP func //
+    // assert(0);
+    fprintf(stdout_po, "TODO : PC_TYPE_CALL");
+    PO_OBJSTACK_Pop();          // POP func
+    PO_OBJSTACK_Push(OBJ_NULL); // Default return TODO delete me
     PO_PC_Inc();
     // TODO
     break;
