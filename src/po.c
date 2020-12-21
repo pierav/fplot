@@ -38,6 +38,8 @@
  * Internal function declaration
  ******************************************************************************/
 
+void flushall(void);
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -53,31 +55,33 @@ FILE *stdout_po;
 
 void PO_Run(void) {
   stdout_po = LB_Init(1024);
-  fprintf(stdout_po, "=== Launch PO ===\n");
+  fprintf(stdout_po, "=== begin PO ===\n");
   fflush(stdout_po);
 
-  PO_PC_Init();
+  CTX_Init();
   PO_ALU_Init();
   CTX_enter(); // On entre dans le contexte d'entree
+  flushall();
 
   run = true;
   while (run) {
     PO_Iter();
-    fflush(stdout_po);
-    fflush(stdout_po_alu);
-    fflush(stdout_po_pc);
+    flushall();
   }
+  fprintf(stdout_po, "=== end PO ===\n");
+  flushall();
 }
 
 void PO_Iter(void) {
   // GET mem[pc]
-  code = MEMPRGM_Get(PO_PC_Get());
+  code = MEMPRGM_Get(CTX_PC_getMainPc(), CTX_PC_Get());
   if (code == NULL) { // EOP
     run = 0;
     return;
   }
 
-  fprintf(stdout_po, "[\e[34mFPC\e[39m]>>> [%ld]", PO_PC_Get());
+  fprintf(stdout_po, "[\e[34mFPC\e[39m]>>> [%ld][%ld] ", CTX_PC_getMainPc(),
+          CTX_PC_Get());
   PC_FPrint(stdout_po, code);
   fprintf(stdout_po, "(");
 
@@ -87,9 +91,8 @@ void PO_Iter(void) {
     char *name = code->arg.pchar_t;
     OBJ *obj = MEM_GetObj(name);
     fprintf(stdout_po, "\"%s\":", name);
-    OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
-    PO_PC_Inc();
+    CTX_PC_Inc();
     break;
   }
   case PC_TYPE_PUSH_DST_VAR: {
@@ -98,19 +101,18 @@ void PO_Iter(void) {
     fprintf(stdout_po, "\"%s\":", name);
     OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
-    PO_PC_Inc();
+    CTX_PC_Inc();
     break;
   }
   case PC_TYPE_PUSH_CST: {
     OBJ *obj = code->arg.pobj_t;
-    OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
-    PO_PC_Inc();
+    CTX_PC_Inc();
     break;
   }
   case PC_TYPE_POP:
     PO_OBJSTACK_Pop();
-    PO_PC_Inc();
+    CTX_PC_Inc();
     break;
   case PC_TYPE_APPLY_OBJ_FUNC: {
     fprintf(stdout_po, "\"%s\"", OBJ_FUNCS_NAMES[code->arg.int_t]);
@@ -133,7 +135,7 @@ void PO_Iter(void) {
       printf("AYE AYE AYE !");
       assert(0);
     }
-    PO_PC_Inc();
+    CTX_PC_Inc();
   } break;
   case PC_TYPE_AFFECT: {
     OBJ *src = PO_OBJSTACK_Pop();
@@ -142,10 +144,10 @@ void PO_Iter(void) {
     OBJ_FPrint(stdout_po, src);
     fprintf(stdout_po, ", ");
     OBJ_FPrint(stdout_po, dst);
-    PO_PC_Inc();
+    CTX_PC_Inc();
   } break;
   case PC_TYPE_JUMP:
-    PO_PC_Add(code->arg.int_t);
+    CTX_PC_Add(code->arg.int_t);
     break;
   case PC_TYPE_CONDITIONAL_JUMP: {
     OBJ *test = PO_OBJSTACK_Pop();
@@ -156,21 +158,40 @@ void PO_Iter(void) {
     OBJ_FPrint(stdout_po, res_test);
     fprintf(stdout_po, "%s", *(int *)res_test->data ? ":true" : ":false");
     if (*(int *)res_test->data) // do nothing
-      PO_PC_Inc();
+      CTX_PC_Inc();
     else // Jump if false
-      PO_PC_Add(code->arg.int_t);
+      CTX_PC_Add(code->arg.int_t);
+  } break;
+  case PC_TYPE_CALL: {
+    fprintf(stdout_po, "CALL: ");
+    OBJ *func = PO_OBJSTACK_Pop(); // POP func
+    OBJ_FPrint(stdout_po, func);
+    // new context
+    CTX_enter();
+    CTX_PC_setMainPc(*(int *)func->data + 1);
+    CTX_PC_Set(0);
+
+  } break;
+  case PC_TYPE_RETURN: {
+    // Valeur de retour en tete de pile a la fin de la func
+    //    PO_OBJSTACK_Push(OBJ_NULL); // Default return TODO delete me
+    // Recuperation du contexte
+    // CTX_PC_Set(0); // reset PC TODO
+    CTX_leave();
+    // Inc cur
+    CTX_PC_Inc();
+  } break;
+  case PC_TYPE_AFFECT_ARG: {
+    char *name = code->arg.pchar_t;
+    fprintf(stdout_po, name);
+    CTX_set(name, PO_OBJSTACK_Pop());
+    CTX_PC_Inc();
   } break;
   default:
     printf("Invalid CODE\n");
+    flushall();
+    printf("\n");
     assert(0);
-    break;
-  case PC_TYPE_CALL:
-    // assert(0);
-    fprintf(stdout_po, "TODO : PC_TYPE_CALL");
-    PO_OBJSTACK_Pop();          // POP func
-    PO_OBJSTACK_Push(OBJ_NULL); // Default return TODO delete me
-    PO_PC_Inc();
-    // TODO
     break;
   }
 
@@ -182,3 +203,9 @@ void PO_Iter(void) {
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
+
+void flushall(void) {
+  fflush(stdout_po);
+  fflush(stdout_po_alu);
+  fflush(stdout_po_ctx);
+}

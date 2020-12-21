@@ -16,17 +16,19 @@ ret4 = function(){
   return 4;
 };
 
+test_0 = ret4() == 4;
+
 areta = function(a){
   return a;
 };
+
+test_1 = areta(456) == 456;
 
 
 addition = function(x, y){
  return x + y;
 };
-test_addition = addition(2, 4 * 2);
-/* 10 */
-valide = (10 == test_addition);
+test_2 = 10 == addition(2, 4 * 2);
 
 test = function(a){
   while(a){
@@ -43,9 +45,12 @@ mret = function(a){
   }
   return a;
 };
+test_4 = mret(1) == 1;
+test_5 = mret(2) == 2;
+test_6 = mret(3) == 3;
+
 
 ret = function(a, b, c, d, e){
-  return;
+  return a + b + c + d + e;
 };
-
-ret(1, 2, 3, 4, 5);
+test_7 = ret(1, 2, 3, 4, 5) == 15;

@@ -43,10 +43,11 @@ void MEMPRGM_Init(PCODE ***prgm, size_t mainsize, size_t *subsizes) {
   memsubsizes = subsizes;
 }
 
-PCODE *MEMPRGM_Get(size_t i) { // ONLY ENTRY POINT TODO /!\//
-  if (i >= memsubsizes[0])
-    return NULL;        // EOP
-  return memprgm[0][i]; // TODO;
+PCODE *MEMPRGM_Get(size_t mainindex, size_t i) {
+  assert(mainindex < memmainsize);
+  if (i >= memsubsizes[mainindex])
+    return NULL;                // EOP
+  return memprgm[mainindex][i]; // TODO;
 }
 
 void MEMPRGM_Print(void) {

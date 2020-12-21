@@ -1,5 +1,5 @@
-cmp = function(a, b){
-  return a < b;
+adder = function(a, b){
+  return a + b;
 };
 
-testtrue = cmp(2, 4);
+sum = adder(2, 4);

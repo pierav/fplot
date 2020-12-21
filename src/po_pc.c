@@ -10,7 +10,6 @@
  ******************************************************************************/
 
 #include "po_pc.h"
-#include "logbuffer.h"
 #include <stdlib.h>
 
 /*******************************************************************************
@@ -29,29 +28,9 @@
  * Variables
  ******************************************************************************/
 
-FILE *stdout_po_pc = NULL;
-size_t pc = 0; // Program counter
-
 /*******************************************************************************
  * Public function
  ******************************************************************************/
-
-void PO_PC_Init(void) {
-  pc = 0;
-  stdout_po_pc = LB_Init(1024);
-}
-
-void PO_PC_Set(size_t npc) {
-  pc = npc;
-  fprintf(stdout_po_pc, "[\e[32m PC\e[39m]>>> pc <- [%ld]\n", pc);
-  fflush(stdout_po_pc);
-}
-
-void PO_PC_Inc(void) { pc++; }
-
-size_t PO_PC_Get(void) { return pc; }
-
-void PO_PC_Add(size_t dpc) { PO_PC_Set(pc + dpc); }
 
 /*******************************************************************************
  * Internal function

@@ -32,7 +32,7 @@
  ******************************************************************************/
 
 void MEMPRGM_Init(PCODE ***prgm, size_t mainsize, size_t *subsizes);
-PCODE *MEMPRGM_Get(size_t i);
+PCODE *MEMPRGM_Get(size_t mainindex, size_t i);
 void MEMPRGM_Print(void);
 
 #endif /* _mem_prgm_H_ */
