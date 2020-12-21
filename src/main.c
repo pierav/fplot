@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "mem.h"
 #include "mem_prgm.h"
 
 #include "ast.h"

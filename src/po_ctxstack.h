@@ -34,9 +34,13 @@ void CTX_Init(void);
 
 void CTX_enter();
 void CTX_leave();
-void CTX_set(char *name, OBJ *o);
-OBJ *CTX_get(char *name);
+
 void CTX_printCur();
+
+OBJ *CTX_set(char *name, OBJ *o);
+OBJ *CTX_GetObj(char *name);
+OBJ *CTX_CreateObj(OBJ_TYPE type, void *value, char *name);
+OBJ *CTX_GetOrCreateObj(char *name);
 
 void CTX_PC_Set(size_t npc);
 void CTX_PC_Inc(void);

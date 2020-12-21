@@ -10,9 +10,7 @@
  ******************************************************************************/
 
 #include "po.h"
-#include "po_pc.h"
 
-#include "mem.h"
 #include "mem_prgm.h"
 #include "po_ctxstack.h"
 #include "po_objstack.h"
@@ -89,7 +87,7 @@ void PO_Iter(void) {
   switch (code->type) {
   case PC_TYPE_PUSH_SRC_VAR: {
     char *name = code->arg.pchar_t;
-    OBJ *obj = MEM_GetObj(name);
+    OBJ *obj = CTX_GetObj(name);
     fprintf(stdout_po, "\"%s\":", name);
     PO_OBJSTACK_Push(obj);
     CTX_PC_Inc();
@@ -97,7 +95,7 @@ void PO_Iter(void) {
   }
   case PC_TYPE_PUSH_DST_VAR: {
     char *name = code->arg.pchar_t;
-    OBJ *obj = MEM_GetOrCreateObj(name);
+    OBJ *obj = CTX_GetOrCreateObj(name);
     fprintf(stdout_po, "\"%s\":", name);
     OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);

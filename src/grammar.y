@@ -2,9 +2,7 @@
   #include <stdio.h>
   #include <stdlib.h>
   #include "obj.h"
-  #include "mem.h"
   #include "fpcode.h"
-  //#include "prgm.h"
   #include "ast_displayer.h"
   #include "ast_traversal.h"
 

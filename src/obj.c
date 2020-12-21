@@ -41,7 +41,7 @@ const char *OBJ_FUNCS_NAMES[NB_OBJ_FUNC] = {
 const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC] = {2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2,
                                           2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1};
 
-const char *OBJ_TYPES_NAMES[] = {"BOOL", "INT", "CHAR", "STR", "FUNC"};
+const char *OBJ_TYPES_NAMES[] = {"BOOL", OBJ_INT_NAME, "CHAR", "STR", "FUNC"};
 
 const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, NULL, NULL};
 

@@ -39,6 +39,7 @@ typedef struct Context Context;
  ******************************************************************************/
 
 static void htformat(FILE *pf, char *name, void *obj);
+static OBJ *CTX_get(char *name);
 
 /*******************************************************************************
  * Variables
@@ -57,6 +58,7 @@ Context *curctx = NULL;
 
 void CTX_Init(void) { stdout_po_ctx = LB_Init(1024); }
 
+// STACK
 void CTX_enter() {
   assert(ctxIndex < CTX_STACK_SIZE - 1);
   fprintf(stdout_po_ctx, "[\e[32mCTX\e[39m]>>> enter CTX [%d]\n", ctxIndex);
@@ -76,14 +78,42 @@ void CTX_leave() {
   curctx = ctxstack[ctxIndex - 1];
 }
 
-void CTX_set(char *name, OBJ *o) {
+// Namespace
+// link name obj
+OBJ *CTX_set(char *name, OBJ *o) {
   fprintf(stdout_po_ctx, "[\e[32mCTX\e[39m]>>> link %s <->", name);
   OBJ_FPrint(stdout_po_ctx, o);
   fprintf(stdout_po_ctx, "\n");
   HT_Insert(curctx->namespace, name, o);
+  return o;
 }
 
-OBJ *CTX_get(char *name) { return HT_Get(curctx->namespace, name); }
+// Retourne l'objet de nom name
+OBJ *CTX_GetObj(char *name) {
+  OBJ *ret = CTX_get(name);
+  if (ret == NULL) {
+    printf("USR# undefined varable : %s", name);
+    exit(1);
+  }
+  return ret;
+}
+
+// Crée un objet de nom name
+OBJ *CTX_CreateObj(OBJ_TYPE type, void *value, char *name) {
+  if (CTX_get(name) != NULL) {
+    printf("USR# ever defined varable : %s", name);
+    exit(1);
+  }
+  return CTX_set(name, OBJ_Create(type, value));
+}
+
+// Retourne l'objet pointe par name. On le créer si inexistant
+OBJ *CTX_GetOrCreateObj(char *name) {
+  OBJ *ret = CTX_get(name);
+  if (ret != NULL)
+    return ret;
+  return CTX_set(name, OBJ_Create(OBJ_STR, "NULL OBJ"));
+}
 
 void CTX_printCur() {
   fprintf(stdout_po_ctx, "Namespace :\n");
@@ -114,6 +144,8 @@ size_t CTX_PC_getMainPc() { return curctx->mainpc; }
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
+
+static OBJ *CTX_get(char *name) { return HT_Get(curctx->namespace, name); }
 
 static void htformat(FILE *pf, char *name, void *obj) {
   fprintf(pf, "%s:", name);
