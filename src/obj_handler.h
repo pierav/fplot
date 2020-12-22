@@ -1,17 +1,21 @@
 /*
- * po_ctxstack.h
+ * obj_handler.h
  *
- *  Created on: 20/12/2020
+ *  Created on: 22/12/2020
+ *      Author: pirx
  */
 
-#ifndef _PO_CTXSTACK_H_
-#define _PO_CTXSTACK_H_
+#ifndef _obj_handler_H_
+#define _obj_handler_H_
 
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "obj_handler.h"
+#include "logbuffer.h"
+#include "obj.h"
+#include "obj_int.h"
+#include "obj_string.h"
 
 /*******************************************************************************
  * Macros
@@ -25,29 +29,23 @@
  * Variables
  ******************************************************************************/
 
-extern FILE *stdout_po_ctx;
+extern FILE *stdout_po_alu;
+extern const char *OBJ_TYPES_NAMES[];
+extern const void *OBJ_FULL_FUNC[];
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
-void CTX_Init(void);
 
-void CTX_enter();
-void CTX_leave();
+void PO_ALU_Init(void);
 
-void CTX_printCur();
+OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
+OBJ *OBJ_Call(OBJ *func);
 
-OBJ *CTX_set(char *name, OBJ *o);
-OBJ *CTX_GetObj(char *name);
-OBJ *CTX_CreateObj(OBJ_TYPE type, void *value, char *name);
-OBJ *CTX_GetOrCreateObj(char *name);
+void OBJ_FPrint(FILE *pf, OBJ *obj);
+void OBJ_Print(OBJ *obj);
 
-void CTX_PC_Set(size_t npc);
-void CTX_PC_Inc(void);
-size_t CTX_PC_Get(void);
-void CTX_PC_Add(size_t dpc);
+OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1);
+OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2);
 
-void CTX_PC_setMainPc(size_t value);
-size_t CTX_PC_getMainPc();
-
-#endif /* _PO_CTXSTACK_H_ */
+#endif /* _obj_handler_H_ */

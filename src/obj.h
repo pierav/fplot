@@ -4,13 +4,12 @@
 /*******************************************************************************
  * Includes
  ******************************************************************************/
+#include "utils/hashtable.h"
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "utils/hashtable.h"
 
 /*******************************************************************************
  * Macros
@@ -20,12 +19,21 @@
  * Types
  ******************************************************************************/
 
+// Types primitif
+typedef int OBJ_int_t;
+
+struct OBJ_string {
+  char *s;
+  OBJ_int_t size;
+};
+typedef struct OBJ_string OBJ_string;
+
 #define NB_OBJ_TYPE 5
 typedef enum {
   OBJ_BOOL = 0,
   OBJ_INT = 1,
   OBJ_CHAR = 2,
-  OBJ_STR = 3,
+  OBJ_STRING = 3,
   OBJ_FUNC = 4
 } OBJ_TYPE;
 
@@ -42,6 +50,14 @@ typedef union OBJ_DATA {
   OBJ_DATA_FUNC *func;
 } OBJ_DATA;
 
+typedef struct OBJ {
+  OBJ_TYPE type;
+  void *data;
+  //  char *name;
+  uint32_t cpt_usage;
+} OBJ;
+
+// Primitives
 #define NB_OBJ_FUNC (22)
 typedef enum {
   // Opérations mathématiques
@@ -77,12 +93,8 @@ typedef enum {
   __DOUBLE__ = 21, // ->toDouble
 } OBJ_PRIMITIVES;
 
-typedef struct OBJ {
-  OBJ_TYPE type;
-  void *data;
-  //  char *name;
-  uint32_t cpt_usage;
-} OBJ;
+typedef OBJ *(*OBJ_func1)(OBJ *);
+typedef OBJ *(*OBJ_func2)(OBJ *, OBJ *);
 
 // NULL ou OBJ {OBJ_TYPE_NULL, NULL, NULL, 0}
 #define OBJ_NULL NULL
@@ -93,26 +105,16 @@ typedef struct OBJ {
 
 extern const char *OBJ_FUNCS_NAMES[NB_OBJ_FUNC];
 extern const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC];
-extern const char *OBJ_TYPES_NAMES[];
-extern const void *OBJ_FULL_FUNC[];
-
-extern FILE *stdout_po_alu;
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
-void PO_ALU_Init(void);
+OBJ *OBJ_Create(OBJ_TYPE type, void *value); // TODO : PRIVATE !
 
-OBJ *OBJ_Create(OBJ_TYPE type, void *value);
-
-OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
-OBJ *OBJ_Call(OBJ *func);
-
-void OBJ_FPrint(FILE *pf, OBJ *obj);
-void OBJ_Print(OBJ *obj);
-
-OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1);
-OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_INT_Init(OBJ_int_t value);
+OBJ_int_t OBJ_INT_GetRaw(OBJ *obj);
+OBJ *OBJ_string_Init(char *s, OBJ_int_t size);
+OBJ_string *OBJ_string_GetRaw(OBJ *obj);
 
 #endif /* _OBJ_H_ */

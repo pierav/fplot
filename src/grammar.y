@@ -1,7 +1,7 @@
 %{
   #include <stdio.h>
   #include <stdlib.h>
-  #include "obj.h"
+  #include "obj_handler.h"
   #include "fpcode.h"
   #include "ast_displayer.h"
   #include "ast_traversal.h"
@@ -127,7 +127,7 @@ expr_list_not_empty
 var_src
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushSrc((char *)$1), NULL, NULL);}
   | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_INT, $1)), NULL, NULL); }
-  | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STR, $1)), NULL, NULL); }
+  | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STRING, $1)), NULL, NULL); }
 
 var_dst
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushDst((char *)$1), NULL, NULL); }
@@ -138,14 +138,15 @@ name_list
   | %empty                              { $$ = NULL; }
 
 name_list_not_empty
-  : name_list_not_empty COMMA VAR       { $$ = /*HT_Insert($$, $3, 0);*/ AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$3), $1, NULL); }
-  | VAR                                 { $$ = /*HT_Init(); HT_Insert($$, $1, 0);*/ AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$1), NULL, NULL); }
+  : name_list_not_empty COMMA VAR       { $$ = AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$3), $1, NULL); }
+  | VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$1), NULL, NULL); }
 
 
 
 %%
 
 int yyerror(AST_NODE **root, char *s){
-    printf("yyerror : %s\n tree : %p\n", s, root);
-    return 0;
+    printf("yyerror : %s || tree : %p\n", s, root);
+    AST_DISPLAY_Text(*root, 0);
+    exit(1);
 }

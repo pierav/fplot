@@ -10,7 +10,7 @@
 
 #include "po_ctxstack.h"
 #include "logbuffer.h"
-#include "obj.h"
+#include "obj_handler.h"
 #include "utils/hashtable.h"
 #include <assert.h>
 #include <stdint.h>
@@ -112,7 +112,7 @@ OBJ *CTX_GetOrCreateObj(char *name) {
   OBJ *ret = CTX_get(name);
   if (ret != NULL)
     return ret;
-  return CTX_set(name, OBJ_Create(OBJ_STR, "NULL OBJ"));
+  return CTX_set(name, OBJ_INT_Init(0)); // TODO delete
 }
 
 void CTX_printCur() {

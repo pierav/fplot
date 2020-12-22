@@ -1,4 +1,4 @@
-LEX = flex --warn
+LEX = flex -d --warn
 YACC = bison -d -v --graph
 # --graph --
 CC = gcc

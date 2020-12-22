@@ -89,6 +89,7 @@ void PO_Iter(void) {
     char *name = code->arg.pchar_t;
     OBJ *obj = CTX_GetObj(name);
     fprintf(stdout_po, "\"%s\":", name);
+    OBJ_FPrint(stdout_po, obj);
     PO_OBJSTACK_Push(obj);
     CTX_PC_Inc();
     break;

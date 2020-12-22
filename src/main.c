@@ -17,12 +17,15 @@
 
 #include "utils/hashtable.h"
 
+extern int yy_flex_debug;
+
 AST_NODE *BISON_Parse(void) {
   AST_NODE *root = NULL;
 
   yydebug = 0;
-  int ret = yyparse(&root);
+  yy_flex_debug = 0;
 
+  int ret = yyparse(&root);
   assert(ret == 0);
   assert(root);
   return root;

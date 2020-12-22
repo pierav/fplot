@@ -3,10 +3,14 @@
 #include <stdio.h>
 
 int oldstate;
+int oldstatestr;
+
+char buf[256];
+char *s;
 
 %}
-%x COMMENT
-
+%x F_COMMENT
+%x F_STRING
 
 %option warn
 
@@ -43,48 +47,59 @@ comma       \,
 name        {LET}({LET}|{DEC})*
 
 /* Chaines de caractères */
-string 			\"[^\"]*
-
 %option yylineno
 
 %%
 
+{comment2}					{ /* ignore */ }
+"/*"								{ oldstate = YY_START; BEGIN F_COMMENT; printf("[COMM: "); }
+<F_COMMENT>"*/" 		{ BEGIN oldstate; printf("]\n"); }
+<F_COMMENT>.|\n 		{ ECHO; }
+<F_COMMENT><<EOF>>	{ printf("unclosed comment"); }
+
+"\"" 								{ oldstatestr = YY_START; BEGIN F_STRING; s = buf; }
+<F_STRING>"\\n" 		{ *s++ = '\n'; }
+<F_STRING>"\\t" 		{ *s++ = '\t'; }
+<F_STRING>"\\\\" 		{ *s++ = '\"'; }
+<F_STRING>"\"" 			{ *s   = '\0';
+											BEGIN oldstatestr;
+											yylval = malloc(sizeof(OBJ_string));
+											((OBJ_string*) yylval)->s = strdup(buf);
+											((OBJ_string*) yylval)->size = strlen(buf);
+											printf("[STR '%s#%d']", ((OBJ_string*) yylval)->s, ((OBJ_string*) yylval)->size);
+											return(STRING);
+										}
+<F_STRING>\n 				{ printf("invalid string"); exit(1); }
+<F_STRING>. 				{ *s++ = *yytext; }
+
 "if"     		{ECHO; return(IF); }
 "elsif"			{ECHO; return(ELSIF); }
 "else"   		{ECHO; return(ELSE); }
-"for"				{ECHO;  return(FOR); }
-"while"			{ECHO;  return(WHILE); }
+"for"				{ECHO; return(FOR); }
+"while"			{ECHO; return(WHILE); }
 "function"	{ECHO; return(FUNC);}
 "return"		{ECHO; return(RETURN); }
 
-"{"					{ECHO;  return(BEG); }
-"}"					{ECHO;  return(END); }
+"{"					{ECHO; return(BEG); }
+"}"					{ECHO; return(END); }
 
-"("    			{ECHO;  return(OPAR); }
-")"					{ECHO;  return(CPAR); }
+"("    			{ECHO; return(OPAR); }
+")"					{ECHO; return(CPAR); }
 
-"=="				{ECHO;  return(EQ); }
-"!="				{ECHO;  return(NE); }
-"<="				{ECHO;  return(LE); }
-"<" 				{ECHO;  return(LT); }
-">="				{ECHO;  return(GE); }
-">" 				{ECHO;  return(GT); }
-
-{comment2}	{ /* ignore */ }
-
-"/*"								{ oldstate = YY_START; BEGIN COMMENT; }
-<COMMENT>"*/" 			{ BEGIN oldstate; }
-<COMMENT>.|\n 			{ ; }
-<COMMENT><<EOF>>		{ printf("unclosed comment"); }
-
+"=="				{ECHO; return(EQ); }
+"!="				{ECHO; return(NE); }
+"<="				{ECHO; return(LE); }
+"<" 				{ECHO; return(LT); }
+">="				{ECHO; return(GE); }
+">" 				{ECHO; return(GT); }
 
 {entier}    {
-							ECHO;
 							yylval = malloc(sizeof(int));
 	 						*(int *)yylval = atoi(yytext);
+							printf("[INT '%d']", *(int *)yylval);
 							return(ENTIER);
 						}
-{string}		{ ECHO; return(STRING);}
+
 {plus}      { ECHO; return(PLUS); }
 {moins}     { ECHO; return(MOINS); }
 {fois}      { ECHO; return(FOIS); }
