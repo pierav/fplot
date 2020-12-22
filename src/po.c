@@ -94,15 +94,6 @@ void PO_Iter(void) {
     CTX_PC_Inc();
     break;
   }
-  case PC_TYPE_PUSH_DST_VAR: {
-    char *name = code->arg.pchar_t;
-    OBJ *obj = CTX_GetOrCreateObj(name);
-    fprintf(stdout_po, "\"%s\":", name);
-    OBJ_FPrint(stdout_po, obj);
-    PO_OBJSTACK_Push(obj);
-    CTX_PC_Inc();
-    break;
-  }
   case PC_TYPE_PUSH_CST: {
     OBJ *obj = code->arg.pobj_t;
     PO_OBJSTACK_Push(obj);
@@ -134,15 +125,6 @@ void PO_Iter(void) {
       printf("AYE AYE AYE !");
       assert(0);
     }
-    CTX_PC_Inc();
-  } break;
-  case PC_TYPE_AFFECT: {
-    OBJ *src = PO_OBJSTACK_Pop();
-    OBJ *dst = PO_OBJSTACK_Pop();
-    OBJ_Affect(dst, src);
-    OBJ_FPrint(stdout_po, src);
-    fprintf(stdout_po, ", ");
-    OBJ_FPrint(stdout_po, dst);
     CTX_PC_Inc();
   } break;
   case PC_TYPE_JUMP:
@@ -180,10 +162,16 @@ void PO_Iter(void) {
     // Inc cur
     CTX_PC_Inc();
   } break;
-  case PC_TYPE_AFFECT_ARG: {
+  case PC_TYPE_STORE: {
     char *name = code->arg.pchar_t;
     fprintf(stdout_po, name);
     CTX_set(name, PO_OBJSTACK_Pop());
+    CTX_PC_Inc();
+  } break;
+  case PC_TYPE_LOAD: {
+    char *name = code->arg.pchar_t;
+    fprintf(stdout_po, name);
+    PO_OBJSTACK_Push(CTX_GetObj(name));
     CTX_PC_Inc();
   } break;
   default:

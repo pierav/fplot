@@ -45,34 +45,6 @@ const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, OBJ_STRING_FUNC, NULL};
 
 void PO_ALU_Init(void) { stdout_po_alu = LB_Init(1024); }
 
-// obj =
-OBJ *OBJ_Affect(OBJ *dst, OBJ *src) {
-  fprintf(stdout_po_alu, "[\e[33mOBJ\e[39m]>>> ");
-  fprintf(stdout_po_alu, "MV  ");
-  OBJ_FPrint(stdout_po_alu, dst);
-  fprintf(stdout_po_alu, " <- ");
-  OBJ_FPrint(stdout_po_alu, src);
-
-  assert(dst);
-  assert(src);
-
-  dst->data = src->data;
-  dst->type = src->type;
-
-  fprintf(stdout_po_alu, " ==> ");
-  OBJ_FPrint(stdout_po_alu, dst);
-  fprintf(stdout_po_alu, "\n");
-  return dst;
-}
-
-// obj()
-// TODO
-OBJ *OBJ_Call(OBJ *func) {
-  fprintf(stdout_po_alu, "[\e[33mOBJ\e[39m]>>> ");
-  fprintf(stdout_po_alu, "CALL %s(%s)>\n", "TODO", "TODO");
-  return func;
-}
-
 OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
   fprintf(stdout_po_alu, "[\e[33mOBJ\e[39m]>>> ");
   fprintf(stdout_po_alu, OBJ_FUNCS_NAMES[func]);

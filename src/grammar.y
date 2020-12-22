@@ -79,7 +79,7 @@ statement_expression
   | PTCOMMA
 
 statement_affectation
-  : var_dst EQUAL expr PTCOMMA          { $$ = AST_NODE_PCODE_Create(PC_CreateAffect(), $1, $3); }
+  : var_dst EQUAL expr PTCOMMA          { $$ = AST_NODE_PCODE_Create(PC_CreateStore((char *)$1), $3, NULL); }
 
 statement_condition
   : IF OPAR expr CPAR BEG statement END
@@ -111,7 +111,7 @@ expr
   | expr LE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__LE__), $1, $3); }
   | expr GE expr                        { $$ = AST_NODE_PCODE_Create(PC_CreateApply(__GE__), $1, $3); }
   | OPAR expr CPAR                      { $$ = $2; }
-  | var_dst OPAR expr_list CPAR         { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, $3/* args*/ ); }
+  | var_src OPAR expr_list CPAR            { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, $3/* args*/ ); }
   | FUNC OPAR name_list CPAR BEG statements END
                                         { $$ = AST_NODE_FUNC_DEC_Create($3/* args*/, $6/*code */);}
 
@@ -125,21 +125,20 @@ expr_list_not_empty
   | expr                                { $$ = $1; }
 
 var_src
-  : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushSrc((char *)$1), NULL, NULL);}
+  : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreateLoad((char *)$1), NULL, NULL);}
   | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_INT, $1)), NULL, NULL); }
   | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STRING, $1)), NULL, NULL); }
 
 var_dst
-  : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreatePushDst((char *)$1), NULL, NULL); }
-
+  : VAR                                 { $$ = $1; }
 
 name_list
   : name_list_not_empty                 { $$ = $1; }
   | %empty                              { $$ = NULL; }
 
 name_list_not_empty
-  : name_list_not_empty COMMA VAR       { $$ = AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$3), $1, NULL); }
-  | VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreateAffectArg((char *)$1), NULL, NULL); }
+  : name_list_not_empty COMMA VAR       { $$ = AST_NODE_PCODE_Create(PC_CreateStore((char *)$3), $1, NULL); }
+  | VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreateStore((char *)$1), NULL, NULL); }
 
 
 

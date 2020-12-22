@@ -110,8 +110,11 @@ void AST_DISPLAY_Text(AST_NODE *cur, int space) {
     printf("\n");
     for (int i = 0; i < space; i++)
       printf(" | ");
-    printf("function:\n");
+    printf("args:\n");
     AST_DISPLAY_Text(((AST_NODE_FUNC_CALL *)cur)->args, space + 1);
+    for (int i = 0; i < space; i++)
+      printf(" | ");
+    printf("func:\n");
     AST_DISPLAY_Text(((AST_NODE_FUNC_CALL *)cur)->func, space + 1);
   } break;
   default:

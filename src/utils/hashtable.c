@@ -70,6 +70,13 @@ HashTable *HT_Init(void) {
 HashTable *HT_Insert(HashTable *ht, char *str, void *dat) {
   assert(ht);
   hash_t key = compute_hash(str);
+  // Deja present
+  for (Cell *cur = ht->tab[key % ht->len]; cur->next != NULL; cur = cur->next)
+    if (cur->key == key) {
+      assert(strcmp(cur->name, str) == 0);
+      cur->dat = dat;
+      return ht;
+    }
   // Ajout en tete
   Cell *cell = malloc(sizeof(struct Cell));
   assert(cell);

@@ -39,9 +39,6 @@ extern const void *OBJ_FULL_FUNC[];
 
 void PO_ALU_Init(void);
 
-OBJ *OBJ_Affect(OBJ *dst, OBJ *src);
-OBJ *OBJ_Call(OBJ *func);
-
 void OBJ_FPrint(FILE *pf, OBJ *obj);
 void OBJ_Print(OBJ *obj);
 

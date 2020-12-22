@@ -27,9 +27,8 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm);
  ******************************************************************************/
 
 const char *PC_TYPE_NAME[] = {
-    "PUSH_SRC_VAR",     "PUSH_DST_VAR", "PUSH_CST",  "POP",
-    "APPLY_OBJ_FUNC",   "CALL",         "AFFECT",    "JUMP",
-    "CONDITIONAL_JUMP", "RETURN",       "AFFECT_ARG"};
+    "PUSH_SRC_VAR", "PUSH_CST",         "POP",    "APPLY_OBJ_FUNC", "CALL",
+    "JUMP",         "CONDITIONAL_JUMP", "RETURN", "STORE",          "LOAD"};
 
 /*******************************************************************************
  * Public function
@@ -60,10 +59,6 @@ PCODE *PC_CreatePushSrc(char *name) {
   return PC_Create(PC_TYPE_PUSH_SRC_VAR, (PC_ARG)name);
 }
 
-PCODE *PC_CreatePushDst(char *name) {
-  return PC_Create(PC_TYPE_PUSH_DST_VAR, (PC_ARG)name);
-}
-
 PCODE *PC_CreatePushCst(OBJ *obj) {
   return PC_Create(PC_TYPE_PUSH_CST, (PC_ARG)obj);
 }
@@ -76,13 +71,16 @@ PCODE *PC_CreateApply(size_t func) {
 
 PCODE *PC_CreateCall(void) { return PC_Create(PC_TYPE_CALL, (PC_ARG)0UL); }
 
-PCODE *PC_CreateAffect(void) { return PC_Create(PC_TYPE_AFFECT, (PC_ARG)0UL); }
-
 PCODE *PC_CreateReturn(void) { return PC_Create(PC_TYPE_RETURN, (PC_ARG)0UL); }
 
-PCODE *PC_CreateAffectArg(char *name) {
-  return PC_Create(PC_TYPE_AFFECT_ARG, (PC_ARG)name);
+PCODE *PC_CreateStore(char *name) {
+  return PC_Create(PC_TYPE_STORE, (PC_ARG)name);
 }
+
+PCODE *PC_CreateLoad(char *name) {
+  return PC_Create(PC_TYPE_LOAD, (PC_ARG)name);
+}
+
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
@@ -96,9 +94,9 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm) {
     fprintf(pf, " ");
   }
   switch (code->type) {
+  case PC_TYPE_STORE:
+  case PC_TYPE_LOAD:
   case PC_TYPE_PUSH_SRC_VAR: // fallthrough
-  case PC_TYPE_PUSH_DST_VAR:
-  case PC_TYPE_AFFECT_ARG:
     fprintf(pf, "%s", code->arg.pchar_t);
     break;
   case PC_TYPE_PUSH_CST:
@@ -112,7 +110,6 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm) {
     fprintf(pf, "(%ld)", code->arg.int_t);
     break;
   case PC_TYPE_CALL: // fallthrough
-  case PC_TYPE_AFFECT:
   case PC_TYPE_POP:
   case PC_TYPE_RETURN:
     break;
