@@ -80,7 +80,7 @@ void CTX_leave() {
 
 // Namespace
 // link name obj
-OBJ *CTX_set(char *name, OBJ *o) {
+OBJ *CTX_setObj(char *name, OBJ *o) {
   fprintf(stdout_po_ctx, "[\e[32mCTX\e[39m]>>> link %s <->", name);
   OBJ_FPrint(stdout_po_ctx, o);
   fprintf(stdout_po_ctx, "\n");
@@ -89,30 +89,13 @@ OBJ *CTX_set(char *name, OBJ *o) {
 }
 
 // Retourne l'objet de nom name
-OBJ *CTX_GetObj(char *name) {
+OBJ *CTX_getObj(char *name) {
   OBJ *ret = CTX_get(name);
   if (ret == NULL) {
     printf("USR# undefined varable : %s", name);
     exit(1);
   }
   return ret;
-}
-
-// Crée un objet de nom name
-OBJ *CTX_CreateObj(OBJ_TYPE type, void *value, char *name) {
-  if (CTX_get(name) != NULL) {
-    printf("USR# ever defined varable : %s", name);
-    exit(1);
-  }
-  return CTX_set(name, OBJ_Create(type, value));
-}
-
-// Retourne l'objet pointe par name. On le créer si inexistant
-OBJ *CTX_GetOrCreateObj(char *name) {
-  OBJ *ret = CTX_get(name);
-  if (ret != NULL)
-    return ret;
-  return CTX_set(name, OBJ_INT_Init(0)); // TODO delete
 }
 
 void CTX_printCur() {
@@ -123,11 +106,13 @@ void CTX_printCur() {
 }
 
 void CTX_PC_Set(size_t npc) {
+  int delta = npc - curctx->pc; // debug
   curctx->pc = npc;
-  fprintf(stdout_po_ctx, "[\e[32m PC\e[39m]>>> pc <- [%ld]\n", curctx->pc);
+  fprintf(stdout_po_ctx, "[\e[32m PC\e[39m]>>> pc <- %ld [+%d]\n", curctx->pc,
+          delta);
 }
 
-void CTX_PC_Inc(void) { curctx->pc += 1; }
+void CTX_PC_Inc(void) { CTX_PC_Add(1); }
 
 size_t CTX_PC_Get(void) { return curctx->pc; }
 
@@ -135,7 +120,7 @@ void CTX_PC_Add(size_t dpc) { CTX_PC_Set(curctx->pc + dpc); }
 
 void CTX_PC_setMainPc(size_t value) {
   curctx->mainpc = value;
-  fprintf(stdout_po_ctx, "[\e[32m PC\e[39m]>>> mainpc <- [%ld]\n",
+  fprintf(stdout_po_ctx, "[\e[32m PC\e[39m]>>> mainpc <- %ld]\n",
           curctx->mainpc);
 }
 

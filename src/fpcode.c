@@ -26,9 +26,9 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm);
  * Variables
  ******************************************************************************/
 
-const char *PC_TYPE_NAME[] = {
-    "PUSH_SRC_VAR", "PUSH_CST",         "POP",    "APPLY_OBJ_FUNC", "CALL",
-    "JUMP",         "CONDITIONAL_JUMP", "RETURN", "STORE",          "LOAD"};
+const char *PC_TYPE_NAME[] = {"PUSH_CST", "POP",   "APPLY_OBJ_FUNC",
+                              "CALL",     "JUMP",  "CONDITIONAL_JUMP",
+                              "RETURN",   "STORE", "LOAD"};
 
 /*******************************************************************************
  * Public function
@@ -53,10 +53,6 @@ PCODE *PC_CreateJump(size_t arg) {
 
 PCODE *PC_CreateJumpCond(size_t arg) {
   return PC_Create(PC_TYPE_CONDITIONAL_JUMP, (PC_ARG)arg);
-}
-
-PCODE *PC_CreatePushSrc(char *name) {
-  return PC_Create(PC_TYPE_PUSH_SRC_VAR, (PC_ARG)name);
 }
 
 PCODE *PC_CreatePushCst(OBJ *obj) {
@@ -94,9 +90,8 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm) {
     fprintf(pf, " ");
   }
   switch (code->type) {
-  case PC_TYPE_STORE:
+  case PC_TYPE_STORE: // fallthrough
   case PC_TYPE_LOAD:
-  case PC_TYPE_PUSH_SRC_VAR: // fallthrough
     fprintf(pf, "%s", code->arg.pchar_t);
     break;
   case PC_TYPE_PUSH_CST:

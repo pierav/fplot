@@ -19,11 +19,11 @@
  ******************************************************************************/
 
 enum PC_TYPE {
-  PC_TYPE_PUSH_SRC_VAR,     // char * | Push variable existante
-  PC_TYPE_PUSH_CST,         // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
-  PC_TYPE_POP,              // void   | Pop
-  PC_TYPE_APPLY_OBJ_FUNC,   // void   | Applique une OBJ__FUNC__ en tete de pile
-  PC_TYPE_CALL,             // void   | Applique une fonction anonyme
+  PC_TYPE_PUSH_CST,       // OBJ *  | Push constante ("Hello", 10, 1e3, ...)
+  PC_TYPE_POP,            // void   | Pop
+  PC_TYPE_APPLY_OBJ_FUNC, // void   | Applique une OBJ__FUNC__ en tete de pile
+  PC_TYPE_CALL,           // void   | Applique une fonction anonyme
+
   PC_TYPE_JUMP,             // INT    | Jump à l'adresse INT du programme
   PC_TYPE_CONDITIONAL_JUMP, // INT    | Jump si pop() == False
   PC_TYPE_RETURN,           // OBJ *  | PC <- POP(); PUSH(OBJ)
@@ -63,7 +63,6 @@ PCODE *PC_Create(PC_TYPE type, PC_ARG arg);
 
 PCODE *PC_CreateJump(size_t arg);
 PCODE *PC_CreateJumpCond(size_t arg);
-PCODE *PC_CreatePushSrc(char *name);
 PCODE *PC_CreatePushCst(OBJ *obj);
 PCODE *PC_CreatePop(void);
 PCODE *PC_CreateApply(size_t func);

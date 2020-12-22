@@ -37,10 +37,8 @@ void CTX_leave();
 
 void CTX_printCur();
 
-OBJ *CTX_set(char *name, OBJ *o);
-OBJ *CTX_GetObj(char *name);
-OBJ *CTX_CreateObj(OBJ_TYPE type, void *value, char *name);
-OBJ *CTX_GetOrCreateObj(char *name);
+OBJ *CTX_setObj(char *name, OBJ *o);
+OBJ *CTX_getObj(char *name);
 
 void CTX_PC_Set(size_t npc);
 void CTX_PC_Inc(void);

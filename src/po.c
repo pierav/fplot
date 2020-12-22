@@ -85,15 +85,6 @@ void PO_Iter(void) {
 
   // Exec code
   switch (code->type) {
-  case PC_TYPE_PUSH_SRC_VAR: {
-    char *name = code->arg.pchar_t;
-    OBJ *obj = CTX_GetObj(name);
-    fprintf(stdout_po, "\"%s\":", name);
-    OBJ_FPrint(stdout_po, obj);
-    PO_OBJSTACK_Push(obj);
-    CTX_PC_Inc();
-    break;
-  }
   case PC_TYPE_PUSH_CST: {
     OBJ *obj = code->arg.pobj_t;
     PO_OBJSTACK_Push(obj);
@@ -163,15 +154,15 @@ void PO_Iter(void) {
     CTX_PC_Inc();
   } break;
   case PC_TYPE_STORE: {
-    char *name = code->arg.pchar_t;
-    fprintf(stdout_po, name);
-    CTX_set(name, PO_OBJSTACK_Pop());
+    OBJ *o = PO_OBJSTACK_Pop();
+    OBJ_FPrint(stdout_po, o);
+    CTX_setObj(code->arg.pchar_t, o);
     CTX_PC_Inc();
   } break;
   case PC_TYPE_LOAD: {
-    char *name = code->arg.pchar_t;
-    fprintf(stdout_po, name);
-    PO_OBJSTACK_Push(CTX_GetObj(name));
+    OBJ *o = CTX_getObj(code->arg.pchar_t);
+    OBJ_FPrint(stdout_po, o);
+    PO_OBJSTACK_Push(o);
     CTX_PC_Inc();
   } break;
   default:

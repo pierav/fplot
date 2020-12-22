@@ -46,18 +46,10 @@ void MEMPRGM_Init(PCODE ***prgm, size_t mainsize, size_t *subsizes) {
 PCODE *MEMPRGM_Get(size_t mainindex, size_t i) {
   assert(mainindex < memmainsize);
   if (i >= memsubsizes[mainindex])
-    return NULL;                // EOP
-  return memprgm[mainindex][i]; // TODO;
+    return NULL; // EOP
+  return memprgm[mainindex][i];
 }
 
-void MEMPRGM_Print(void) {
-  printf("***     MEM-PRGM(%ld)     ***\n", memsubsizes[0]);
-  for (size_t i = 0; i < memsubsizes[0]; i++) {
-    printf("[%.5ld] ", i);
-    PC_Print(memprgm[0][i]);
-    printf("\n");
-  }
-}
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

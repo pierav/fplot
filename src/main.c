@@ -53,9 +53,6 @@ int main(void) {
   MEMPRGM_Init(prgm, mainsize, subsizes);
   printf("DONE3\n");
 
-  MEMPRGM_Print();
-  printf("DONE4\n");
-
   PO_Run();
 
   // State of PO
