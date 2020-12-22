@@ -102,9 +102,18 @@ OBJ *OBJ_INT__mod__(OBJ *obj1, OBJ *obj2) {
 
 //////////////////////////////// TODO//////////////////////////////////////////
 // Opération arithmétiques unaire
-OBJ *OBJ_INT__neg__(OBJ *obj1) { return obj1; }
-OBJ *OBJ_INT__pos__(OBJ *obj1) { return obj1; }
-OBJ *OBJ_INT__abs__(OBJ *obj1) { return obj1; }
+OBJ *OBJ_INT__neg__(OBJ *obj1) {
+  assert(0);
+  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) > 0);
+}
+OBJ *OBJ_INT__pos__(OBJ *obj1) {
+  assert(0);
+  return obj1;
+}
+OBJ *OBJ_INT__abs__(OBJ *obj1) {
+  assert(0);
+  return obj1;
+}
 
 // Comparaisons
 // Retourne un OBJ_BOOL TODO !
