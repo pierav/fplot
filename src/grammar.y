@@ -126,8 +126,8 @@ expr_list_not_empty
 
 var_src
   : VAR                                 { $$ = AST_NODE_PCODE_Create(PC_CreateLoad((char *)$1), NULL, NULL);}
-  | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_INT, $1)), NULL, NULL); }
-  | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst(OBJ_Create(OBJ_STRING, $1)), NULL, NULL); }
+  | ENTIER                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst($1), NULL, NULL); }
+  | STRING                              { $$ = AST_NODE_PCODE_Create(PC_CreatePushCst($1), NULL, NULL); }
 
 var_dst
   : VAR                                 { $$ = $1; }

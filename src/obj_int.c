@@ -18,138 +18,138 @@
  ******************************************************************************/
 
 /*******************************************************************************
- * Internal function declaration
+ * internal function declaration
  ******************************************************************************/
 
 // Opérations arithmétiques
-OBJ *OBJ_INT__add__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__sub__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__mul__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__tdv__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__pow__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__mod__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__fdv__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__add__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__sub__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__mul__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__tdv__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__pow__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__mod__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__fdv__(OBJ *obj1, OBJ *obj2);
 // Opération arithmétiques unaire
-OBJ *OBJ_INT__neg__(OBJ *obj1);
-OBJ *OBJ_INT__pos__(OBJ *obj1);
-OBJ *OBJ_INT__abs__(OBJ *obj1);
+OBJ *OBJ_int__neg__(OBJ *obj1);
+OBJ *OBJ_int__pos__(OBJ *obj1);
+OBJ *OBJ_int__abs__(OBJ *obj1);
 // Comparaisons Retourne un OBJ_BOOL
-OBJ *OBJ_INT__eq__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__ne__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__lt__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__gt__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__le__(OBJ *obj1, OBJ *obj2);
-OBJ *OBJ_INT__ge__(OBJ *obj1, OBJ *obj2);
-// Taille d'un element Retourne un OBJ_INT
-OBJ *OBJ_INT__len__(OBJ *obj1);
-OBJ *OBJ_INT__getitem__(OBJ *obj1, OBJ *objarg);
+OBJ *OBJ_int__eq__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__ne__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__lt__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__gt__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__le__(OBJ *obj1, OBJ *obj2);
+OBJ *OBJ_int__ge__(OBJ *obj1, OBJ *obj2);
+// Taille d'un element Retourne un OBJ_int
+OBJ *OBJ_int__len__(OBJ *obj1);
+OBJ *OBJ_int__getitem__(OBJ *obj1, OBJ *objarg);
 // Représentation textuelle Retourne un OBJ_STR
-OBJ *OBJ_INT__str__(OBJ *obj1);
-OBJ *OBJ_INT__repr__(OBJ *obj1);
+OBJ *OBJ_int__str__(OBJ *obj1);
+OBJ *OBJ_int__repr__(OBJ *obj1);
 // Changement de type
-OBJ *OBJ_INT__int__(OBJ *obj);
-OBJ *OBJ_INT__double__(OBJ *obj);
-OBJ *OBJ_INT__bool__(OBJ *obj);
+OBJ *OBJ_int__int__(OBJ *obj);
+OBJ *OBJ_int__double__(OBJ *obj);
+OBJ *OBJ_int__bool__(OBJ *obj);
 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
 const void *OBJ_INT_FUNC[NB_OBJ_FUNC] = {
-    OBJ_INT__add__, OBJ_INT__sub__,     OBJ_INT__mul__, OBJ_INT__tdv__,
-    OBJ_INT__pow__, OBJ_INT__fdv__,     OBJ_INT__mod__, OBJ_INT__neg__,
-    OBJ_INT__pos__, OBJ_INT__abs__,     OBJ_INT__eq__,  OBJ_INT__ne__,
-    OBJ_INT__lt__,  OBJ_INT__gt__,      OBJ_INT__le__,  OBJ_INT__ge__,
-    OBJ_INT__len__, OBJ_INT__getitem__, OBJ_INT__str__, OBJ_INT__repr__,
-    OBJ_INT__int__, OBJ_INT__double__};
+    OBJ_int__add__, OBJ_int__sub__,     OBJ_int__mul__, OBJ_int__tdv__,
+    OBJ_int__pow__, OBJ_int__fdv__,     OBJ_int__mod__, OBJ_int__neg__,
+    OBJ_int__pos__, OBJ_int__abs__,     OBJ_int__eq__,  OBJ_int__ne__,
+    OBJ_int__lt__,  OBJ_int__gt__,      OBJ_int__le__,  OBJ_int__ge__,
+    OBJ_int__len__, OBJ_int__getitem__, OBJ_int__str__, OBJ_int__repr__,
+    OBJ_int__int__, OBJ_int__double__};
 
 /*******************************************************************************
  * Public function
  ******************************************************************************/
 
 /*******************************************************************************
- * Internal function
+ * internal function
  ******************************************************************************/
 
 // Opérations arithmétiques
-OBJ *OBJ_INT__add__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) + OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__add__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) + OBJ_int_getRaw(obj2));
 }
 
-OBJ *OBJ_INT__sub__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) - OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__sub__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) - OBJ_int_getRaw(obj2));
 }
 
-OBJ *OBJ_INT__mul__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) * OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__mul__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) * OBJ_int_getRaw(obj2));
 }
 
-OBJ *OBJ_INT__tdv__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) / OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__tdv__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) / OBJ_int_getRaw(obj2));
 }
 
-OBJ *OBJ_INT__pow__(OBJ *obj1, OBJ *obj2) { // TODO
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) * OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__pow__(OBJ *obj1, OBJ *obj2) { // TODO
+  return OBJ_int_init(OBJ_int_getRaw(obj1) * OBJ_int_getRaw(obj2));
 }
 
-OBJ *OBJ_INT__fdv__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) / OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__fdv__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) / OBJ_int_getRaw(obj2));
 }
 
-OBJ *OBJ_INT__mod__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) % OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__mod__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) % OBJ_int_getRaw(obj2));
 }
 
 //////////////////////////////// TODO//////////////////////////////////////////
 // Opération arithmétiques unaire
-OBJ *OBJ_INT__neg__(OBJ *obj1) {
+OBJ *OBJ_int__neg__(OBJ *obj1) {
   assert(0);
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) > 0);
+  return OBJ_int_init(OBJ_int_getRaw(obj1) > 0);
 }
-OBJ *OBJ_INT__pos__(OBJ *obj1) {
+OBJ *OBJ_int__pos__(OBJ *obj1) {
   assert(0);
   return obj1;
 }
-OBJ *OBJ_INT__abs__(OBJ *obj1) {
+OBJ *OBJ_int__abs__(OBJ *obj1) {
   assert(0);
   return obj1;
 }
 
 // Comparaisons
 // Retourne un OBJ_BOOL TODO !
-OBJ *OBJ_INT__eq__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) == OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__eq__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) == OBJ_int_getRaw(obj2));
 }
-OBJ *OBJ_INT__ne__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) != OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__ne__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) != OBJ_int_getRaw(obj2));
 }
-OBJ *OBJ_INT__lt__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) < OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__lt__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) < OBJ_int_getRaw(obj2));
 }
-OBJ *OBJ_INT__gt__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) > OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__gt__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) > OBJ_int_getRaw(obj2));
 }
-OBJ *OBJ_INT__le__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) <= OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__le__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) <= OBJ_int_getRaw(obj2));
 }
-OBJ *OBJ_INT__ge__(OBJ *obj1, OBJ *obj2) {
-  return OBJ_INT_Init(OBJ_INT_GetRaw(obj1) >= OBJ_INT_GetRaw(obj2));
+OBJ *OBJ_int__ge__(OBJ *obj1, OBJ *obj2) {
+  return OBJ_int_init(OBJ_int_getRaw(obj1) >= OBJ_int_getRaw(obj2));
 }
 
 // Taille d'un element
-// Retourne un OBJ_INT
-OBJ *OBJ_INT__len__(OBJ *obj1) { return obj1; }
-OBJ *OBJ_INT__getitem__(OBJ *obj1, OBJ *objarg) {
-  OBJ_int_t value = (OBJ_INT_GetRaw(obj1) & (1 << OBJ_INT_GetRaw(objarg))) > 0;
-  return OBJ_INT_Init(value);
+// Retourne un OBJ_int
+OBJ *OBJ_int__len__(OBJ *obj1) { return obj1; }
+OBJ *OBJ_int__getitem__(OBJ *obj1, OBJ *objarg) {
+  OBJ_int_t value = (OBJ_int_getRaw(obj1) & (1 << OBJ_int_getRaw(objarg))) > 0;
+  return OBJ_int_init(value);
 }
 
 // Représentation textuelle
 // Retourne un OBJ_STR
-OBJ *OBJ_INT__str__(OBJ *obj1) { return obj1; }
-OBJ *OBJ_INT__repr__(OBJ *obj1) { return obj1; }
+OBJ *OBJ_int__str__(OBJ *obj1) { return obj1; }
+OBJ *OBJ_int__repr__(OBJ *obj1) { return obj1; }
 
 // Changement de type
-OBJ *OBJ_INT__int__(OBJ *obj) { return obj; }
-OBJ *OBJ_INT__double__(OBJ *obj) { return obj; }
-OBJ *OBJ_INT__bool__(OBJ *obj) { return obj; }
+OBJ *OBJ_int__int__(OBJ *obj) { return obj; }
+OBJ *OBJ_int__double__(OBJ *obj) { return obj; }
+OBJ *OBJ_int__bool__(OBJ *obj) { return obj; }

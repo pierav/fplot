@@ -21,6 +21,7 @@
 
 // Types primitif
 typedef int OBJ_int_t;
+typedef char OBJ_char_t;
 
 struct OBJ_string {
   char *s;
@@ -28,32 +29,37 @@ struct OBJ_string {
 };
 typedef struct OBJ_string OBJ_string;
 
+struct OBJ_class { // Pour les types non primitif
+  char *name;
+  HashTable /* objects */ *local;
+};
+typedef struct OBJ_class OBJ_class;
+
+typedef size_t OBJ_func_t;
+
+// OBJ
 #define NB_OBJ_TYPE 5
 typedef enum {
-  OBJ_BOOL = 0,
-  OBJ_INT = 1,
-  OBJ_CHAR = 2,
-  OBJ_STRING = 3,
-  OBJ_FUNC = 4
+  OBJ_BOOL,
+  OBJ_INT,
+  OBJ_CHAR,
+  OBJ_STRING,
+  OBJ_FUNC,
+  OBJ_CLASS
 } OBJ_TYPE;
 
-typedef struct OBJ_DATA_FUNC {
-  HashTable *namespace;
-
-} OBJ_DATA_FUNC;
-
 typedef union OBJ_DATA {
-  bool *pbool;
-  int *pint;
-  char *pchar;
-  char *pstr;
-  OBJ_DATA_FUNC *func;
+  OBJ_int_t *intt;
+  OBJ_char_t *chart;
+  OBJ_string *stringt;
+  OBJ_func_t *funct;
+  OBJ_class *classt;
 } OBJ_DATA;
 
 typedef struct OBJ {
   OBJ_TYPE type;
-  void *data;
-  //  char *name;
+  OBJ_DATA *data;
+
   uint32_t cpt_usage;
 } OBJ;
 
@@ -110,11 +116,13 @@ extern const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC];
  * Prototypes
  ******************************************************************************/
 
-OBJ *OBJ_Create(OBJ_TYPE type, void *value); // TODO : PRIVATE !
+OBJ *OBJ_int_init(OBJ_int_t value);
+OBJ_int_t OBJ_int_getRaw(OBJ *obj);
 
-OBJ *OBJ_INT_Init(OBJ_int_t value);
-OBJ_int_t OBJ_INT_GetRaw(OBJ *obj);
-OBJ *OBJ_string_Init(char *s, OBJ_int_t size);
-OBJ_string *OBJ_string_GetRaw(OBJ *obj);
+OBJ *OBJ_string_init(char *s, OBJ_int_t size);
+OBJ_string *OBJ_string_getRaw(OBJ *obj);
+
+OBJ *OBJ_func_init(OBJ_func_t value);
+OBJ_func_t OBJ_func_getRaw(OBJ *obj);
 
 #endif /* _OBJ_H_ */

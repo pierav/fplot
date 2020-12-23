@@ -228,7 +228,7 @@ PrgmCode AST_ToCodeRec(AST_NODE *node, PrgmPkg *outPkg) {
       outPkg->size += 1;
 
       // Code hors de la fonction
-      PC_AddEnd(&pc, PC_CreatePushCst(OBJ_Create(OBJ_FUNC, &point->id)));
+      PC_AddEnd(&pc, PC_CreatePushCst(OBJ_func_init(point->id)));
       break;
     }
     case AST_NODE_TYPE_FUNC_CALL: {

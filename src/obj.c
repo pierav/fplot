@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*******************************************************************************
  * Macros
@@ -18,6 +19,8 @@
 /*******************************************************************************
  * Internal function declaration
  ******************************************************************************/
+
+static OBJ *OBJ_Create(OBJ_TYPE type, void *value); // TODO : PRIVATE !
 
 /*******************************************************************************
  * Variables
@@ -37,32 +40,45 @@ const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC] = {2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2,
  ******************************************************************************/
 
 // Allocation
-inline OBJ *OBJ_INT_Init(OBJ_int_t value) {
-  OBJ_int_t *p_data = (int *)malloc(sizeof(int));
+inline OBJ *OBJ_int_init(OBJ_int_t value) {
+  OBJ_int_t *p_data = (OBJ_int_t *)malloc(sizeof(OBJ_int_t));
   *p_data = value;
   return OBJ_Create(OBJ_INT, p_data);
 }
 
 // Acces
-inline OBJ_int_t OBJ_INT_GetRaw(OBJ *obj) {
+inline OBJ_int_t OBJ_int_getRaw(OBJ *obj) {
   assert(obj);
   assert(obj->type == OBJ_INT);
   return *(OBJ_int_t *)obj->data;
 }
 
 // Allocation
-inline OBJ *OBJ_string_Init(char *s, OBJ_int_t size) {
+inline OBJ *OBJ_string_init(char *s, OBJ_int_t size) {
   OBJ_string *value = malloc(sizeof(OBJ_string));
-  value->s = s;
+  value->s = strdup(s);
   value->size = size;
   return OBJ_Create(OBJ_STRING, value);
 }
 
 // Acces
-inline OBJ_string *OBJ_string_GetRaw(OBJ *obj) {
+inline OBJ_string *OBJ_string_getRaw(OBJ *obj) {
   assert(obj);
   assert(obj->type == OBJ_STRING);
   return (OBJ_string *)obj->data;
+}
+
+inline OBJ *OBJ_func_init(OBJ_func_t value) {
+  OBJ_func_t *p_data = (OBJ_func_t *)malloc(sizeof(OBJ_func_t));
+  *p_data = value;
+  return OBJ_Create(OBJ_FUNC, p_data);
+}
+
+// Acces
+inline OBJ_func_t OBJ_func_getRaw(OBJ *obj) {
+  assert(obj);
+  assert(obj->type == OBJ_FUNC);
+  return (OBJ_func_t)obj->data;
 }
 
 /*******************************************************************************

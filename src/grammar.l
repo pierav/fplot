@@ -63,10 +63,10 @@ name        {LET}({LET}|{DEC})*
 <F_STRING>"\\\\" 		{ *s++ = '\"'; }
 <F_STRING>"\"" 			{ *s   = '\0';
 											BEGIN oldstatestr;
-											yylval = malloc(sizeof(OBJ_string));
-											((OBJ_string*) yylval)->s = strdup(buf);
-											((OBJ_string*) yylval)->size = strlen(buf);
-											printf("[STR '%s#%d']", ((OBJ_string*) yylval)->s, ((OBJ_string*) yylval)->size);
+											yylval = OBJ_string_init(buf, strlen(buf));
+											printf("[STR ");
+											OBJ_FPrint(stdout, yylval);
+											printf("]");
 											return(STRING);
 										}
 <F_STRING>\n 				{ printf("invalid string"); exit(1); }
@@ -94,9 +94,10 @@ name        {LET}({LET}|{DEC})*
 ">" 				{ECHO; return(GT); }
 
 {entier}    {
-							yylval = malloc(sizeof(int));
-	 						*(int *)yylval = atoi(yytext);
-							printf("[INT '%d']", *(int *)yylval);
+	 						yylval = OBJ_int_init(atoi(yytext));
+							printf("[INT ");
+							OBJ_FPrint(stdout, yylval);
+							printf("]");
 							return(ENTIER);
 						}
 

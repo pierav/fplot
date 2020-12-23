@@ -73,7 +73,7 @@ const void *OBJ_STRING_FUNC[NB_OBJ_FUNC] = {
     /* GET */ OBJ_string__getitem__,
     /* STR  */ OBJ_string__str__,
     /* REPR  */ OBJ_string__repr__,
-    /* INT  */ OBJ_string__int__,
+    /* int  */ OBJ_string__int__,
     /* DOUBLE  */ OBJ_string__double__};
 
 /*******************************************************************************
@@ -86,12 +86,12 @@ const void *OBJ_STRING_FUNC[NB_OBJ_FUNC] = {
 
 // Opérations arithmétiques
 OBJ *OBJ_string__add__(OBJ *obj1, OBJ *obj2) {
-  OBJ_string *s1 = OBJ_string_GetRaw(obj1);
-  OBJ_string *s2 = OBJ_string_GetRaw(obj2);
+  OBJ_string *s1 = OBJ_string_getRaw(obj1);
+  OBJ_string *s2 = OBJ_string_getRaw(obj2);
   char *result = malloc(s1->size + s2->size + 1);
   strcpy(result, s1->s);
   strcat(result, s2->s);
-  return OBJ_string_Init(result, s1->size + s2->size);
+  return OBJ_string_init(result, s1->size + s2->size);
 }
 
 OBJ *OBJ_string__mul__(OBJ *obj1, OBJ *obj2) {
@@ -101,45 +101,45 @@ OBJ *OBJ_string__mul__(OBJ *obj1, OBJ *obj2) {
 // Comparaisons
 // Retourne un OBJ_BOOL TODO !
 OBJ *OBJ_string__eq__(OBJ *obj1, OBJ *obj2) {
-  char *s1 = OBJ_string_GetRaw(obj1)->s;
-  char *s2 = OBJ_string_GetRaw(obj2)->s;
-  return OBJ_INT_Init(strcmp(s1, s2) == 0);
+  char *s1 = OBJ_string_getRaw(obj1)->s;
+  char *s2 = OBJ_string_getRaw(obj2)->s;
+  return OBJ_int_init(strcmp(s1, s2) == 0);
 }
 OBJ *OBJ_string__ne__(OBJ *obj1, OBJ *obj2) {
-  char *s1 = OBJ_string_GetRaw(obj1)->s;
-  char *s2 = OBJ_string_GetRaw(obj2)->s;
-  return OBJ_INT_Init(strcmp(s1, s2) != 0);
+  char *s1 = OBJ_string_getRaw(obj1)->s;
+  char *s2 = OBJ_string_getRaw(obj2)->s;
+  return OBJ_int_init(strcmp(s1, s2) != 0);
 }
 OBJ *OBJ_string__lt__(OBJ *obj1, OBJ *obj2) {
-  char *s1 = OBJ_string_GetRaw(obj1)->s;
-  char *s2 = OBJ_string_GetRaw(obj2)->s;
-  return OBJ_INT_Init(strcmp(s1, s2) < 0);
+  char *s1 = OBJ_string_getRaw(obj1)->s;
+  char *s2 = OBJ_string_getRaw(obj2)->s;
+  return OBJ_int_init(strcmp(s1, s2) < 0);
 }
 OBJ *OBJ_string__gt__(OBJ *obj1, OBJ *obj2) {
-  char *s1 = OBJ_string_GetRaw(obj1)->s;
-  char *s2 = OBJ_string_GetRaw(obj2)->s;
-  return OBJ_INT_Init(strcmp(s1, s2) > 0);
+  char *s1 = OBJ_string_getRaw(obj1)->s;
+  char *s2 = OBJ_string_getRaw(obj2)->s;
+  return OBJ_int_init(strcmp(s1, s2) > 0);
 }
 OBJ *OBJ_string__le__(OBJ *obj1, OBJ *obj2) {
-  char *s1 = OBJ_string_GetRaw(obj1)->s;
-  char *s2 = OBJ_string_GetRaw(obj2)->s;
-  return OBJ_INT_Init(strcmp(s1, s2) <= 0);
+  char *s1 = OBJ_string_getRaw(obj1)->s;
+  char *s2 = OBJ_string_getRaw(obj2)->s;
+  return OBJ_int_init(strcmp(s1, s2) <= 0);
 }
 OBJ *OBJ_string__ge__(OBJ *obj1, OBJ *obj2) {
-  char *s1 = OBJ_string_GetRaw(obj1)->s;
-  char *s2 = OBJ_string_GetRaw(obj2)->s;
-  return OBJ_INT_Init(strcmp(s1, s2) >= 0);
+  char *s1 = OBJ_string_getRaw(obj1)->s;
+  char *s2 = OBJ_string_getRaw(obj2)->s;
+  return OBJ_int_init(strcmp(s1, s2) >= 0);
 }
 
 // Taille d'un element
 // Retourne un OBJ_string
 OBJ *OBJ_string__len__(OBJ *obj1) {
-  return OBJ_INT_Init(OBJ_string_GetRaw(obj1)->size);
+  return OBJ_int_init(OBJ_string_getRaw(obj1)->size);
 }
 OBJ *OBJ_string__getitem__(OBJ *obj1, OBJ *objarg) {
-  OBJ_int_t index = OBJ_INT_GetRaw(objarg);
-  assert(index < OBJ_string_GetRaw(obj1)->size);
-  return OBJ_INT_Init((OBJ_string_GetRaw(obj1)->s)[index]);
+  OBJ_int_t index = OBJ_int_getRaw(objarg);
+  assert(index < OBJ_string_getRaw(obj1)->size);
+  return OBJ_int_init((OBJ_string_getRaw(obj1)->s)[index]);
 }
 
 // Représentation textuelle
@@ -149,7 +149,7 @@ OBJ *OBJ_string__repr__(OBJ *obj1) { return obj1; }
 
 // Changement de type
 OBJ *OBJ_string__int__(OBJ *obj) {
-  return OBJ_INT_Init(atoi(OBJ_string_GetRaw(obj)->s));
+  return OBJ_int_init(atoi(OBJ_string_getRaw(obj)->s));
 }
 OBJ *OBJ_string__double__(OBJ *obj) {
   assert(0 && "TODO");
