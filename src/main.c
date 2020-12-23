@@ -16,6 +16,7 @@
 #include "po_objstack.h"
 
 #include "utils/hashtable.h"
+#include "utils/list.h"
 
 extern int yy_flex_debug;
 
@@ -33,6 +34,8 @@ AST_NODE *BISON_Parse(void) {
 
 int main(void) {
   // TU_HashTable();
+  // TU_List();
+  // return 0;
 
   // auto flush stdout
   setvbuf(stdout, NULL, _IONBF, 0);
