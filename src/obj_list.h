@@ -1,26 +1,25 @@
 /*
- * obj_handler.h
+ * obj_list.h
  *
- *  Created on: 22/12/2020
+ *  Created on: 23/12/2020
  *      Author: pirx
  */
 
-#ifndef _obj_handler_H_
-#define _obj_handler_H_
+#ifndef _OBJ_LIST_H_
+#define _OBJ_LIST_H_
 
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "logbuffer.h"
-#include "obj.h"
-#include "obj_int.h"
-#include "obj_list.h"
-#include "obj_string.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 /*******************************************************************************
  * Macros
  ******************************************************************************/
+
+#define OBJCLASS_LIST_NAME "List"
 
 /*******************************************************************************
  * Types
@@ -30,21 +29,10 @@
  * Variables
  ******************************************************************************/
 
-extern FILE *stdout_po_alu;
-extern const char *OBJ_TYPES_NAMES[];
-extern const void *OBJ_FULL_FUNC[];
+extern const void *OBJCLASS_LIST_FUNC[];
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
-void PO_ALU_Init(void);
-void PO_ALU_setNewClass(char *classname, void *funcs[]);
-
-void OBJ_FPrint(FILE *pf, OBJ *obj);
-void OBJ_Print(OBJ *obj);
-
-OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1);
-OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2);
-
-#endif /* _obj_handler_H_ */
+#endif /* _OBJ_LIST_H_ */

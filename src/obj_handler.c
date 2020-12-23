@@ -24,26 +24,50 @@
  * Internal function declaration
  ******************************************************************************/
 
+void *PO_ALU_getFuncs(OBJ *obj);
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
 FILE *stdout_po_alu = NULL;
 
+// Types primitifs
 const char *OBJ_TYPES_NAMES[] = {"BOOL", OBJ_INT_NAME, "CHAR", OBJ_STRING_NAME,
                                  "FUNC"};
 
 const void *OBJ_FULL_FUNC[] = {NULL, OBJ_INT_FUNC, NULL, OBJ_STRING_FUNC, NULL};
 
+// Classes
+HashTable *objclass_full_func;
+
 /*******************************************************************************
  * Public function
  ******************************************************************************/
+
+void PO_ALU_Init(void) {
+  stdout_po_alu = LB_Init(1024);
+  // Initialisation de la table des classes (les types primitifs sont statiques)
+  objclass_full_func = HT_Init();
+  PO_ALU_setNewClass(OBJCLASS_LIST_NAME, (void **)OBJCLASS_LIST_FUNC);
+}
+
+void PO_ALU_setNewClass(char *classname, void *funcs[]) {
+  HT_Insert(objclass_full_func, classname, funcs);
+}
 
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
 
-void PO_ALU_Init(void) { stdout_po_alu = LB_Init(1024); }
+void *PO_ALU_getFuncs(OBJ *obj) {
+  assert(obj);
+  // Type dynamique
+  if (obj->type == OBJ_CLASS)
+    return HT_Get(objclass_full_func, ((OBJ_class *)obj->data)->name);
+  // Type statique
+  return (void *)OBJ_FULL_FUNC[obj->type];
+}
 
 OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
   fprintf(stdout_po_alu, "[\e[33mOBJ\e[39m]>>> ");
@@ -51,7 +75,7 @@ OBJ *OBJ_ApplyFunc1(OBJ_PRIMITIVES func, OBJ *obj1) {
   OBJ_FPrint(stdout_po_alu, obj1);
 
   // type valide ? TODO delete
-  const void *objfunctab = OBJ_FULL_FUNC[obj1->type];
+  const void *objfunctab = PO_ALU_getFuncs(obj1);
   if (objfunctab == NULL) {
     printf("Invalid type\n");
     assert(0);
@@ -80,7 +104,7 @@ OBJ *OBJ_ApplyFunc2(OBJ_PRIMITIVES func, OBJ *obj1, OBJ *obj2) {
   OBJ_FPrint(stdout_po_alu, obj2);
 
   // type valide ? TODO delete
-  const void *objfunctab = OBJ_FULL_FUNC[obj1->type];
+  const void *objfunctab = PO_ALU_getFuncs(obj1);
   if (objfunctab == NULL) {
     printf("Invalid type\n");
     return obj1;

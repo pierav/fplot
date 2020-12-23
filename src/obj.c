@@ -20,8 +20,6 @@
  * Internal function declaration
  ******************************************************************************/
 
-static OBJ *OBJ_Create(OBJ_TYPE type, void *value); // TODO : PRIVATE !
-
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -81,6 +79,18 @@ inline OBJ_func_t OBJ_func_getRaw(OBJ *obj) {
   return (OBJ_func_t)obj->data;
 }
 
+inline OBJ *OBJ_class_init(char *name, void *data) {
+  OBJ_class *p_data = (OBJ_class *)malloc(sizeof(struct OBJ_class));
+  p_data->name = name;
+  p_data->data = data;
+  return OBJ_Create(OBJ_CLASS, p_data);
+}
+
+inline OBJ_class *OBJ_class_getRaw(OBJ *obj) {
+  assert(obj);
+  assert(obj->type == OBJ_CLASS);
+  return (OBJ_class *)obj->data;
+}
 /*******************************************************************************
  * Internal function
  ******************************************************************************/

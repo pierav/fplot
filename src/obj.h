@@ -31,7 +31,8 @@ typedef struct OBJ_string OBJ_string;
 
 struct OBJ_class { // Pour les types non primitif
   char *name;
-  HashTable /* objects */ *local;
+  HashTable /* objects */ *local; // TODO?
+  void *data;
 };
 typedef struct OBJ_class OBJ_class;
 
@@ -116,6 +117,8 @@ extern const uint8_t OBJ_NB_ARGS[NB_OBJ_FUNC];
  * Prototypes
  ******************************************************************************/
 
+OBJ *OBJ_Create(OBJ_TYPE type, void *value); // TODO : PRIVATE !
+
 OBJ *OBJ_int_init(OBJ_int_t value);
 OBJ_int_t OBJ_int_getRaw(OBJ *obj);
 
@@ -124,5 +127,8 @@ OBJ_string *OBJ_string_getRaw(OBJ *obj);
 
 OBJ *OBJ_func_init(OBJ_func_t value);
 OBJ_func_t OBJ_func_getRaw(OBJ *obj);
+
+OBJ *OBJ_class_init(char *name, void *data);
+OBJ_class *OBJ_class_getRaw(OBJ *obj);
 
 #endif /* _OBJ_H_ */
