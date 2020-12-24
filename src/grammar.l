@@ -79,6 +79,7 @@ name        {LET}({LET}|{DEC})*
 "while"			{ECHO; return(WHILE); }
 "function"	{ECHO; return(FUNC);}
 "return"		{ECHO; return(RETURN); }
+"new"				{ECHO; return(NEW); }
 
 "{"					{ECHO; return(BEG); }
 "}"					{ECHO; return(END); }

@@ -29,7 +29,9 @@ enum PC_TYPE {
   PC_TYPE_RETURN,           // OBJ *  | PC <- POP(); PUSH(OBJ)
 
   PC_TYPE_STORE, // char * | NS[char*] <- POP()
-  PC_TYPE_LOAD   // char * | PUSH(NS[char*])
+  PC_TYPE_LOAD,  // char * | PUSH(NS[char*])
+
+  PC_TYPE_CLASS_INIT // char * | PUSH(new CLASS[char *])
 };
 typedef enum PC_TYPE PC_TYPE;
 
@@ -71,5 +73,6 @@ PCODE *PC_CreateReturn(void);
 
 PCODE *PC_CreateStore(char *name);
 PCODE *PC_CreateLoad(char *name);
+PCODE *PC_CreateClassInit(char *name);
 
 #endif /* _PC_FPCODE_H_ */

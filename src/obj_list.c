@@ -83,6 +83,8 @@ const void *OBJCLASS_LIST_FUNC[NB_OBJ_FUNC] = {
  * Public function
  ******************************************************************************/
 
+OBJ *OBJ_list__init__(void) { return OBJ_list_init(LIST_init()); }
+
 /*******************************************************************************
  * Internal function
  ******************************************************************************/
@@ -130,8 +132,14 @@ OBJ *OBJ_list__getitem__(OBJ *obj1, OBJ *objarg) {
 // Retourne un OBJ_STR
 OBJ *OBJ_list__str__(OBJ *obj1) {
   assert(obj1);
-  return OBJ_string_init("[...]", 5);
+  OBJ *ret = OBJ_string_init("[", 1);
+  for (size_t i = 0; i < LIST_getSize(OBJ_list_getRaw(obj1)->dat); i++) {
+    OBJ *oi = LIST_get(OBJ_list_getRaw(obj1)->dat, i);
+    ret = OBJ_ApplyFunc2(__ADD__, ret, OBJ_ApplyFunc1(__STR__, oi));
+  }
+  return OBJ_ApplyFunc2(__ADD__, ret, OBJ_string_init("]", 1));
 }
+
 OBJ *OBJ_list__repr__(OBJ *obj1) { return OBJ_list__str__(obj1); }
 
 OBJ *OBJ_list_init(List *l) {

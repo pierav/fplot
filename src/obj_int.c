@@ -146,8 +146,12 @@ OBJ *OBJ_int__getitem__(OBJ *obj1, OBJ *objarg) {
 
 // Représentation textuelle
 // Retourne un OBJ_STR
-OBJ *OBJ_int__str__(OBJ *obj1) { return obj1; }
-OBJ *OBJ_int__repr__(OBJ *obj1) { return obj1; }
+OBJ *OBJ_int__str__(OBJ *obj1) {
+  char *str = calloc(1, 20);
+  sprintf(str, "%d", OBJ_int_getRaw(obj1));
+  return OBJ_string_init(str, strlen(str));
+}
+OBJ *OBJ_int__repr__(OBJ *obj1) { return OBJ_int__str__(obj1); }
 
 // Changement de type
 OBJ *OBJ_int__int__(OBJ *obj) { return obj; }

@@ -1,19 +1,10 @@
-/*
- * obj_list.h
- *
- *  Created on: 23/12/2020
- *      Author: pirx
- */
-
-#ifndef _OBJ_LIST_H_
-#define _OBJ_LIST_H_
+#ifndef _OBJ_FUNC_H_
+#define _OBJ_FUNC_H_
 
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 
-#include "obj.h"
-#include "obj_handler.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -21,7 +12,7 @@
  * Macros
  ******************************************************************************/
 
-#define OBJCLASS_LIST_NAME "List"
+#define OBJ_FUNC_NAME "Function"
 
 /*******************************************************************************
  * Types
@@ -31,12 +22,10 @@
  * Variables
  ******************************************************************************/
 
-extern const void *OBJCLASS_LIST_FUNC[];
+extern const void *OBJ_FUNC_FUNC[];
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
-OBJ *OBJ_list__init__(void);
-
-#endif /* _OBJ_LIST_H_ */
+#endif /* _OBJ_FUNC_H_ */

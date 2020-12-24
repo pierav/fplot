@@ -76,7 +76,7 @@ inline OBJ *OBJ_func_init(OBJ_func_t value) {
 inline OBJ_func_t OBJ_func_getRaw(OBJ *obj) {
   assert(obj);
   assert(obj->type == OBJ_FUNC);
-  return (OBJ_func_t)obj->data;
+  return *(OBJ_func_t *)obj->data;
 }
 
 inline OBJ *OBJ_class_init(char *name, void *data) {

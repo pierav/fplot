@@ -14,6 +14,7 @@
 
 #include "logbuffer.h"
 #include "obj.h"
+#include "obj_func.h"
 #include "obj_int.h"
 #include "obj_list.h"
 #include "obj_string.h"
@@ -39,7 +40,9 @@ extern const void *OBJ_FULL_FUNC[];
  ******************************************************************************/
 
 void PO_ALU_Init(void);
-void PO_ALU_setNewClass(char *classname, void *funcs[]);
+void PO_ALU_setNewClass(char *classname, void *funcs[], void *initfunc);
+OBJ *PO_ALU_createObjclass(char *classname);
+void PO_ALU_fprintObj(FILE *pf, OBJ *obj);
 
 void OBJ_FPrint(FILE *pf, OBJ *obj);
 void OBJ_Print(OBJ *obj);

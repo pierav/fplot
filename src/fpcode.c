@@ -26,9 +26,9 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm);
  * Variables
  ******************************************************************************/
 
-const char *PC_TYPE_NAME[] = {"PUSH_CST", "POP",   "APPLY_OBJ_FUNC",
-                              "CALL",     "JUMP",  "CONDITIONAL_JUMP",
-                              "RETURN",   "STORE", "LOAD"};
+const char *PC_TYPE_NAME[] = {
+    "PUSH_CST",         "POP",    "APPLY_OBJ_FUNC", "CALL", "JUMP",
+    "CONDITIONAL_JUMP", "RETURN", "STORE",          "LOAD", "CLASS_INIT"};
 
 /*******************************************************************************
  * Public function
@@ -76,6 +76,9 @@ PCODE *PC_CreateStore(char *name) {
 PCODE *PC_CreateLoad(char *name) {
   return PC_Create(PC_TYPE_LOAD, (PC_ARG)name);
 }
+PCODE *PC_CreateClassInit(char *name) {
+  return PC_Create(PC_TYPE_CLASS_INIT, (PC_ARG)name);
+}
 
 /*******************************************************************************
  * Internal function
@@ -92,6 +95,7 @@ void PC_FPrintGen(FILE *pf, PCODE *code, int forTerm) {
   switch (code->type) {
   case PC_TYPE_STORE: // fallthrough
   case PC_TYPE_LOAD:
+  case PC_TYPE_CLASS_INIT:
     fprintf(pf, "%s", code->arg.pchar_t);
     break;
   case PC_TYPE_PUSH_CST:

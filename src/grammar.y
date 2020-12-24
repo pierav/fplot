@@ -42,6 +42,7 @@
 %token FOR WHILE
 %token FUNC
 %token RETURN
+%token NEW
 
 %token COMMA
 %token PTCOMMA
@@ -114,7 +115,7 @@ expr
   | var_src OPAR expr_list CPAR            { $$ = AST_NODE_FUNC_CALL_Create($1/* name */, $3/* args*/ ); }
   | FUNC OPAR name_list CPAR BEG statements END
                                         { $$ = AST_NODE_FUNC_DEC_Create($3/* args*/, $6/*code */);}
-
+  | NEW VAR OPAR CPAR                   { $$ = AST_NODE_PCODE_Create(PC_CreateClassInit((char *)$2), NULL, NULL); }
 
 expr_list
   : expr_list_not_empty                 { $$ = $1; }

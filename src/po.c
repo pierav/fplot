@@ -124,10 +124,10 @@ void PO_Iter(void) {
   case PC_TYPE_CONDITIONAL_JUMP: {
     OBJ *test = PO_OBJSTACK_Pop();
     fprintf(stdout_po, "test:");
-    OBJ_FPrint(stdout_po, test);
+    PO_ALU_fprintObj(stdout_po, test);
     OBJ *res_test = OBJ_ApplyFunc1(__INT__, test);
     fprintf(stdout_po, "::");
-    OBJ_FPrint(stdout_po, res_test);
+    PO_ALU_fprintObj(stdout_po, res_test);
     fprintf(stdout_po, "%s", *(int *)res_test->data ? ":true" : ":false");
     if (*(int *)res_test->data) // do nothing
       CTX_PC_Inc();
@@ -137,7 +137,7 @@ void PO_Iter(void) {
   case PC_TYPE_CALL: {
     fprintf(stdout_po, "CALL: ");
     OBJ *func = PO_OBJSTACK_Pop(); // POP func
-    OBJ_FPrint(stdout_po, func);
+    PO_ALU_fprintObj(stdout_po, func);
     // new context
     CTX_enter();
     CTX_PC_setMainPc(*(int *)func->data + 1);
@@ -155,14 +155,18 @@ void PO_Iter(void) {
   } break;
   case PC_TYPE_STORE: {
     OBJ *o = PO_OBJSTACK_Pop();
-    OBJ_FPrint(stdout_po, o);
+    PO_ALU_fprintObj(stdout_po, o);
     CTX_setObj(code->arg.pchar_t, o);
     CTX_PC_Inc();
   } break;
   case PC_TYPE_LOAD: {
     OBJ *o = CTX_getObj(code->arg.pchar_t);
-    OBJ_FPrint(stdout_po, o);
+    PO_ALU_fprintObj(stdout_po, o);
     PO_OBJSTACK_Push(o);
+    CTX_PC_Inc();
+  } break;
+  case PC_TYPE_CLASS_INIT: {
+    PO_OBJSTACK_Push(PO_ALU_createObjclass(code->arg.pchar_t));
     CTX_PC_Inc();
   } break;
   default:
@@ -172,7 +176,6 @@ void PO_Iter(void) {
     assert(0);
     break;
   }
-
   fprintf(stdout_po, ")\e[39m\n");
   fflush(stdout_po);
   return;
